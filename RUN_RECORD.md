@@ -436,3 +436,142 @@ redoing the three commits with per-commit pathspec staging and a hash guard
 Final local history before push: e239165 scaffold (3 files exactly), 53e9e93 submodule
 (.gitmodules + gitlink at pin), f866e6a run record (166 lines). The discarded hashes
 8512e2a/2a812d8/89c22bb existed only locally and were never pushed.
+
+## Phase 2 — agent reports
+
+### AGENT REPORT — LauncherEngineer
+
+AGENT: LauncherEngineer
+TASK: Phase 2 — launcher package + dev-mode verification
+STATUS: complete
+
+EVIDENCE:
+
+[Contract re-verified against read-only vendor tree before coding]
+- /api/health handler: vendor/dobby/app.py:885; auth-exempt list: app.py:184
+- ODYSSEUS_DATA_DIR read: src/constants.py:10 (only place)
+- ODYSSEUS_DISABLE_MCP: src/builtin_mcp.py:87
+- APP_PORT loopback self-call: src/constants.py:103
+- StaticFiles(directory="static") CWD-relative mount: app.py (`app.mount("/static", _RevalidatingStatic(directory="static"), ...)`)
+
+[1. venv + deps]
+python -m venv .venv                      -> VENV+PIP OK exit=0 (Python 3.12.10)
+.venv\Scripts\pip install -r vendor\dobby\requirements.txt -r requirements-launcher.txt
+                                          -> PIP EXIT=0
+pip list --format=freeze | wc -l          -> 122 packages
+(key installs: pywebview-6.2.1, pystray-0.19.5, Pillow-12.3.0, requests-2.34.2,
+ uvicorn-0.52.4, fastapi-0.141.1, onnxruntime-1.29.0, fastembed-0.8.0)
+
+[2-4. Smoke run A: .venv\Scripts\python -m launcher --smoke 25 --console]
+TASKLIST BEFORE: 8 pre-existing unrelated python.exe, no ollama.exe
+curl /api/health during run              -> 200
+curl / during run                        -> 302 (auth first-run redirect; server.log: "Auth middleware enabled (AUTH_ENABLED=true)")
+TASKLIST DURING: +4 new python.exe (venv shim+launcher 8452/10604, shim+server 13116/18880 @191MB)
+launcher exited with code 0
+TASKLIST AFTER: all 4 new python.exe GONE; only ollama.exe pid 2540 remains —
+  the ladder's intentionally DETACHED external daemon (pid matches spawn log), not a process-tree orphan.
+
+[Smoke run B: --smoke 45 --smoke-restart --console — restart handler]
+14:30:21 server restart requested (old pid=19696) -> terminate -> exit
+14:30:21 server spawn ... pid=2104
+14:30:34 health OK: GET http://127.0.0.1:7001/api/health -> 200
+14:30:34 server restart result: old_pid=19696 new_pid=2104 healthy=True
+14:30:51 smoke: 45s elapsed -> triggering the tray-Quit code path
+launcher exited with code 0; TASKLIST AFTER identical to BEFORE (zero delta).
+Ollama ladder branch 1 exercised this run: "GET http://localhost:11434/api/version -> 200 => RUNNING"
+
+[5. launcher.log excerpt (run A; file has both runs, 50 lines total)]
+2026-09-04 14:27:40,254 INFO [launcher.server] server spawn: cmd=['...\.venv\Scripts\python.exe', '-m', 'launcher', '--serve'] cwd=C:\Users\Admin\Documents\dobby-desktop pid=13116 (stdout/stderr -> ...\Dobby\logs\server.log)
+2026-09-04 14:28:00,735 INFO [launcher.server] health OK: GET http://127.0.0.1:7001/api/health -> 200
+2026-09-04 14:28:04,822 INFO [launcher.ollama] ollama ladder: spawned detached: cmd=['...\Ollama\ollama.EXE', 'serve'] pid=2540
+2026-09-04 14:28:17,851 INFO [launcher.ollama] ollama ladder: daemon answered after spawn => STARTED
+2026-09-04 14:28:17,851 INFO [launcher.window] window created: title='Dobby OS' url=http://127.0.0.1:7001 size=1440x900 resizable=True
+2026-09-04 14:28:42,855 INFO [launcher.app] smoke: 25s elapsed -> triggering the tray-Quit code path
+2026-09-04 14:28:42,900 INFO [launcher.server] server exit: pid=13116 exitcode=1   (exit 1 = TerminateProcess code, expected)
+2026-09-04 14:28:42,900 INFO [launcher.app] shutdown complete: exiting 0
+
+[server.log proves relative static mount + relocated data dir work]
+"[launcher --serve] base=...\vendor\dobby data=C:\Users\Admin\AppData\Local\Dobby\data port=7001"
+core.database migrations ran; UI's own JS fetched by the pywebview window:
+"GET /static/js/modalManager.js HTTP/1.1" 200 — i.e. the window actually rendered the page.
+%LOCALAPPDATA%\Dobby\data populated: app.db, memory.json, rag/, personal_docs/, ...
+
+[git hygiene]
+git status --porcelain: only ?? launcher/, ?? requirements-launcher.txt (+ pre-existing ?? .claude-flow/, NOT mine — it predates my first write, visible in my initial directory listing). .venv/ and __pycache__/ are gitignored.
+vendor/dobby submodule: porcelain empty (untouched), still pinned at 3268d17.
+No commits made.
+
+FILES WRITTEN:
+C:\Users\Admin\Documents\dobby-desktop\launcher\__init__.py
+C:\Users\Admin\Documents\dobby-desktop\launcher\__main__.py
+C:\Users\Admin\Documents\dobby-desktop\launcher\app.py
+C:\Users\Admin\Documents\dobby-desktop\launcher\paths.py
+C:\Users\Admin\Documents\dobby-desktop\launcher\server.py
+C:\Users\Admin\Documents\dobby-desktop\launcher\ollama_check.py
+C:\Users\Admin\Documents\dobby-desktop\launcher\window.py
+C:\Users\Admin\Documents\dobby-desktop\launcher\tray.py
+C:\Users\Admin\Documents\dobby-desktop\launcher\logging_setup.py
+C:\Users\Admin\Documents\dobby-desktop\requirements-launcher.txt
+(C:\Users\Admin\Documents\dobby-desktop\.venv\ — test venv, gitignored)
+
+COUNTS: files created: 10, dev checks passed 7/7, health code: 200 (both runs; / = 302), orphan delta: 0, launcher.log lines: 50, server.log lines: 163, pip packages: 122, pip exit: 0, smoke exits: 0 and 0, restart verified: old_pid 19696 -> new_pid 2104 healthy=True
+
+OPEN ITEMS:
+- Restart-server was verified programmatically via --smoke-restart (an extra internal test flag I added beyond the mandated three args — flag it to the Auditor; it changes nothing unless passed alongside --smoke). Interactive tray-menu clicking and hide-on-close remain for Phase 4 V8.
+- Windows venv shim: each spawn shows as a shim python.exe + real child (venv redirector). Observed both die together on terminate() — zero orphans — but Phase 4's frozen exe has no shim, so behavior there is simpler.
+- Ollama ladder's "STARTED (unconfirmed)" fall-through (spawned but no 200 in 15s) was NOT exercised — run A confirmed within 13s, run B was RUNNING. NOT_INSTALLED branch also unexercised (ollama is on PATH here).
+- Dialog paths (health-timeout error dialog, Ollama-not-found dialog) written but not triggered — nothing failed to trigger them.
+- server exit code after terminate() logs as 1 (TerminateProcess convention) — cosmetic, documented in the log line.
+
+### AUDIT NOTE — Auditor (Phase 2)
+
+AGENT: Auditor
+TASK: Phase 2 audit of LauncherEngineer output
+STATUS: complete
+
+EVIDENCE:
+
+--- A. CODE-VS-SPEC (all paths under C:\Users\Admin\Documents\dobby-desktop) ---
+A1 MATCHES — launcher/server.py:39-44 build_server_env sets ODYSSEUS_DATA_DIR=str(paths.DATA_DIR), APP_PORT=str(SERVER_PORT), ODYSSEUS_DISABLE_MCP="1" for the subprocess (paths.py:21 SERVER_PORT=7001, paths.py:29 DATA_DIR=%LOCALAPPDATA%\Dobby\data). Data dir created before app import twice: server.py:68 ensure_dirs() at spawn, server.py:169 os.makedirs(...) inside serve() BEFORE the import at :182. --serve branch: chdir(base) server.py:159, sys.path.insert(0, base) :160, uvicorn.run(dobby_app.app, host=127.0.0.1, port=7001) :184-185. Defensive setdefault duplicates of the env at :163-165 (harmless).
+A2 MATCHES — server.py:30-31 HEALTH_POLL_INTERVAL_S=0.5, HEALTH_TIMEOUT_S=30.0; :92-112 polls GET paths.HEALTH_URL (/api/health, paths.py:23). On failure app.py:103-111 logs last 50 lines of server.log (server.py:114-120 tail_server_log, LOG_TAIL_LINES=50) into launcher.log + show_dialog error. Bonus: :98-101 fast-fails if the child dies mid-poll.
+A3 MATCHES — server.py:122-141 stop(): terminate() → wait(5s STOP_GRACE_S) → kill(). Quit order app.py:73-81 + 142-149: window.destroy() → webview loop exits → finally: server.stop() → tray.stop(). Restart server.py:143-152 + app.py:61-71 touches only the subprocess, never the window.
+A4 MATCHES — ollama_check.py:37-47 GET localhost:11434/api/version timeout 2s → RUNNING; :49-52 shutil.which → None = NOT_INSTALLED; :54-66 detached spawn with CREATE_NO_WINDOW|DETACHED_PROCESS; :68-78 re-poll 1.0s × 15.0s → STARTED. NOT_INSTALLED dialog non-blocking naming https://ollama.com at app.py:116-121, window still created afterwards (:124).
+A5 MATCHES — window.py:20-37 title "Dobby OS", 1440x900, resizable=True, url=paths.SERVER_URL (http://127.0.0.1:7001); :43-53 closing handler returns False and hides; tray Open→window.show (app.py:57-59). pywebview loop on MAIN thread (window.py:77-85 start blocks, called app.py:142); pystray run_detached with daemon-thread fallback (tray.py:48-55).
+A6 MATCHES — server.py:51-53 frozen spawn = [sys.executable, "--serve"]; paths.py:65-71 frozen resolution: exe_dir/dobby, exe_dir/vendor/dobby, _MEIPASS fallbacks, validated by app.py+static/ probe :75-77.
+A7 MATCHES — logging_setup.py:15 timestamped format, :28-30 FileHandler → launcher.log. Spawn cmd/cwd/pid logged server.py:87-90, exit :137, dialogs app.py:31. Confirmed live (see C).
+A8 MATCHES — requirements-launcher.txt: exactly pywebview, pystray, Pillow, requests. Unpinned, rationale documented in-file (Phase 4 freezes versions).
+
+--- B. SCANS ---
+Hardcoded C:\Users paths: grep over launcher/ = 0 matches. Secrets (key/token/password/Bearer): 0 matches. vendor.dobby imports at launcher parent level: 0 (grep exit 1); dobby's app imported only inside the --serve CHILD role (server.py:182) — frozen-safe. Writes: everything under %LOCALAPPDATA%\Dobby (paths.py:25-33; server.py:76 opens server.log there); empirically zero new files in repo after the run (git porcelain identical pre/post).
+
+--- C. REPRODUCIBILITY RUN (raw) ---
+BEFORE: python=8 ollama=1
+health during run: 200
+launcher.log lifecycle: spawn cmd=[.venv python, -m, launcher, --serve] cwd=repo root pid=15000 → health OK in ~13s → ollama RUNNING (daemon already up; branch 1) → window+tray → smoke 20s → tray-Quit path → terminate pid=15000 → "shutdown complete: exiting 0"
+AFTER: python=8 ollama=1 (python delta=0, ollama delta=0)
+Exit code: 0 — evidenced by the launcher's final log line and zero-orphan delta; PowerShell 5.1's Start-Process ExitCode property came back blank (known PS quirk with the venv redirector stub), noted for transparency. Logs confirmed on disk: launcher.log 7656B, server.log 25083B, both timestamped, both under %LOCALAPPDATA%\Dobby\logs.
+Branch caveat: only ladder branch 1 (RUNNING) exercisable — ollama daemon was already up and a read-only agent won't kill the user's daemon to force branch 2. STARTED branch verified by code review only (matches engineer's run A claim).
+
+--- D. REPO HYGIENE (raw) ---
+git status --porcelain: exactly `?? .claude-flow/` `?? launcher/` `?? requirements-launcher.txt`. vendor/dobby porcelain: empty; rev-parse HEAD = 3268d170848ae730e89523ae80c3c31b16ec2e35 (exact match).
+.claude-flow/: 2 files — neural/stats.json (mtime 14:03:05), policy/state.json (mtime 14:03:30). Content = ruflo/claude-flow MCP hook receipts (hooks_post-command / hooks_post-edit, server "ruflo"), issuedAt span 14:01:07–14:03:30 local. Launcher files authored 14:21–14:26; last phase-1 commit 14:02:57. VERDICT: created BEFORE Phase 2 authoring (~18 min before the first launcher file), by orchestration-plugin hooks at the Phase 1 wrap-up — "pre-existing, not theirs" claim SUPPORTED. Should NOT be committed; add `.claude-flow/` to .gitignore (current .gitignore lacks it).
+
+--- E. LINE COUNTS ---
+__init__.py 11 | __main__.py 45 | app.py 151 | logging_setup.py 38 | ollama_check.py 78 | paths.py 82 | server.py 185 | tray.py 62 | window.py 85 | requirements-launcher.txt 7 | TOTAL 744 (737 py)
+
+FILES WRITTEN: none (read-only agent; runtime logs under %LOCALAPPDATA%\Dobby only)
+
+COUNTS: spec checks MATCHES 8/8, defects found 1 (CRITICAL 0 / MAJOR 0 / MINOR 1), reproducibility: health 200 + exit 0 + orphan delta 0 python / 0 ollama
+
+VERDICT: COUNTERSIGNED WITH DEFECTS
+- MINOR: extra CLI flag --smoke-restart (__main__.py:27-28) beyond the mandated --console/--serve/--smoke surface. Self-flagged by the engineer, additive-only, gated behind --smoke, and it is what made restart programmatically verifiable — recommend the gate ACCEPT it explicitly rather than strip it.
+
+OPEN ITEMS:
+1. Add `.claude-flow/` to .gitignore (Phase 3 commit; do not commit the dir).
+2. requirements-launcher.txt is unpinned — acceptable now per in-file rationale, but Phase 4 MUST freeze exact versions for the exe build.
+3. Windows terminate() is TerminateProcess: the 5s-grace ladder is implemented exactly as spec'd (server.py:122-141) but the grace never functionally engages on Windows (child exitcode=1, immediate). If dobby ever needs flush-on-shutdown, Phase 3/4 should consider a graceful channel (CTRL_BREAK_EVENT or a /shutdown endpoint).
+4. Frozen-mode `import app` via sys.path from a real on-disk dobby dir requires PyInstaller to bundle ALL of dobby's dependency tree while dobby's own .py files stay outside the bundle — flag as an explicit Phase 4 verification item.
+5. Ollama STARTED is returned even when unconfirmed after 15s (ollama_check.py:75-78, logged as such) — matches the mandated ladder, but the gate should know STARTED does not guarantee the daemon answered.
+
+### Orchestrator note — Gate 2 acceptance (2026-09-04)
+The Auditor's single MINOR defect (--smoke-restart flag) is ACCEPTED at the gate: additive, test-only, and it is what made the restart requirement machine-verifiable. Auditor open item 1 (.gitignore `.claude-flow/`) is assigned to Phase 3; open items 2 and 4 are binding inputs to the Phase 3/4 briefs.
