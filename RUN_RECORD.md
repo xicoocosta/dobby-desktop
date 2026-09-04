@@ -875,3 +875,191 @@ OPEN ITEMS: none — notes: (1) no in-spec third-party count comment existed, so
 
 ### Orchestrator note — Gate 3 handling (2026-09-04)
 The Auditor's MINOR defect (dirty-tree gap in the submodule gate) and its open items 1–2 (explicit anyio backend hiddenimport; pyinstaller>=6,<7 pin) were fixed by the owning agent (Packager fix run) BEFORE the gate, per the gate rule; the Orchestrator verified all four changes mechanically (grep + line counts: spec 351, script 130, .gitignore 7). The .gitignore `.claude-flow/` line (Phase-2 Auditor recommendation) was applied in the same fix run under an explicit Orchestrator ownership grant. Auditor open item 3 (Compress-Archive ~4GB ZIP64 limit) is carried into the Phase 4 brief as a zip-integrity check. Final hiddenimports count: 89 explicit (59 stdlib + 30 third-party).
+
+## Phase 4 — agent reports
+
+### AGENT REPORT — Packager (build run 1, BLOCKED)
+
+AGENT: Packager (build run)
+TASK: Phase 4 — execute build-windows.ps1 + launch sanity
+STATUS: blocked
+
+EVIDENCE:
+Command run (repo root C:\Users\Admin\Documents\dobby-desktop):
+  powershell -NoProfile -ExecutionPolicy Bypass -File build-windows.ps1
+  → script exit code 1 (captured: EXITCODE=1)
+
+Step banners reached (4 of 7):
+  [1/7] Verify .venv + Python version        → Python 3.12.10, OK
+  [2/7] Sync submodule + verify pinned gitlink → pinned gitlink 3268d170848ae730e89523ae80c3c31b16ec2e35 == checked out; "submodule OK ... at the pinned commit"; "working tree is clean"
+  [3/7] Install dependencies                 → "Successfully installed altgraph-0.17.5 pefile-2024.8.26 pyinstaller-6.22.2 pyinstaller-hooks-contrib-2026.7 pywin32-ctypes-0.2.3 setuptools-84.0.0"; freeze written to build\pip-freeze.txt
+  [4/7] Frontend build step                  → "SKIP: static/ is committed prebuilt (254 files, Phase 0 verified)"
+  [5/7] PyInstaller build (dobby-desktop.spec) → FATAL during spec execution (below). Steps 6/7 never ran.
+
+Raw failure (verbatim, from transcript):
+  Error: typer is required. Install with 'pip install mcp[cli]'
+  ...
+    File "dobby-desktop.spec", line 247, in <module>
+      hidden_collected += collect_submodules(pkg)
+    File "...\PyInstaller\utils\hooks\__init__.py", line 634, in collect_submodules
+      modules, subpackages, on_error = isolated_python.call(_collect_submodules, name, on_error)
+    File "...\PyInstaller\isolated\_parent.py", line 334, in call
+      raise RuntimeError(f"Child process call to {function.__name__}() failed with:\n" + output)
+  RuntimeError: Child process call to _collect_submodules() failed with:
+    File "...\.venv\Lib\site-packages\mcp\cli\cli.py", line 15, in <module>
+      import typer
+  ModuleNotFoundError: No module named 'typer'
+  During handling of the above exception, another exception occurred:
+    File "...\mcp\cli\__init__.py", line 3, in <module>
+      from .cli import app
+    File "...\mcp\cli\cli.py", line 18, in <module>
+      sys.exit(1)
+  SystemExit: 1
+  FATAL: pyinstaller failed (exit code 1)
+
+ROOT CAUSE (spec defect, NOT the pre-registered harmless warning):
+- dobby-desktop.spec:247 runs collect_submodules over a package list that includes ('mcp', ...) (entry at spec lines 237-241).
+- collect_submodules does RUNTIME imports of every mcp.* submodule in an isolated child Python — not static analysis. mcp 2.1.1's mcp\cli\cli.py wraps `import typer` in try/except ImportError and calls sys.exit(1) (verified in .venv: except ImportError → print("Error: typer is required...") → sys.exit(1)).
+- SystemExit is not an ImportError, so collect_submodules' on_error tolerance never applies; the isolated worker dies, PyInstaller raises RuntimeError, spec exec aborts.
+- The Gate pre-registration assumed typer/rich absence would surface as tolerated missing-module WARNINGS; that holds for static analysis (and would hold for mcp.client.sse's httpx_sse, whose failure mode is a genuine ImportError) but NOT for mcp.cli, whose sys.exit(1) escalates to fatal.
+- Defect for the Packager fix run: exclude mcp.cli from collection at dobby-desktop.spec:247's ('mcp', ...) entry. NOT patched — spec is read-only to this run; the console=True contingency does not cover build-time failures.
+
+LAUNCH SANITY: not run — no exe exists (dist\ recursive item count: 0).
+
+FILES WRITTEN: build\pip-freeze.txt (2,522 bytes); build\dobby-desktop\Tree-00.toc ... Tree-07.toc; dist\ created but EMPTY; scratchpad build-transcript.log (outside repo).
+
+COUNTS: build exit: 1, dist files: 0, dist MB: 0, zip MB: n/a, exe bytes: n/a, health code: n/a, process delta: n/a, missing-module warnings: 0 observed (build died before analysis; pre-registered "2 families" invalidated — family 1 (mcp.cli/typer) is FATAL, not a warning), pyinstaller version: 6.22.2 (also: fastapi 0.141.1, uvicorn 0.52.4, pywebview 6.2.1, mcp 2.1.1)
+
+OPEN ITEMS:
+1. Packager fix run needed: dobby-desktop.spec:247 — filter mcp.cli out of collect_submodules('mcp'); root cause is mcp 2.1.1 mcp\cli\cli.py:15-18 converting missing typer into sys.exit(1) inside PyInstaller's isolated import worker.
+2. After that fix, mcp.client.sse/httpx_sse should downgrade to the pre-registered tolerated warning (it raises a true ImportError); verify on the rebuild.
+3. Gate pre-registration text should be corrected: "missing-module warnings" family 1 was mispredicted as harmless.
+4. V1-V9 Verifier matrix: not reachable this run (no artifact).
+
+### AGENT REPORT — Packager (fix + rebuild run)
+
+AGENT: Packager (fix + rebuild run)
+TASK: Phase 4 — fix mcp.cli collection, rebuild, launch sanity
+STATUS: partial
+
+EVIDENCE:
+
+1. FIX (applied + verified). dobby-desktop.spec, cumulative diff hunk:
+   @@ -213,4 +213,21 @@ (after "hidden_collected = []")
+   +# Per-package submodule filters for the loop below. 'mcp' MUST exclude
+   +# mcp.cli: collect_submodules imports every submodule in an isolated child
+   +# process, and mcp 2.1.1's mcp/cli/cli.py:15-18 wraps `import typer` in
+   +# try/except ImportError and calls sys.exit(1) when typer is absent (typer
+   +# is an mcp[cli] extra we do not install). SystemExit is not a tolerated
+   +# import failure, so the child — and the whole build — dies. ...
+   +# ... The exclusion matches exactly 'mcp.cli' and
+   +# 'mcp.cli.*' — NOT a bare startswith('mcp.cli') prefix, which would also
+   +# swallow 'mcp.client.*' (the very transports this collection exists for).
+   +_NO_FILTER = lambda name: True
+   +_SUBMODULE_FILTERS = {
+   +    'mcp': lambda name: name != 'mcp.cli' and not name.startswith('mcp.cli.'),
+   +}
+   @@ -245,5 +262,6 @@
+   -    hidden_collected += collect_submodules(pkg)
+   +    hidden_collected += collect_submodules(
+   +        pkg, filter=_SUBMODULE_FILTERS.get(pkg, _NO_FILTER))
+   ast.parse: "AST PARSE OK", exit 0.
+   Deliberate refinement of the Orchestrator's suggested lambda, still within the one diagnosed fix: PYZ inspection of the first rebuild proved `startswith('mcp.cli')` also prefix-matches `mcp.client.*`, silently dropping the lazy client transports from the explicit hiddenimports. The exact-boundary filter restored them explicitly: mcp.* modules in PYZ 112 → 120.
+
+2. REBUILD (two runs, both BUILD OK exit 0): Banners [1/7]..[7/7] all passed; PyInstaller 6.22.2, Python 3.12.10. Tail: "Building COLLECT COLLECT-00.toc completed successfully." → artifact summary 2723 files / 233.6 MB → zip 106.6 MB → "BUILD OK". The previous fatal is gone — collect_submodules('mcp') ran with zero warnings.
+   Tolerated missing-module warnings: 7 total in 2 families: (a) collect_submodules TRUE-ImportError x3 — webview.platforms.android, chromadb.server.fastapi (opentelemetry.instrumentation), onnxruntime.quantization (onnx); (b) hidden-import-not-found x4 — pycparser.lextab/yacctab, pysqlite2, MySQLdb (hook-generated optionals). NOTE: the predicted mcp.client.sse/httpx_sse warning did NOT materialize — mcp.client.sse IS in the PYZ.
+
+3. ARTIFACT STATS + LAYOUT: DobbyOS.exe = 30,816,602 bytes; 2,723 files; 233.6 MB. Zip 111,789,580 bytes (106.6 MB), 2,766 entries, central directory readable + spot-reads OK. Layout: _internal\dobby\app.py EXISTS, _internal\dobby\static\ EXISTS. PYZ: mcp.cli/* = NONE; mcp.client.sse/stdio/streamable_http present.
+
+4. LAUNCH SANITY: FAILED — NEW, fully diagnosed spec-level defect. Ran dist\DobbyOS\DobbyOS.exe --smoke 30 (PID 12128). HEALTH_HTTP=000 (connection refused; --serve child never spawned). Both %LOCALAPPDATA%\Dobby log files untouched (pre-logging crash). Process sat on PyInstaller's windowed error dialog ("Unhandled exception in script"); traceback scraped VERBATIM via UIAutomation, twice (both builds, identical):
+     Failed to execute script '__main__' due to unhandled exception: attempted relative import with no known parent package
+     Traceback (most recent call last):
+       File "__main__.py", line 45, in <module>
+       File "__main__.py", line 36, in main
+     ImportError: attempted relative import with no known parent package
+   Root cause: Analysis() freezes launcher\__main__.py as top-level "__main__" with no package context; line 36 is `from .logging_setup import setup_logging`. Dev works via `python -m launcher` (sets __package__). Spec-implicating, launcher-side, fires before any dobby code. NOT patched (one-fix rule). After: process force-killed → FINAL_DOBBY_COUNT=0.
+
+FILES WRITTEN: dobby-desktop.spec (the mcp.cli fix); build\ + dist\ (regenerated); scratchpad build logs.
+
+COUNTS: build exit 0 (both); dist files 2,723; dist 233.6 MB; zip 106.6 MB / 2,766 entries; exe 30,816,602 bytes; health 000; process delta 0 (via forced kill of hung dialog); warning families 2 (7 warnings, mcp family zero); pyinstaller 6.22.2
+
+OPEN ITEMS:
+- BLOCKER (diagnosed, not patched): frozen entry runs launcher/__main__.py as top-level "__main__" → relative imports die at launcher/__main__.py:36. Fix direction: root-level wrapper entry script.
+- The frozen "[launcher --serve] base=..." evidence line unobtainable until fixed.
+- On this crash path the exe never self-exits (modal dialog) — guard with timeout+kill.
+- httpx-sse and typer both absent from freeze; mcp.client.sse bundled with no warning — worth a runtime check whenever MCP is re-enabled (not a v1 concern; ODYSSEUS_DISABLE_MCP=1).
+
+### AGENT REPORT — Packager (entry-fix run)
+
+AGENT: Packager (entry-fix run)
+TASK: Phase 4 — wrapper entry fix, rebuild, launch sanity
+STATUS: complete
+
+EVIDENCE:
+
+[1] WRAPPER — dobby_desktop_entry.py (new): docstring explains PyInstaller runs the Analysis entry script as top-level "__main__" with NO package context, breaking launcher's relative imports; the wrapper imports launcher as a real package; main() reads sys.argv itself (argv=None default, launcher/__main__.py:18), so the frozen --serve child spawned as [sys.executable, "--serve"] keeps working. Body: import sys / from launcher.__main__ import main / if __name__ == "__main__": sys.exit(main()). launcher/ untouched.
+
+[2] SPEC HUNK — Analysis entry changed from launcher/__main__.py to dobby_desktop_entry.py with explanatory comment. ast.parse OK.
+
+[3] DEV SANITY (unfrozen): `.venv\Scripts\python dobby_desktop_entry.py --smoke 15 --console` → DEV_SANITY_EXIT=0; "frozen=False", health OK 200, tray-Quit path, "shutdown complete: exiting 0".
+
+[4] REBUILD: BUILD_EXIT=0, "BUILD OK". "Analyzing ...dobby_desktop_entry.py"; full PYZ/PKG/EXE/COLLECT rebuild; wall ~89s (deps satisfied, warm caches; real full rebuild). 2,723 files, 233.6 MB, zip 106.6 MB — 0% delta.
+
+[5] LAUNCH SANITY (frozen): tasklist BEFORE: zero DobbyOS. DobbyOS.exe --smoke 30 → pid=5264; health 200 after 13s; SELF-EXIT yes, exitcode=0, 45s total; tasklist AFTER: zero DobbyOS.
+    launcher.log (17:53:51–17:54:35): "launcher starting: python=3.12.10 frozen=True home=C:\Users\Admin\AppData\Local\Dobby pid=5264" → "server spawn: cmd=['...\\dist\\DobbyOS\\DobbyOS.exe', '--serve'] ... pid=13412" → "health OK ... -> 200" → smoke quit → "shutdown complete: exiting 0".
+    server.log: "[launcher --serve] base=C:\Users\Admin\Documents\dobby-desktop\dist\DobbyOS\_internal\dobby data=C:\Users\Admin\AppData\Local\Dobby\data port=7001 python=3.12.10".
+
+[6] LAYOUT + LOGS: _internal\dobby\app.py present, _internal\dobby\static\ present (254 files); fresh frozen-run log entries.
+
+FILES WRITTEN: dobby_desktop_entry.py (new); dobby-desktop.spec (entry change only); build\, dist\ (rebuilt). No commits.
+
+COUNTS: build exit 0, dist files 2723, dist 233.6 MB, zip 106.6 MB, health code 200, self-exit: yes (exit 0), process delta 0 -> 0, dev sanity exit 0
+
+OPEN ITEMS: none
+
+### AGENT REPORT — Verifier (V1–V9)
+
+AGENT: Verifier
+TASK: Phase 4 — V1-V9 matrix against dist\DobbyOS
+STATUS: complete
+EVIDENCE:
+- V1 PASS — onedir artifact intact: DobbyOS.exe 30,837,186 bytes + _internal\, 2,723 files / 233.6 MB, _internal\dobby\app.py + static present, dist\DobbyOS-win64.zip 111,809,523 bytes (build script's Compress-Archive).
+- V2 PASS — fresh --smoke 45 run (Run A, pids 9272/12816): /api/health -> exact 200 (first at t+12s, re-confirmed standalone), launcher.log slice shows spawn -> health OK -> smoke quit -> "shutdown complete: exiting 0"; exit code 0, no kill fallback.
+- V3 PASS — Run C (--smoke 420) with AUTH_ENABLED=false (supported env override, app.py:169 + README env table; deviation stated prominently in the file; shipped default untouched). UI driven via browser pane at 127.0.0.1:7001: 3 switches observed — Hogwarts Premium -> Cyberpunk (neon palette), -> Light (parchment), World Harry Potter -> Star Wars (full re-skin: comlink/the bridge/Jedi Council/credits vault). Native pywebview window observed on desktop showing the same server's dashboard. 560 static asset requests, 88 css, zero 404.
+- V4 PASS — ollama list showed 6 pre-existing models (nothing pulled). Registered Ollama endpoint (8bd590eb) + session via Dobby's API, then POST /api/chat "Reply with the word pong" -> {"response":"Pong"} (HTTP 200, 20s wall / 8.94s LLM); server.log shows Dobby -> localhost:11434/api/chat 200 round trip.
+- V5 PASS — killed ollama.exe pid 2540 (recorded), 11434 -> 000, PATH stripped child-env-only; launcher.log: "NOT_INSTALLED" + dialog "Ollama not found" logged, health still 200, clean exit 0, 0 orphans. RESTORED via detached `ollama serve` (full path): /api/version -> 200 {"version":"0.32.14"}, pid 18816; V8's ladder line re-confirms RUNNING.
+- V6 PASS — Run A tasklist: 0 DobbyOS before, exactly 2 during (launcher+server, pids match launcher.log), 0 after self-exit; Gate-2 equivalence (--smoke quit == tray-Quit code path) restated in file.
+- V7 PASS — recursive path|size|mtime snapshot of dist\DobbyOS before/after Run A: identical SHA256 over 2,723 lines, Compare-Object diff = 0. Fresh writes landed only in %LOCALAPPDATA%\Dobby\logs; zero writes beside the exe.
+- V8 PASS — --smoke 60 --smoke-restart (shipped defaults): launcher.log old pid 15504 -> terminate -> new pid 3596 -> health 200 -> "restart result ... healthy=True"; post-restart external fetches health 200, / 302 (default auth), /login 200; exactly 2 procs with the new pid; clean exit 0.
+- V9 PASS — Run C server.log slice (uvicorn.access only): 1,245 inbound requests (819x200, 417x304, 9x404), /static 404 count = 0. All 9 404s listed verbatim + classified: 8x research/stream status polls (app-behavioral) + 1x /favicon.ico browser default probe (app's favicon is /static/favicon.png per index.html:6, served 200/304 in-slice). Full slice archived as V9-serverlog-runC-slice.txt.
+FILES WRITTEN: docs/verification/V1.txt ... V9.txt (+ V9-serverlog-runC-slice.txt), all under the owned dir; nothing committed.
+COUNTS: passed 9/9 (no PARTIAL/BLOCKED/FAIL). Key metrics: health 200 in every run (t+12s typical); 404s: 0 bundled-asset / 9 behavioral; orphan delta 0 (2 -> 0 in runs A/D/E); restart pids 15504 -> 3596 healthy=True; V7 dist diff 0 lines; exit code 0 on all 4 full runs, kill fallback never used; 5 exe runs total (A smoke45, B smoke300 auth-off, C smoke420 auth-off, D smoke30 PATH-stripped, E smoke60+restart).
+OPEN ITEMS: none blocking. Notes: (1) V3/V4 ran under the documented AUTH_ENABLED=false override because shipped-default auth requires creating a first account (hard-limit: not permitted); pre-auth behavior under defaults was still captured (/ -> 302, /login -> 200 in Run E; /api/auth/setup is auth-exempt, observed only). (2) "server exit: exitcode=1" lines are the expected Windows TerminateProcess result for the child, not failures. (3) Ollama restoration state: RUNNING, pid 18816, /api/version 200 — verified twice. (4) Theme switching is client-side (localStorage/CSS vars), so theme-asset 200s live in the UI-load slice — noted in V3/V9.
+
+### AUDIT NOTE — Auditor (Phase 4)
+
+AGENT: Auditor
+TASK: Phase 4 audit (build fixes + V1-V9 evidence)
+STATUS: complete
+
+EVIDENCE:
+[1] Evidence files — PASS. All 10 files exist: V1 41L, V2 39L, V3 50L, V4 51L, V5 55L, V6 25L, V7 61L, V8 55L, V9 45L, V9-slice 1391L. Every V-file has "VERDICT: PASS" at line 3 and RAW output. None narrative-only. V3/V4 deviation stated prominently at line 5 of each (quoted in full in the audit; both state SHIPPED DEFAULT UNCHANGED).
+[2] V1 recount — PASS, exact match on all five numbers: exe 30,837,186 bytes; 2,723 files; 244,938,143 bytes = 233.6 MB; zip 111,809,523 bytes; _internal\dobby\app.py + static True.
+[3] V7 method — SOUND. Recursive 'FullName|Length|LastWriteTimeUtc' sorted lines; sha256 BEFORE == AFTER (95272DB9...9324, 2723 lines); Compare-Object diff 0.
+[4] V9 method — SOUND, recounted from slice: 1245 access lines; 200=819, 304=417, 404=9 — all match; 9 404 lines byte-identical to V9.txt's verbatim list; /static 560 requests, 404 count 0; favicon claim verified against static/index.html line 6.
+[5] Spec state — PASS. Uncommitted diff = exactly two logical changes (mcp.cli exact-boundary filter with justification comment; entry change to dobby_desktop_entry.py). Wrapper matches reported content; argv passthrough confirmed (main(argv=None), launcher/__main__.py:18). ast.parse OK on both.
+[6] mcp filter cross-check — PASS. Committed spec would collect mcp.cli and die; new lambda excludes exactly mcp.cli/mcp.cli.*; 'mcp.client...' survives ('mcp.client'.startswith('mcp.cli.') is False).
+[7] Repo hygiene — PASS. Porcelain exactly: M dobby-desktop.spec, ?? dobby_desktop_entry.py, ?? docs/verification (10 files). vendor/dobby porcelain empty; rev-parse = 3268d170848ae730e89523ae80c3c31b16ec2e35.
+[8] Environment — PASS. tasklist DobbyOS: none. curl localhost:11434/api/version -> {"version":"0.32.14"} [200] — matches V5's recorded restoration.
+[9] Honesty — PASS. mcp/cli/cli.py:14-18 = exactly the diagnosed root cause; typer confirmed absent from .venv. Cross-corroborations hold (V9 404 session id = V4 session; V8 re-confirms V5 restoration; V6 pids match V2 spawn line). No claimed-but-unevidenced item found. V3 screenshots live in the verifier's session transcript only (stated in-file — honest, not re-checkable from disk).
+
+FILES WRITTEN: none (read-only agent)
+COUNTS: spot-checks passed 9/9, defects found 0, V-matrix independently confirmed rows: 3/9 (V1 + V9 full recounts, V5 restoration re-probed; the rest rest on raw in-file log slices that are internally consistent and cross-corroborating)
+VERDICT: COUNTERSIGNED (0 defects)
+OPEN ITEMS:
+- V3's UI screenshots live in the verifier's session transcript, not on disk — acceptable per protocol but not independently re-checkable by a later auditor.
+- The two spec changes + entry wrapper + evidence files are uncommitted; Gate 4 approval should trigger the commit.
+- AUTH_ENABLED=false deviation (V3/V4 only) is documented and justified (no-accounts hard limit); Gate 4 approver should explicitly accept it.
+
+### Orchestrator note — Phase 4 commit mechanics (2026-09-04)
+The two spec changes were committed as two one-concern commits by snapshotting the final spec, reverting the entry hunk for the first commit (1522979 "phase4: fix mcp.cli collection in spec" — exactly the state that build runs 2/3 compiled successfully), then restoring the snapshot byte-identically (cmp verified, "SPEC-RESTORED-IDENTICAL") for the second (3db920b "phase4: frozen entry wrapper", with dobby_desktop_entry.py). Verification evidence committed as d9618e1 "phase4: verification evidence V1-V9" (10 files, 1,813 lines). The Gate-3 pre-registration of "mcp.cli typer/rich missing-module warnings = harmless" was WRONG for family 1 (it was fatal at build time) — corrected in the record per the Packager's open item; family 2 (httpx_sse) never materialized because collection imports package __init__ chains, not leaf modules.
