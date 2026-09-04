@@ -212,6 +212,23 @@ hidden_thirdparty = [
 # (c) collect_submodules — packages whose submodules are loaded by STRING or
 # imported only by dobby code (invisible), so the static graph under-collects:
 hidden_collected = []
+
+# Per-package submodule filters for the loop below. 'mcp' MUST exclude
+# mcp.cli: collect_submodules imports every submodule in an isolated child
+# process, and mcp 2.1.1's mcp/cli/cli.py:15-18 wraps `import typer` in
+# try/except ImportError and calls sys.exit(1) when typer is absent (typer
+# is an mcp[cli] extra we do not install). SystemExit is not a tolerated
+# import failure, so the child — and the whole build — dies. mcp.cli is the
+# `mcp` console-script CLI only; dobby imports client transports exclusively
+# (src/mcp_manager.py:182-327, src/mcp_oauth.py:121-147), so excluding it
+# drops no runtime coverage. The exclusion matches exactly 'mcp.cli' and
+# 'mcp.cli.*' — NOT a bare startswith('mcp.cli') prefix, which would also
+# swallow 'mcp.client.*' (the very transports this collection exists for).
+_NO_FILTER = lambda name: True
+_SUBMODULE_FILTERS = {
+    'mcp': lambda name: name != 'mcp.cli' and not name.startswith('mcp.cli.'),
+}
+
 for pkg, why in [
     ('uvicorn',   'loops/protocols/lifespan impls are string-loaded by '
                   'uvicorn.config (import_from_string) at runtime'),
@@ -244,7 +261,8 @@ for pkg, why in [
     ('urllib',    'stdlib: urllib.request/parse/error used across the dobby '
                   'tree, invisible to analysis'),
 ]:
-    hidden_collected += collect_submodules(pkg)
+    hidden_collected += collect_submodules(
+        pkg, filter=_SUBMODULE_FILTERS.get(pkg, _NO_FILTER))
 
 # (d) collect_all — packages that ship native DLLs or runtime data files that
 # must travel with the package (verified by walking each package in .venv):
