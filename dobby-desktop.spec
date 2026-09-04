@@ -318,7 +318,12 @@ hiddenimports = (hidden_stdlib + hidden_thirdparty + hidden_collected
 # (src/project_export.py:210) and Pillow's ImageTk path is never imported.
 
 a = Analysis(
-    [os.path.join(REPO, 'launcher', '__main__.py')],
+    # Entry is the root-level wrapper, NOT launcher/__main__.py: PyInstaller
+    # runs the entry script without package context, which breaks launcher's
+    # relative imports (see dobby_desktop_entry.py header). The wrapper
+    # imports launcher as a real package; analysis still walks the same
+    # launcher import graph from there.
+    [os.path.join(REPO, 'dobby_desktop_entry.py')],
     pathex=[REPO],
     binaries=collect_all_binaries,
     datas=datas + collect_all_datas,
