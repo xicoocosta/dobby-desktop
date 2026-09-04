@@ -1,0 +1,7 @@
+# Launcher-only dependencies (the server's deps live in
+# vendor/dobby/requirements.txt). Unpinned on purpose — matches the vendor
+# requirements style; Phase 4 freezes exact versions into the exe build.
+pywebview
+pystray
+Pillow
+requests
