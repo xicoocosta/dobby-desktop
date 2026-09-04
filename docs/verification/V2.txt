@@ -1,0 +1,39 @@
+﻿V2 — Exe launches; server healthy
+DATE: 2026-09-04 18:01:52
+VERDICT: PASS
+RUN: "Run A" = dist\DobbyOS\DobbyOS.exe --smoke 45, fresh launch at 2026-09-04 17:59:46 (launcher pid 9272, server pid 12816). No kill fallback needed; self-exit code 0 at t+61s.
+
+=== launch + exit record (Start-Process capture) ===
+runA start: 2026-09-04 17:59:46.638
+launcher pid (Start-Process): 9272
+exited: HasExited=True exitcode=0 killedFallback=False t+61s
+
+=== health poll (curl.exe -s -o NUL -w %{http_code} http://127.0.0.1:7001/api/health) ===
+t+4s GET /api/health -> 000
+t+8s GET /api/health -> 000
+t+12s GET /api/health -> 200
+FINAL: curl -s -o NUL -w %{http_code} http://127.0.0.1:7001/api/health -> 200
+
+=== launcher.log lines for THIS run (slice: lines after offset 130 of C:\Users\Admin\AppData\Local\Dobby\logs\launcher.log; run window 17:59:47-18:00:45) ===
+2026-09-04 17:59:47,010 INFO    [launcher.app] launcher starting: python=3.12.10 frozen=True home=C:\Users\Admin\AppData\Local\Dobby pid=9272
+2026-09-04 17:59:47,018 INFO    [launcher.server] server spawn: cmd=['C:\\Users\\Admin\\Documents\\dobby-desktop\\dist\\DobbyOS\\DobbyOS.exe', '--serve'] cwd=C:\Users\Admin\Documents\dobby-desktop\dist\DobbyOS pid=12816 (stdout/stderr -> C:\Users\Admin\AppData\Local\Dobby\logs\server.log)
+2026-09-04 17:59:47,018 INFO    [launcher.server] health poll: GET http://127.0.0.1:7001/api/health every 0.5s, timeout 30s
+2026-09-04 17:59:58,646 INFO    [launcher.server] health OK: GET http://127.0.0.1:7001/api/health -> 200
+2026-09-04 18:00:00,774 INFO    [launcher.ollama] ollama ladder: GET http://localhost:11434/api/version -> 200 => RUNNING
+2026-09-04 18:00:00,774 INFO    [launcher.app] ollama status: RUNNING
+2026-09-04 18:00:00,774 INFO    [launcher.window] window created: title='Dobby OS' url=http://127.0.0.1:7001 size=1440x900 resizable=True
+2026-09-04 18:00:00,775 INFO    [launcher.tray] tray started (run_detached): menu=Open/Restart server/Quit
+2026-09-04 18:00:00,775 INFO    [launcher.app] smoke mode: auto-quit in 45s (restart check: False)
+2026-09-04 18:00:00,776 INFO    [launcher.window] webview loop starting (main thread)
+2026-09-04 18:00:45,777 INFO    [launcher.app] smoke: 45s elapsed -> triggering the tray-Quit code path
+2026-09-04 18:00:45,777 INFO    [launcher.app] quit: destroying window (shutdown continues on main thread)
+2026-09-04 18:00:45,777 INFO    [launcher.window] window destroy requested
+2026-09-04 18:00:45,779 INFO    [launcher.window] window closing (quit in progress)
+2026-09-04 18:00:45,811 INFO    [launcher.window] webview loop exited
+2026-09-04 18:00:45,811 INFO    [launcher.app] shutdown: webview loop exited; stopping server
+2026-09-04 18:00:45,811 INFO    [launcher.server] server stop: terminate() pid=12816
+2026-09-04 18:00:45,826 INFO    [launcher.server] server exit: pid=12816 exitcode=1
+2026-09-04 18:00:45,826 INFO    [launcher.tray] tray stop
+2026-09-04 18:00:45,827 INFO    [launcher.app] shutdown complete: exiting 0
+
+VERDICT RATIONALE: exact health code 200 (first at t+12s, re-confirmed by standalone curl -> 200). launcher.log for this run shows server spawn (pid=12816, stdout->server.log), health OK at 17:59:58, ollama RUNNING, smoke auto-quit at 18:00:45, server terminate + 'shutdown complete: exiting 0'. Note: 'server exit: pid=12816 exitcode=1' is the expected TerminateProcess result code on Windows for the terminated child, not a failure — launcher itself exited 0.

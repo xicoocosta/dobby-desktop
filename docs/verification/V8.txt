@@ -1,0 +1,55 @@
+﻿V8 — Restart recycles subprocess
+DATE: 2026-09-04 18:23:34
+VERDICT: PASS
+RUN: "Run E" = DobbyOS.exe --smoke 60 --smoke-restart, SHIPPED DEFAULT env (auth on), launcher pid 17468, 18:21:47-18:23:01. The restart timer invokes the exact tray Restart-server handler (launcher\app.py _smoke_restart -> restart_server, the same method wired to the tray menu).
+
+=== external observation record (raw) ===
+runE start: 18:21:47.242 cmd: DobbyOS.exe --smoke 60 --smoke-restart (shipped default env)
+initial health: 200 at t+12s
+post-restart (t+48s): GET /api/health -> 200 ; GET / -> 302 (302=auth redirect, shipped default) ; GET /login -> 200
+tasklist DobbyOS post-restart:
+DobbyOS.exe                  17468 Console                    1    124,784 K
+DobbyOS.exe                   3596 Console                    1    198,776 K
+exit: HasExited=True exitcode=0 killedFallback=False t+76s
+tasklist DobbyOS after: <none>
+
+=== launcher.log slice for THIS run (raw, complete) ===
+2026-09-04 18:21:47,644 INFO    [launcher.app] launcher starting: python=3.12.10 frozen=True home=C:\Users\Admin\AppData\Local\Dobby pid=17468
+2026-09-04 18:21:47,651 INFO    [launcher.server] server spawn: cmd=['C:\\Users\\Admin\\Documents\\dobby-desktop\\dist\\DobbyOS\\DobbyOS.exe', '--serve'] cwd=C:\Users\Admin\Documents\dobby-desktop\dist\DobbyOS pid=15504 (stdout/stderr -> C:\Users\Admin\AppData\Local\Dobby\logs\server.log)
+2026-09-04 18:21:47,651 INFO    [launcher.server] health poll: GET http://127.0.0.1:7001/api/health every 0.5s, timeout 30s
+2026-09-04 18:21:59,398 INFO    [launcher.server] health OK: GET http://127.0.0.1:7001/api/health -> 200
+2026-09-04 18:22:01,426 INFO    [launcher.ollama] ollama ladder: GET http://localhost:11434/api/version -> 200 => RUNNING
+2026-09-04 18:22:01,426 INFO    [launcher.app] ollama status: RUNNING
+2026-09-04 18:22:01,426 INFO    [launcher.window] window created: title='Dobby OS' url=http://127.0.0.1:7001 size=1440x900 resizable=True
+2026-09-04 18:22:01,427 INFO    [launcher.tray] tray started (run_detached): menu=Open/Restart server/Quit
+2026-09-04 18:22:01,427 INFO    [launcher.app] smoke mode: auto-quit in 60s (restart check: True)
+2026-09-04 18:22:01,427 INFO    [launcher.window] webview loop starting (main thread)
+2026-09-04 18:22:21,428 INFO    [launcher.app] smoke: exercising the tray Restart-server handler
+2026-09-04 18:22:21,428 INFO    [launcher.app] tray: Restart server
+2026-09-04 18:22:21,428 INFO    [launcher.server] server restart requested (old pid=15504)
+2026-09-04 18:22:21,428 INFO    [launcher.server] server stop: terminate() pid=15504
+2026-09-04 18:22:21,442 INFO    [launcher.server] server exit: pid=15504 exitcode=1
+2026-09-04 18:22:21,448 INFO    [launcher.server] server spawn: cmd=['C:\\Users\\Admin\\Documents\\dobby-desktop\\dist\\DobbyOS\\DobbyOS.exe', '--serve'] cwd=C:\Users\Admin\Documents\dobby-desktop\dist\DobbyOS pid=3596 (stdout/stderr -> C:\Users\Admin\AppData\Local\Dobby\logs\server.log)
+2026-09-04 18:22:21,448 INFO    [launcher.server] health poll: GET http://127.0.0.1:7001/api/health every 0.5s, timeout 30s
+2026-09-04 18:22:33,612 INFO    [launcher.server] health OK: GET http://127.0.0.1:7001/api/health -> 200
+2026-09-04 18:22:33,612 INFO    [launcher.server] server restart result: old_pid=15504 new_pid=3596 healthy=True
+2026-09-04 18:23:01,428 INFO    [launcher.app] smoke: 60s elapsed -> triggering the tray-Quit code path
+2026-09-04 18:23:01,428 INFO    [launcher.app] quit: destroying window (shutdown continues on main thread)
+2026-09-04 18:23:01,428 INFO    [launcher.window] window destroy requested
+2026-09-04 18:23:01,429 INFO    [launcher.window] window closing (quit in progress)
+2026-09-04 18:23:01,458 INFO    [launcher.window] webview loop exited
+2026-09-04 18:23:01,458 INFO    [launcher.app] shutdown: webview loop exited; stopping server
+2026-09-04 18:23:01,458 INFO    [launcher.server] server stop: terminate() pid=3596
+2026-09-04 18:23:01,477 INFO    [launcher.server] server exit: pid=3596 exitcode=1
+2026-09-04 18:23:01,478 INFO    [launcher.tray] tray stop
+2026-09-04 18:23:01,478 INFO    [launcher.app] shutdown complete: exiting 0
+
+VERDICT RATIONALE (all required markers present in the log slice):
+- old pid: "server restart requested (old pid=15504)"
+- terminate: "server stop: terminate() pid=15504" -> "server exit: pid=15504 exitcode=1" (expected TerminateProcess code)
+- new pid: "server spawn: ... pid=3596"
+- health after restart: "health OK ... -> 200" + "server restart result: old_pid=15504 new_pid=3596 healthy=True"
+- UI recovers (external post-restart fetches at t+48s): GET /api/health -> 200; GET / -> 302 (shipped-default auth redirect); GET /login -> 200 (page fetch OK)
+- tasklist post-restart: exactly 2 DobbyOS.exe (17468 launcher + 3596 NEW server pid — old 15504 gone)
+- clean end: self-exit code 0, killedFallback=False, 0 DobbyOS.exe after.
+- bonus: 18:22:01 "ollama ladder: ... => RUNNING" independently re-confirms the V5 restoration.

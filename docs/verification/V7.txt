@@ -1,0 +1,61 @@
+﻿V7 — Exe dir unchanged; data in %LOCALAPPDATA%\Dobby
+DATE: 2026-09-04 18:01:52
+VERDICT: PASS
+RUN: same "Run A" (--smoke 45) as V2.txt. Snapshot = recursive listing of dist\DobbyOS as 'FullName|Length|LastWriteTimeUtc(ISO)' sorted by path, taken immediately BEFORE launch and AFTER self-exit.
+
+=== snapshot hashes ===
+BEFORE sha256(2723 lines): 95272DB93FDAFFA5506515E57011832A85677462FB0473609900A0FD398A1324
+AFTER  sha256(2723 lines): 95272DB93FDAFFA5506515E57011832A85677462FB0473609900A0FD398A1324
+Compare-Object diff line count: 0   (empty diff = zero files added/removed/resized/re-timestamped)
+
+=== sample of snapshot format (first 3 lines of BEFORE) ===
+C:\Users\Admin\Documents\dobby-desktop\dist\DobbyOS\_internal\_asyncio.pyd|74096|2026-09-04T16:52:16.7529643Z
+C:\Users\Admin\Documents\dobby-desktop\dist\DobbyOS\_internal\_bz2.pyd|86896|2026-09-04T16:52:16.7544770Z
+C:\Users\Admin\Documents\dobby-desktop\dist\DobbyOS\_internal\_cffi_backend.cp312-win_amd64.pyd|181248|2026-09-04T16:52:16.7554798Z
+
+=== %LOCALAPPDATA%\Dobby top levels BEFORE run (Name, LastWriteTime) ===
+
+Name      LastWriteTime      
+----      -------------      
+AppWindow 8/7/2026 9:57:05 PM
+data      9/4/2026 2:27:59 PM
+logs      9/4/2026 2:27:40 PM
+webview   9/4/2026 2:28:19 PM
+
+
+
+=== %LOCALAPPDATA%\Dobby AFTER run ===
+
+Name      LastWriteTime      
+----      -------------      
+AppWindow 8/7/2026 9:57:05 PM
+data      9/4/2026 2:27:59 PM
+logs      9/4/2026 2:27:40 PM
+webview   9/4/2026 2:28:19 PM
+
+
+
+=== logs\ and data\ contents AFTER run ===
+
+Name                 Length LastWriteTime      
+----                 ------ -------------      
+launcher.log          16229 9/4/2026 6:00:45 PM
+server.log            51901 9/4/2026 6:00:04 PM
+cache                       9/4/2026 2:27:45 PM
+deep_research               9/4/2026 2:27:56 PM
+logs                        9/4/2026 2:27:45 PM
+mail-attachments            9/4/2026 2:27:58 PM
+personal_docs               9/4/2026 2:27:51 PM
+rag                         9/4/2026 2:27:46 PM
+skills                      9/4/2026 2:27:51 PM
+tts_cache                   9/4/2026 2:27:56 PM
+uploads                     9/4/2026 2:27:51 PM
+app.db              1212416 9/4/2026 2:27:44 PM
+memory.json               2 9/4/2026 2:27:51 PM
+presets.json           1852 9/4/2026 2:27:52 PM
+scheduled_emails.db   90112 9/4/2026 2:27:59 PM
+
+
+
+VERDICT RATIONALE: dist\DobbyOS delta = 0 (identical sha256 over 2,723 path|size|mtime lines; Compare-Object empty). Fresh writes landed in %LOCALAPPDATA%\Dobby\logs (launcher.log 18:00:45, server.log 18:00:04 — this run's window). data\ tree exists from earlier runs (app.db mtime 14:27 today, i.e. the prior dev/build-phase run; this 45s smoke performed no DB writes) — reported verbatim. ZERO writes beside the exe.
+

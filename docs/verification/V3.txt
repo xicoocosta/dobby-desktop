@@ -1,0 +1,50 @@
+﻿V3 — UI renders; >=2 universe themes switch
+DATE: 2026-09-04 18:18:01
+VERDICT: PASS
+
+*** ENV DEVIATION (auth prelude, stated prominently): this run ("Run C", launcher pid 19516, server pid 20328, --smoke 420, window 18:09:14-18:16:27) was launched with AUTH_ENABLED=false so the UI could be driven without creating any account (HARD LIMIT: no accounts/passwords). Supported override: vendor\dobby\app.py:169 os.getenv("AUTH_ENABLED","true"); README env table documents it. SHIPPED DEFAULT UNCHANGED. Under the shipped default the dev-run behavior (auth on, / -> 302 to /login) was previously observed; under this override we directly observed GET / -> 200 and GET /login -> 302 back to / (app.py:874-877), i.e. the override worked as coded. First-run setup: /api/auth/setup and /api/auth/signup are AUTH_EXEMPT_EXACT (app.py:175-187) — the server DOES expose an unauthenticated setup path pre-first-account; /api/auth/status returned {"configured":false,...} — OBSERVED ONLY, no account form completed. ***
+
+METHOD: UI driven through the in-app browser pane (mcp Claude Browser: navigate/read_page/screenshot/click) against http://127.0.0.1:7001 — the SAME server the pywebview window shows. The native pywebview window also opened on the desktop (verified via a desktop screenshot): title "Dobby OS", showing the same Great Hall dashboard incl. the v4-verify2 conversation from run B; it kept its own default Harry Potter/Hogwarts Premium look because theme selection is client-side per browser profile (static/js/theme.js stores it in localStorage) — the launcher's WebView2 profile lives in %LOCALAPPDATA%\Dobby\webview, separate from the driving browser.
+
+OBSERVED THEME/UNIVERSE SWITCHES (3 total, 2 required):
+1. Baseline: Great Hall dashboard, header selectors "Harry Potter" (world) + "Hogwarts Premium" (theme). Dark walnut/parchment palette, gold Send button, candlelight styling.
+2. Theme dropdown (header) -> "Cyberpunk": entire palette changed live — cyan body text, neon magenta accents, magenta Send button, purple borders. Header chip now "Cyberpunk".
+3. Theme dropdown -> "Light": banner turned parchment-light, quick-action buttons light gray, warm light accents. Header chip "Light".
+4. World dropdown (header) -> "Star Wars" (options observed: Default, Harry Potter/Candlelight, The Lord of the Rings/Ring-gold, Star Wars/Saber blue, Star Trek/LCARS amber, Dune/Spice copper, Game of Thrones/Ice & fire, Custom): FULL re-skin — sidebar renamed (owl post->comlink, great hall->the bridge, the order->alliance command, gringotts->credits vault, marauder's map->star charts, room of requirement->the force), quick actions renamed (Open Jedi Council, Search Jedi Archives, Open Galactic Calendar), panels renamed (CREDITS VAULT OVERVIEW, STAR CHARTS, THE FORCE), amber/saber-blue two-light palette, context chip "World: Star Wars". Raw page text captured via get_page_text is archived in the transcript; key extract:
+   "Deep Research / Open Jedi Council / Search Jedi Archives / Star Charts / Open Galactic Calendar ... Context Memory: 0 Tools idle llama3.2:3b World: Star Wars"
+
+SERVER-LOG EVIDENCE (slice: server.log lines after offset 917 = run C only; grep counts over uvicorn.access):
+- total inbound requests: 1245 (HTTP 200: 819, HTTP 304: 417, HTTP 404: 9)
+- /static asset requests: 560, css requests: 88 — ZERO 404 among them (all 200/304), including the theme-system files: style.css, great-hall.css, premium-tokens.css, motifs.css, premium-surfaces.css, premium-components.css, css/tokens.css, css/style-packs.css, css/style-hyprrice.css, css/style-calm.css, css/components.css, css/typography.css (raw sample lines in V9.txt).
+- NOTE: switching themes/universes triggers no additional theme-CSS fetches by design — all packs load at page load and the switch swaps CSS variables/names client-side (theme.js/naming.js); the asset-200 evidence therefore lives in the UI-load slice.
+- the 9 non-asset 404s are classified in V9.txt (status-poll endpoints + browser /favicon.ico probe); none is a theme/style asset.
+
+=== launcher.log slice for run C (raw) ===
+2026-09-04 18:09:14,056 INFO    [launcher.app] launcher starting: python=3.12.10 frozen=True home=C:\Users\Admin\AppData\Local\Dobby pid=19516
+2026-09-04 18:09:14,063 INFO    [launcher.server] server spawn: cmd=['C:\\Users\\Admin\\Documents\\dobby-desktop\\dist\\DobbyOS\\DobbyOS.exe', '--serve'] cwd=C:\Users\Admin\Documents\dobby-desktop\dist\DobbyOS pid=20328 (stdout/stderr -> C:\Users\Admin\AppData\Local\Dobby\logs\server.log)
+2026-09-04 18:09:14,063 INFO    [launcher.server] health poll: GET http://127.0.0.1:7001/api/health every 0.5s, timeout 30s
+2026-09-04 18:09:25,599 INFO    [launcher.server] health OK: GET http://127.0.0.1:7001/api/health -> 200
+2026-09-04 18:09:27,668 INFO    [launcher.ollama] ollama ladder: GET http://localhost:11434/api/version -> 200 => RUNNING
+2026-09-04 18:09:27,668 INFO    [launcher.app] ollama status: RUNNING
+2026-09-04 18:09:27,668 INFO    [launcher.window] window created: title='Dobby OS' url=http://127.0.0.1:7001 size=1440x900 resizable=True
+2026-09-04 18:09:27,669 INFO    [launcher.tray] tray started (run_detached): menu=Open/Restart server/Quit
+2026-09-04 18:09:27,670 INFO    [launcher.app] smoke mode: auto-quit in 420s (restart check: False)
+2026-09-04 18:09:27,670 INFO    [launcher.window] webview loop starting (main thread)
+2026-09-04 18:16:27,670 INFO    [launcher.app] smoke: 420s elapsed -> triggering the tray-Quit code path
+2026-09-04 18:16:27,670 INFO    [launcher.app] quit: destroying window (shutdown continues on main thread)
+2026-09-04 18:16:27,670 INFO    [launcher.window] window destroy requested
+2026-09-04 18:16:27,674 INFO    [launcher.window] window closing (quit in progress)
+2026-09-04 18:16:27,702 INFO    [launcher.window] webview loop exited
+2026-09-04 18:16:27,702 INFO    [launcher.app] shutdown: webview loop exited; stopping server
+2026-09-04 18:16:27,702 INFO    [launcher.server] server stop: terminate() pid=20328
+2026-09-04 18:16:27,724 INFO    [launcher.server] server exit: pid=20328 exitcode=1
+2026-09-04 18:16:27,724 INFO    [launcher.tray] tray stop
+2026-09-04 18:16:27,725 INFO    [launcher.app] shutdown complete: exiting 0
+
+=== run C timing (raw) ===
+runC start: 2026-09-04 18:09:13.678  ENV DEVIATION: AUTH_ENABLED=false (V3 only)
+launcher pid: 19516
+health: 200 at t+12s
+runC exited cleanly at 18:16:31
+
+VERDICT RATIONALE: UI renders (dashboard + sidebar + panels, screenshots in session transcript), 3 theme/universe switches observed with described state changes, 560 static asset requests all 200/304, zero asset 404s. Run self-quit cleanly (exiting 0).

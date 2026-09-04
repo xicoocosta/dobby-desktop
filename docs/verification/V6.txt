@@ -1,0 +1,25 @@
+﻿V6 — Tray Quit -> zero orphans
+DATE: 2026-09-04 18:01:52
+VERDICT: PASS
+RUN: same "Run A" (--smoke 45) as V2.txt.
+EQUIVALENCE (Gate-2 accepted, restated): the --smoke auto-quit invokes the EXACT tray-Quit code path — launcher\app.py: _smoke_quit() calls self.quit(), the same method registered as the tray's on_quit callback (App.__init__ -> Tray(on_quit=self.quit)); the module docstring documents "Quit path (tray Quit, and --smoke's programmatic trigger — SAME code)".
+
+=== tasklist captures (raw) ===
+V6-BEFORE tasklist DobbyOS: <none>
+V6-BEFORE tasklist ollama: ollama.exe                    2540 Console                    1     18,696 K
+V6-DURING (t+12s) tasklist DobbyOS:
+DobbyOS.exe                   9272 Console                    1     52,916 K
+DobbyOS.exe                  12816 Console                    1    195,804 K
+V6-DURING tasklist ollama:
+ollama.exe                    2540 Console                    1     18,740 K
+V6-AFTER (t+64s) tasklist DobbyOS: <none>
+V6-AFTER tasklist ollama:
+ollama.exe                    2540 Console                    1     19,184 K
+
+=== counts ===
+DobbyOS.exe BEFORE: 0
+DobbyOS.exe DURING (t+12s): 2  (pid 9272 = launcher, pid 12816 = server; matches launcher.log spawn line)
+DobbyOS.exe AFTER (t+64s): 0   -> orphan delta = 0
+ollama.exe: pid 2540 present before/during/after (external daemon, intentionally NOT part of the launcher process tree — untouched by quit, as designed).
+
+VERDICT RATIONALE: exactly 2 DobbyOS.exe during the run, 0 after self-exit, launcher exit code 0, no kill fallback used.

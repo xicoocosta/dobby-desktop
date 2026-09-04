@@ -1,0 +1,55 @@
+﻿V5 — Ollama stopped + hidden from PATH: graceful degradation
+DATE: 2026-09-04 18:20:41
+VERDICT: PASS
+RUN: "Run D" = DobbyOS.exe --smoke 30 (launcher pid 6740, server pid 3848, 18:18:44-18:19:30), SHIPPED DEFAULT env except PATH stripped of the Ollama dir — child-env only (the strip lived in the launching PowerShell session; machine/user PATH untouched, later sessions saw ollama normally).
+
+=== full action + observation record (raw) ===
+=== V5 pre-state snapshot 18:18:38 ===
+ollama on PATH at: C:\Users\Admin\AppData\Local\Programs\Ollama\ollama.exe
+tasklist ollama: ollama.exe                    2540 Console                    1     26,812 K
+GET 11434/api/version -> 200
+ACTION: taskkill /f /im ollama.exe (verifier-initiated, restoration planned)
+SUCCESS: The process "ollama.exe" with PID 2540 has been terminated.
+
+post-kill tasklist ollama: <none>
+post-kill GET 11434/api/version -> 000 (000 = connection refused)
+PATH entries removed: C:\Users\Admin\AppData\Local\Programs\Ollama
+which ollama with stripped PATH: ; '<null>' expected: True
+runD start: 18:18:44.199 cmd: DobbyOS.exe --smoke 30 (PATH stripped of Ollama, AUTH default)
+health with ollama absent: 200 at t+12s
+tasklist DobbyOS during: 
+DobbyOS.exe                   6740 Console                    1     52,996 K
+DobbyOS.exe                   3848 Console                    1    182,340 K
+exit: HasExited=True exitcode=0 killedFallback=False t+48s
+tasklist DobbyOS after: <none>
+RESTORATION: Start-Process 'C:\Users\Admin\AppData\Local\Programs\Ollama\ollama.exe' serve (detached, hidden) at 18:20:01; GET /api/version -> 200; tasklist: ollama.exe                   18816 Console                    1     50,740 K
+
+=== launcher.log slice for THIS run (lines after offset from runD_offsets) ===
+2026-09-04 18:18:44,612 INFO    [launcher.app] launcher starting: python=3.12.10 frozen=True home=C:\Users\Admin\AppData\Local\Dobby pid=6740
+2026-09-04 18:18:44,619 INFO    [launcher.server] server spawn: cmd=['C:\\Users\\Admin\\Documents\\dobby-desktop\\dist\\DobbyOS\\DobbyOS.exe', '--serve'] cwd=C:\Users\Admin\Documents\dobby-desktop\dist\DobbyOS pid=3848 (stdout/stderr -> C:\Users\Admin\AppData\Local\Dobby\logs\server.log)
+2026-09-04 18:18:44,619 INFO    [launcher.server] health poll: GET http://127.0.0.1:7001/api/health every 0.5s, timeout 30s
+2026-09-04 18:18:56,325 INFO    [launcher.server] health OK: GET http://127.0.0.1:7001/api/health -> 200
+2026-09-04 18:19:00,367 WARNING [launcher.ollama] ollama ladder: 'ollama' not on PATH => NOT_INSTALLED
+2026-09-04 18:19:00,367 INFO    [launcher.app] ollama status: NOT_INSTALLED
+2026-09-04 18:19:00,367 INFO    [launcher.app] dialog: title='Dobby OS' message='Ollama not found â€” install from https://ollama.com' block=False
+2026-09-04 18:19:00,367 INFO    [launcher.window] window created: title='Dobby OS' url=http://127.0.0.1:7001 size=1440x900 resizable=True
+2026-09-04 18:19:00,368 INFO    [launcher.tray] tray started (run_detached): menu=Open/Restart server/Quit
+2026-09-04 18:19:00,368 INFO    [launcher.app] smoke mode: auto-quit in 30s (restart check: False)
+2026-09-04 18:19:00,369 INFO    [launcher.window] webview loop starting (main thread)
+2026-09-04 18:19:30,369 INFO    [launcher.app] smoke: 30s elapsed -> triggering the tray-Quit code path
+2026-09-04 18:19:30,369 INFO    [launcher.app] quit: destroying window (shutdown continues on main thread)
+2026-09-04 18:19:30,369 INFO    [launcher.window] window destroy requested
+2026-09-04 18:19:30,372 INFO    [launcher.window] window closing (quit in progress)
+2026-09-04 18:19:30,412 INFO    [launcher.window] webview loop exited
+2026-09-04 18:19:30,412 INFO    [launcher.app] shutdown: webview loop exited; stopping server
+2026-09-04 18:19:30,412 INFO    [launcher.server] server stop: terminate() pid=3848
+2026-09-04 18:19:30,429 INFO    [launcher.server] server exit: pid=3848 exitcode=1
+2026-09-04 18:19:30,429 INFO    [launcher.tray] tray stop
+2026-09-04 18:19:30,429 INFO    [launcher.app] shutdown complete: exiting 0
+
+VERDICT RATIONALE (all expected markers observed):
+- Pre-state: ollama.exe pid 2540 RUNNING, 11434 -> 200. RECORDED ACTION: taskkill /f /im ollama.exe -> SUCCESS; post-kill 11434 -> 000, tasklist empty.
+- PATH strip verified: 'C:\Users\Admin\AppData\Local\Programs\Ollama' removed; Get-Command ollama -> null in the launching session.
+- launcher.log 18:19:00: "ollama ladder: 'ollama' not on PATH => NOT_INSTALLED" + "dialog: title='Dobby OS' message='Ollama not found - install from https://ollama.com' block=False" — exactly the expected WARNING + non-blocking dialog.
+- Health still 200 at t+12s (health OK 18:18:56); window created (UI opens); clean auto-quit "shutdown complete: exiting 0"; exit code 0; 0 orphans after.
+- RESTORATION (method: started 'ollama serve' detached via full exe path — NOT via the exe's ladder): ollama.exe pid 18816 running, GET http://localhost:11434/api/version -> 200, body {"version":"0.32.14"}. Restoration verified BEFORE the V8 run; V8's launcher.log independently re-confirms the ladder sees RUNNING.

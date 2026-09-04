@@ -1,0 +1,51 @@
+﻿V4 — Ollama RUNNING; one chat round-trip through Dobby
+DATE: 2026-09-04 18:08:58
+VERDICT: PASS
+
+*** ENV DEVIATION (auth prelude, stated prominently): this run ("Run B", launcher pid 9084, --smoke 300, window 18:02:57-18:08:10) was launched with AUTH_ENABLED=false — a supported override (vendor\dobby\app.py:169 reads os.getenv("AUTH_ENABLED","true"); vendor README.md env table documents AUTH_ENABLED "Enable/disable login"). The SHIPPED DEFAULT (auth on) is unchanged; every other run in this matrix used shipped defaults. The launcher propagates its env to the server child (launcher\server.py build_server_env: env = dict(os.environ)). ***
+
+Chat endpoint located read-only in vendor\dobby\routes\chat_routes.py:343 (POST /api/chat, non-streaming). Session router prefix /api at routes/session_routes.py:125.
+
+=== ollama list (pre-check) ===
+NAME                                                         ID              SIZE      MODIFIED     
+llama3.2:3b                                                  a80c4f17acd5    2.0 GB    2 weeks ago     
+orcarouter/Qwen3.8-27B-Uncensored:latest                     6fac2f98fdf7    17 GB     2 weeks ago     
+richardyoung/gemma-2-9b-it-abliterated:Q4_K_M                dd80017a3d6c    5.8 GB    8 weeks ago     
+lucasmg/deepseek-r1-8b-0528-qwen3-q4_K_M-tool-true:latest    c4e304701655    5.2 GB    8 weeks ago     
+qwen3:8b                                                     500a1f067a9f    5.2 GB    3 months ago    
+gemma4:latest                                                c6eb396dbd59    9.6 GB    3 months ago    
+
+=== GET /api/models ===
+{"hosts":[],"items":[]}
+=== POST /session (create chat session on Ollama endpoint, model llama3.2:3b) ===
+REQUEST: curl -X POST http://127.0.0.1:7001/session -F name=v4-verify -F endpoint_url=http://localhost:11434/v1/chat/completions -F model=llama3.2:3b
+RESPONSE: {"detail":"Not Found"}
+CORRECTED PATH: POST /api/session (session router has prefix=/api, routes/session_routes.py:125)
+REQUEST: curl -X POST http://127.0.0.1:7001/api/session -F name=v4-verify -F endpoint_url=http://localhost:11434/v1/chat/completions -F model=llama3.2:3b
+RESPONSE: {"id":"2859d77d-13dc-46d7-bd09-5368e14e2e3a","name":"v4-verify","model":"llama3.2:3b","rag":false,"archived":false}
+=== POST /api/chat (through DOBBY, non-streaming) ===
+REQUEST BODY: {"message":"Reply with the word pong","session":"2859d77d-13dc-46d7-bd09-5368e14e2e3a"}
+RESPONSE (after 0s): {"detail":[{"type":"json_invalid","loc":["body",1],"msg":"JSON decode error","input":{},"ctx":{"error":"Expecting property name enclosed in double quotes"}}]}
+RETRY with --data @file (PS quoting stripped inner quotes on first attempt; noted verbatim above)
+REQUEST BODY (file content): {"message":"Reply with the word pong","session":"2859d77d-13dc-46d7-bd09-5368e14e2e3a"}
+RESPONSE (after 0s): {"detail":"Selected model endpoint was removed. Pick another model in Settings."}
+=== POST /api/model-endpoints (register Ollama endpoint; require_admin passes because AUTH_ENABLED=false = single-owner mode) ===
+REQUEST: curl -X POST http://127.0.0.1:7001/api/model-endpoints -F name=ollama-local -F base_url=http://localhost:11434
+RESPONSE: {"id":"8bd590eb","name":"ollama-local","base_url":"http://localhost:11434","has_key":false,"api_key_fingerprint":"","models":["llama3.2:3b","orcarouter/Qwen3.8-27B-Uncensored:latest","richardyoung/gemma-2-9b-it-abliterated:Q4_K_M","lucasmg/deepseek-r1-8b-0528-qwen3-q4_K_M-tool-true:latest","qwen3:8b","gemma4:latest"],"pinned_models":[],"online":true,"status":"online","ping_error":null,"endpoint_kind":"auto","category":"local"}
+=== POST /api/session with endpoint_id=8bd590eb ===
+RESPONSE: {"id":"838eb441-911e-40a1-b111-8ba383a4a155","name":"v4-verify2","model":"llama3.2:3b","rag":false,"archived":false}
+=== POST /api/chat ===
+REQUEST BODY: {"message":"Reply with the word pong","session":"838eb441-911e-40a1-b111-8ba383a4a155"}
+RESPONSE (after 20s): {"response":"Pong"}
+
+=== server.log excerpt for the round trip (slice: lines after offset 407 of server.log = run B only) ===
+2026-09-04 18:05:20,647 INFO    [src.chat_handler] Preset None: temp=1.0, max_tokens=0
+2026-09-04 18:05:40,647 INFO    [httpx] HTTP Request: POST http://localhost:11434/api/chat "HTTP/1.1 200 OK"
+2026-09-04 18:05:40,648 INFO    [src.llm_core] LLM async call to http://localhost:11434/api/chat succeeded in 8.94s (attempt 1)
+2026-09-04 18:05:40,684 INFO    [uvicorn.access] 127.0.0.1:56429 - "POST /api/chat HTTP/1.1" 200
+
+VERDICT RATIONALE:
+- ollama list showed 6 models BEFORE any exe run (llama3.2:3b 2.0GB used; NOTHING pulled/downloaded).
+- Request went through DOBBY's API (127.0.0.1:7001/api/chat), which called Ollama (localhost:11434/api/chat) — NOT a direct Ollama call.
+- COUNTABLE: 1 registered endpoint (id 8bd590eb, status online), 1 session (838eb441-911e-40a1-b111-8ba383a4a155, model llama3.2:3b), 1 chat POST -> HTTP 200 in 20s wall / 8.94s LLM, response body {"response":"Pong"} for prompt "Reply with the word pong".
+- First attempt notes kept verbatim: POST /session -> 404 (wrong path, router prefix is /api); raw-JSON -d quoting stripped by PS 5.1 (retried with --data @file); first session (raw endpoint_url, no endpoint_id) was rejected by chat's orphaned-endpoint guard -> registered a proper ModelEndpoint row and rebound. These are caller-side corrections, not product defects.

@@ -1,0 +1,41 @@
+﻿V1 — Build artifact exists, onedir layout
+DATE: 2026-09-04 17:58:57
+VERDICT: PASS
+METHOD: static inspection of dist\DobbyOS (no exe run). All commands and raw output below.
+
+=== CMD: dir dist\DobbyOS (head 15) ===
+ Volume in drive C is Windows
+ Volume Serial Number is 3EA0-151A
+
+ Directory of C:\Users\Admin\Documents\dobby-desktop\dist\DobbyOS
+
+09/04/2026  05:52 PM    <DIR>          .
+09/04/2026  05:52 PM    <DIR>          ..
+09/04/2026  05:52 PM        30,837,186 DobbyOS.exe
+09/04/2026  05:52 PM    <DIR>          _internal
+               1 File(s)     30,837,186 bytes
+               3 Dir(s)  115,725,545,472 bytes free
+
+=== CMD: (Get-Item DobbyOS.exe).Length ===
+30837186 bytes  (29.4 MB)
+
+=== CMD: Get-ChildItem -Recurse -File | count / sum ===
+recursive file count: 2723
+total size: 244938143 bytes (233.6 MB)
+
+=== onedir layout checks (Test-Path) ===
+dist\DobbyOS\_internal              : True
+dist\DobbyOS\_internal\dobby\app.py : True
+dist\DobbyOS\_internal\dobby\static : True
+
+=== zip artifact (produced by build-windows.ps1:123 Compress-Archive) ===
+
+Name                 Length LastWriteTime      
+----                 ------ -------------      
+DobbyOS-win64.zip 111809523 9/4/2026 5:52:59 PM
+
+
+
+zip size: 111809523 bytes
+
+VERDICT RATIONALE: onedir artifact present (DobbyOS.exe 30,837,186 bytes + _internal\), 2,723 files / 233.6 MB total, dobby app.py + static bundled under _internal\dobby, zip artifact 111,809,523 bytes. All expected markers observed.

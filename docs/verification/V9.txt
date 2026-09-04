@@ -1,0 +1,45 @@
+﻿V9 — Static assets all bundled (no 404s on UI load)
+DATE: 2026-09-04 18:18:01
+VERDICT: PASS
+
+LOG SLICE: server.log lines after offset 917 (= "Run C" only, 18:09:14-18:16:27, the V3 UI-driving run: full UI load + navigation + theme switches). 1391 slice lines; requests counted over [uvicorn.access] lines only — outbound [httpx] lines (dobby probing OLLAMA, e.g. GET http://localhost:11434/api/slots -> 404) are NOT inbound responses and are excluded by construction.
+
+=== COUNTS ===
+total inbound requests ([uvicorn.access]): 1245
+  HTTP 200: 819
+  HTTP 304: 417
+  HTTP 404: 9
+GET /static/* requests: 560 -> 404 among them: 0  (bundled-asset 404 count = 0)
+.css requests: 88 -> all 200/304
+
+=== ALL 9 x 404 LINES VERBATIM + CLASSIFICATION ===
+2026-09-04 18:09:29,161 INFO    [uvicorn.access] 127.0.0.1:53992 - "GET /api/research/status/838eb441-911e-40a1-b111-8ba383a4a155 HTTP/1.1" 404
+2026-09-04 18:09:29,162 INFO    [uvicorn.access] 127.0.0.1:53832 - "GET /api/chat/stream_status/838eb441-911e-40a1-b111-8ba383a4a155 HTTP/1.1" 404
+2026-09-04 18:09:35,922 INFO    [uvicorn.access] 127.0.0.1:62736 - "GET /api/research/status/838eb441-911e-40a1-b111-8ba383a4a155 HTTP/1.1" 404
+2026-09-04 18:09:35,922 INFO    [uvicorn.access] 127.0.0.1:56372 - "GET /api/chat/stream_status/838eb441-911e-40a1-b111-8ba383a4a155 HTTP/1.1" 404
+2026-09-04 18:10:21,829 INFO    [uvicorn.access] 127.0.0.1:55302 - "GET /favicon.ico HTTP/1.1" 404
+2026-09-04 18:10:22,901 INFO    [uvicorn.access] 127.0.0.1:55302 - "GET /api/research/status/838eb441-911e-40a1-b111-8ba383a4a155 HTTP/1.1" 404
+2026-09-04 18:10:22,901 INFO    [uvicorn.access] 127.0.0.1:64270 - "GET /api/chat/stream_status/838eb441-911e-40a1-b111-8ba383a4a155 HTTP/1.1" 404
+2026-09-04 18:11:29,915 INFO    [uvicorn.access] 127.0.0.1:50901 - "GET /api/research/status/838eb441-911e-40a1-b111-8ba383a4a155 HTTP/1.1" 404
+2026-09-04 18:11:29,916 INFO    [uvicorn.access] 127.0.0.1:65468 - "GET /api/chat/stream_status/838eb441-911e-40a1-b111-8ba383a4a155 HTTP/1.1" 404
+
+CLASSIFICATION:
+- 8x /api/research/status/<sid> and /api/chat/stream_status/<sid>: app-behavioral polling — the UI probes for an active research job / chat stream on the open session (sid = the run-B chat session v4-verify2); vendor route /api/chat/stream_status/{session_id} (chat_routes.py:1350) answers 404 when no stream is active. NOT assets. Same behavior in dev.
+- 1x GET /favicon.ico: the DRIVING browser's automatic root-favicon probe. The app declares its favicon at /static/favicon.png (static/index.html:6 <link rel="icon" ... href="/static/favicon.png?v=roundel1">), and that asset served 200/304 in this same slice:
+  2026-09-04 18:09:28,957 ... "GET /static/favicon.png?v=roundel1 HTTP/1.1" 304
+  2026-09-04 18:09:35,802 ... "GET /static/favicon.png HTTP/1.1" 200
+  The pywebview window does not probe /favicon.ico. NOT a bundled-asset miss.
+
+=== sample raw asset lines (theme/style css, all present in bundle) ===
+2026-09-04 18:09:28,486 INFO    [uvicorn.access] 127.0.0.1:53832 - "GET /static/great-hall.css?v=20260706nav11 HTTP/1.1" 304
+2026-09-04 18:09:28,486 INFO    [uvicorn.access] 127.0.0.1:60232 - "GET /static/style.css HTTP/1.1" 304
+2026-09-04 18:09:28,489 INFO    [uvicorn.access] 127.0.0.1:51594 - "GET /static/premium-tokens.css?v=20260703p4 HTTP/1.1" 304
+2026-09-04 18:09:28,489 INFO    [uvicorn.access] 127.0.0.1:53970 - "GET /static/motifs.css?v=20260703motif3 HTTP/1.1" 304
+2026-09-04 18:09:28,492 INFO    [uvicorn.access] 127.0.0.1:60967 - "GET /static/premium-surfaces.css?v=20260706p43 HTTP/1.1" 304
+2026-09-04 18:09:28,494 INFO    [uvicorn.access] 127.0.0.1:53992 - "GET /static/premium-components.css?v=20260703c3 HTTP/1.1" 304
+2026-09-04 18:09:28,494 INFO    [uvicorn.access] 127.0.0.1:60232 - "GET /static/css/style-hyprrice.css?v=redesign1 HTTP/1.1" 304
+2026-09-04 18:09:28,495 INFO    [uvicorn.access] 127.0.0.1:53832 - "GET /static/css/tokens.css?v=redesign1 HTTP/1.1" 304
+2026-09-04 18:09:28,496 INFO    [uvicorn.access] 127.0.0.1:51594 - "GET /static/css/style-packs.css?v=redesign1 HTTP/1.1" 304
+2026-09-04 18:09:28,498 INFO    [uvicorn.access] 127.0.0.1:53970 - "GET /static/css/style-calm.css?v=redesign1 HTTP/1.1" 304
+
+VERDICT RATIONALE: bundled-asset 404 count = 0 across 1245 inbound requests / 560 static asset requests during a full UI session; every 404 line listed verbatim above is app-behavioral (status polls) or a browser-default probe for a path the app intentionally serves elsewhere.

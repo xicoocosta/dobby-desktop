@@ -1,0 +1,1391 @@
+﻿[launcher --serve] base=C:\Users\Admin\Documents\dobby-desktop\dist\DobbyOS\_internal\dobby data=C:\Users\Admin\AppData\Local\Dobby\data port=7001 python=3.12.10
+2026-09-04 18:09:14,953 INFO    [core.database] Migrated: agent_messages status/reply_to columns
+2026-09-04 18:09:14,981 INFO    [core.database] Migrated: added + backfilled 'last_message_at' on sessions
+2026-09-04 18:09:15,022 INFO    [core.database] Task automation columns migration complete
+2026-09-04 18:09:15,023 INFO    [core.database] Task v2 columns migration complete
+2026-09-04 18:09:15,055 INFO    [core.database] Migrated: mission-quality columns (contract/acceptance/output_type/revises/continuations)
+2026-09-04 18:09:15,072 INFO    [core.auth] No auth config found — first-run setup required
+2026-09-04 18:09:15,072 INFO    [app] Auth middleware disabled (set AUTH_ENABLED=true to enable)
+2026-09-04 18:09:15,215 INFO    [services.youtube.youtube_handler] YouTube transcript API available
+2026-09-04 18:09:19,554 ERROR   [src.rag_vector] VectorRAG init failed: ChromaDB is not reachable at localhost:8100. Start the ChromaDB service (e.g. `docker compose up chromadb`) or set CHROMADB_HOST / CHROMADB_PORT to point at a running instance.
+2026-09-04 18:09:19,554 WARNING [src.rag_singleton] VectorRAG created but not healthy, will retry later
+2026-09-04 18:09:19,554 INFO    [app] Vector document RAG not available at startup (ChromaDB may not be reachable yet — routes will retry lazily)
+2026-09-04 18:09:19,689 INFO    [core.session_manager] Loaded 1 session(s) (metadata only)
+2026-09-04 18:09:19,690 WARNING [src.upload_handler] python-magic not available, falling back to basic detection
+2026-09-04 18:09:19,690 INFO    [src.personal_docs] Refreshed index: 0 documents from 1 directories
+2026-09-04 18:09:23,691 ERROR   [src.memory_vector] MemoryVectorStore init failed: ChromaDB is not reachable at localhost:8100. Start the ChromaDB service (e.g. `docker compose up chromadb`) or set CHROMADB_HOST / CHROMADB_PORT to point at a running instance.
+2026-09-04 18:09:23,691 WARNING [src.app_initializer] MemoryVectorStore DEGRADED: ChromaDB vector memory unavailable
+2026-09-04 18:09:23,692 INFO    [src.research_handler] Legacy research_engine.py not found — DeepResearcher only
+2026-09-04 18:09:23,696 INFO    [app] TTS service initialized (provider managed via admin settings)
+2026-09-04 18:09:24,305 INFO    [app] STT service initialized (provider managed via settings)
+2026-09-04 18:09:24,531 INFO    [app] MCP routes initialized
+2026-09-04 18:09:24,548 INFO    [app] AI interaction tools initialized (session, memory, RAG, UI control)
+2026-09-04 18:09:24,558 INFO    [app] Webhook & API token routes initialized
+2026-09-04 18:09:24,873 INFO    [uvicorn.error] Started server process [20328]
+2026-09-04 18:09:24,873 INFO    [uvicorn.error] Waiting for application startup.
+2026-09-04 18:09:24,873 INFO    [app] Application starting up...
+2026-09-04 18:09:24,878 INFO    [src.bg_monitor] Background-job monitor started (poll 5s)
+2026-09-04 18:09:24,885 INFO    [src.task_scheduler] Task scheduler started (concurrency cap: 1)
+2026-09-04 18:09:24,888 INFO    [src.agent_orchestrator] Agent orchestrator started (tick=20s)
+2026-09-04 18:09:24,889 INFO    [app] Application startup complete
+2026-09-04 18:09:24,891 INFO    [src.builtin_mcp] Built-in MCP servers disabled via ODYSSEUS_DISABLE_MCP
+2026-09-04 18:09:24,895 INFO    [uvicorn.error] Application startup complete.
+2026-09-04 18:09:24,897 INFO    [uvicorn.error] Uvicorn running on http://127.0.0.1:7001 (Press CTRL+C to quit)
+2026-09-04 18:09:24,899 INFO    [src.model_discovery] Scanning 2 hosts for models: ['localhost', 'host.docker.internal']
+2026-09-04 18:09:25,598 INFO    [uvicorn.access] 127.0.0.1:51585 - "GET /api/health HTTP/1.1" 200
+2026-09-04 18:09:25,601 INFO    [uvicorn.access] 127.0.0.1:51584 - "GET /api/health HTTP/1.1" 200
+2026-09-04 18:09:28,414 INFO    [httpx] HTTP Request: GET http://localhost:11434/v1/models "HTTP/1.1 200 OK"
+2026-09-04 18:09:28,453 INFO    [uvicorn.access] 127.0.0.1:60967 - "GET / HTTP/1.1" 200
+2026-09-04 18:09:28,484 INFO    [uvicorn.access] 127.0.0.1:60967 - "GET /static/lib/highlight.min.js HTTP/1.1" 304
+2026-09-04 18:09:28,486 INFO    [uvicorn.access] 127.0.0.1:53832 - "GET /static/great-hall.css?v=20260706nav11 HTTP/1.1" 304
+2026-09-04 18:09:28,486 INFO    [uvicorn.access] 127.0.0.1:60232 - "GET /static/style.css HTTP/1.1" 304
+2026-09-04 18:09:28,489 INFO    [uvicorn.access] 127.0.0.1:51594 - "GET /static/premium-tokens.css?v=20260703p4 HTTP/1.1" 304
+2026-09-04 18:09:28,489 INFO    [uvicorn.access] 127.0.0.1:53970 - "GET /static/motifs.css?v=20260703motif3 HTTP/1.1" 304
+2026-09-04 18:09:28,492 INFO    [uvicorn.access] 127.0.0.1:60967 - "GET /static/premium-surfaces.css?v=20260706p43 HTTP/1.1" 304
+2026-09-04 18:09:28,494 INFO    [uvicorn.access] 127.0.0.1:53992 - "GET /static/premium-components.css?v=20260703c3 HTTP/1.1" 304
+2026-09-04 18:09:28,494 INFO    [uvicorn.access] 127.0.0.1:60232 - "GET /static/css/style-hyprrice.css?v=redesign1 HTTP/1.1" 304
+2026-09-04 18:09:28,495 INFO    [uvicorn.access] 127.0.0.1:53832 - "GET /static/css/tokens.css?v=redesign1 HTTP/1.1" 304
+2026-09-04 18:09:28,496 INFO    [uvicorn.access] 127.0.0.1:51594 - "GET /static/css/style-packs.css?v=redesign1 HTTP/1.1" 304
+2026-09-04 18:09:28,498 INFO    [uvicorn.access] 127.0.0.1:53970 - "GET /static/css/style-calm.css?v=redesign1 HTTP/1.1" 304
+2026-09-04 18:09:28,499 INFO    [uvicorn.access] 127.0.0.1:60967 - "GET /static/css/components.css?v=redesign1 HTTP/1.1" 304
+2026-09-04 18:09:28,501 INFO    [uvicorn.access] 127.0.0.1:53992 - "GET /static/css/typography.css?v=redesign1 HTTP/1.1" 304
+2026-09-04 18:09:28,502 INFO    [uvicorn.access] 127.0.0.1:51594 - "GET /static/css/style-switcher.css?v=redesign1 HTTP/1.1" 304
+2026-09-04 18:09:28,503 INFO    [uvicorn.access] 127.0.0.1:60232 - "GET /static/css/shell-bridge.css?v=redesign1 HTTP/1.1" 304
+2026-09-04 18:09:28,504 INFO    [uvicorn.access] 127.0.0.1:53832 - "GET /static/css/hyprrice-skin.css?v=redesign2 HTTP/1.1" 304
+2026-09-04 18:09:28,506 INFO    [uvicorn.access] 127.0.0.1:53970 - "GET /static/css/council.css?v=20260703co8 HTTP/1.1" 304
+2026-09-04 18:09:28,513 INFO    [uvicorn.access] 127.0.0.1:60967 - "GET /static/css/growth.css?v=20260703g4 HTTP/1.1" 304
+2026-09-04 18:09:28,515 INFO    [uvicorn.access] 127.0.0.1:53832 - "GET /static/retro/retro16.css?v=20260824r16a HTTP/1.1" 304
+2026-09-04 18:09:28,515 INFO    [uvicorn.access] 127.0.0.1:53992 - "GET /static/css/gringotts.css?v=20260703gr3 HTTP/1.1" 304
+2026-09-04 18:09:28,515 INFO    [uvicorn.access] 127.0.0.1:60232 - "GET /static/css/calmail.css?v=20260706cm11 HTTP/1.1" 304
+2026-09-04 18:09:28,515 INFO    [uvicorn.access] 127.0.0.1:51594 - "GET /static/css/mission.css?v=20260706m26 HTTP/1.1" 304
+2026-09-04 18:09:28,517 INFO    [uvicorn.access] 127.0.0.1:53970 - "GET /static/retro/retro16-ui.css?v=20260824r16a HTTP/1.1" 304
+2026-09-04 18:09:28,521 INFO    [uvicorn.access] 127.0.0.1:60967 - "GET /static/js/stylePacks.js?v=redesign1 HTTP/1.1" 304
+2026-09-04 18:09:28,523 INFO    [uvicorn.access] 127.0.0.1:53970 - "GET /static/js/chat.js?v=20260609ws HTTP/1.1" 304
+2026-09-04 18:09:28,524 INFO    [uvicorn.access] 127.0.0.1:51594 - "GET /static/app.js?v=20260706tk2 HTTP/1.1" 304
+2026-09-04 18:09:28,525 INFO    [uvicorn.access] 127.0.0.1:53832 - "GET /static/js/styleSwitcher.js?v=redesign1 HTTP/1.1" 304
+2026-09-04 18:09:28,525 INFO    [uvicorn.access] 127.0.0.1:60232 - "GET /static/retro/toggle.js?v=20260824r16a HTTP/1.1" 304
+2026-09-04 18:09:28,526 INFO    [uvicorn.access] 127.0.0.1:53992 - "GET /static/retro/characters.js?v=20260824r16a HTTP/1.1" 304
+2026-09-04 18:09:28,527 INFO    [uvicorn.access] 127.0.0.1:60967 - "GET /static/js/ui.js HTTP/1.1" 304
+2026-09-04 18:09:28,531 INFO    [uvicorn.access] 127.0.0.1:53970 - "GET /static/js/sessions.js HTTP/1.1" 304
+2026-09-04 18:09:28,535 INFO    [uvicorn.access] 127.0.0.1:51594 - "GET /static/js/markdown.js HTTP/1.1" 304
+2026-09-04 18:09:28,535 INFO    [uvicorn.access] 127.0.0.1:53992 - "GET /static/js/tourAutoplay.js HTTP/1.1" 304
+2026-09-04 18:09:28,538 INFO    [uvicorn.access] 127.0.0.1:60232 - "GET /static/js/tourHints.js HTTP/1.1" 304
+2026-09-04 18:09:28,538 INFO    [uvicorn.access] 127.0.0.1:60967 - "GET /static/js/assistant.js HTTP/1.1" 304
+2026-09-04 18:09:28,538 INFO    [uvicorn.access] 127.0.0.1:53832 - "GET /static/js/skills.js HTTP/1.1" 304
+2026-09-04 18:09:28,540 INFO    [uvicorn.access] 127.0.0.1:53970 - "GET /static/js/init.js HTTP/1.1" 304
+2026-09-04 18:09:28,545 INFO    [uvicorn.access] 127.0.0.1:53992 - "GET /static/assets/pensieve-logo.svg HTTP/1.1" 304
+2026-09-04 18:09:28,545 INFO    [uvicorn.access] 127.0.0.1:51594 - "GET /static/js/a11y.js HTTP/1.1" 304
+2026-09-04 18:09:28,545 INFO    [uvicorn.access] 127.0.0.1:60232 - "GET /static/js/stylePacks.js HTTP/1.1" 304
+2026-09-04 18:09:28,545 INFO    [uvicorn.access] 127.0.0.1:53832 - "GET /static/assets/dobby-os-logo.svg HTTP/1.1" 304
+2026-09-04 18:09:28,548 INFO    [uvicorn.access] 127.0.0.1:60967 - "GET /static/js/council.js?v=20260627council4 HTTP/1.1" 304
+2026-09-04 18:09:28,549 INFO    [uvicorn.access] 127.0.0.1:53970 - "GET /static/assets/dobby-elf-mark.png HTTP/1.1" 304
+2026-09-04 18:09:28,550 INFO    [uvicorn.access] 127.0.0.1:53992 - "GET /api/version HTTP/1.1" 200
+2026-09-04 18:09:28,552 INFO    [uvicorn.access] 127.0.0.1:53832 - "GET /static/js/growth.js?v=20260628growth5 HTTP/1.1" 304
+2026-09-04 18:09:28,555 INFO    [uvicorn.access] 127.0.0.1:60232 - "GET /static/js/gringotts.js?v=20260628gringotts10 HTTP/1.1" 304
+2026-09-04 18:09:28,555 INFO    [uvicorn.access] 127.0.0.1:53992 - "GET /static/js/naming.js?v=20260703naming7 HTTP/1.1" 304
+2026-09-04 18:09:28,555 INFO    [uvicorn.access] 127.0.0.1:51594 - "GET /static/js/missionControl.js?v=20260706m21 HTTP/1.1" 304
+2026-09-04 18:09:28,556 INFO    [uvicorn.access] 127.0.0.1:60967 - "GET /static/js/mailbox.js?v=20260706mail5 HTTP/1.1" 304
+2026-09-04 18:09:28,556 INFO    [uvicorn.access] 127.0.0.1:53970 - "GET /static/js/calendar-views.js?v=20260706cal6 HTTP/1.1" 304
+2026-09-04 18:09:28,557 INFO    [uvicorn.access] 127.0.0.1:53832 - "GET /static/js/dobby-metrics.js?v=20260701metrics4 HTTP/1.1" 304
+2026-09-04 18:09:28,561 INFO    [uvicorn.access] 127.0.0.1:60967 - "GET /static/assets/crest-gryffindor.svg HTTP/1.1" 304
+2026-09-04 18:09:28,562 INFO    [uvicorn.access] 127.0.0.1:53970 - "GET /static/js/dobby-ui.js?v=20260701ui6 HTTP/1.1" 304
+2026-09-04 18:09:28,563 INFO    [uvicorn.access] 127.0.0.1:53992 - "GET /static/js/cookbookSchedule.js HTTP/1.1" 304
+2026-09-04 18:09:28,563 INFO    [uvicorn.access] 127.0.0.1:53832 - "GET /static/assets/ministry-settings-logo.svg HTTP/1.1" 304
+2026-09-04 18:09:28,563 INFO    [uvicorn.access] 127.0.0.1:51594 - "GET /static/assets/gringotts-logo.svg HTTP/1.1" 304
+2026-09-04 18:09:28,625 INFO    [uvicorn.access] 127.0.0.1:51594 - "GET /static/fonts/Inter-Regular.woff2 HTTP/1.1" 304
+2026-09-04 18:09:28,628 INFO    [uvicorn.access] 127.0.0.1:53832 - "GET /static/fonts/Inter-SemiBold.woff2 HTTP/1.1" 304
+2026-09-04 18:09:28,629 INFO    [uvicorn.access] 127.0.0.1:51594 - "GET /static/fonts/Inter-Medium.woff2 HTTP/1.1" 304
+2026-09-04 18:09:28,648 INFO    [uvicorn.access] 127.0.0.1:51594 - "GET /static/js/storage.js HTTP/1.1" 304
+2026-09-04 18:09:28,649 INFO    [uvicorn.access] 127.0.0.1:53832 - "GET /static/js/workspace.js HTTP/1.1" 304
+2026-09-04 18:09:28,653 INFO    [uvicorn.access] 127.0.0.1:53992 - "GET /static/js/fileHandler.js HTTP/1.1" 304
+2026-09-04 18:09:28,656 INFO    [uvicorn.access] 127.0.0.1:53832 - "GET /static/js/models.js HTTP/1.1" 304
+2026-09-04 18:09:28,656 INFO    [uvicorn.access] 127.0.0.1:51594 - "GET /static/js/rag.js HTTP/1.1" 304
+2026-09-04 18:09:28,657 INFO    [uvicorn.access] 127.0.0.1:53970 - "GET /static/js/presets.js HTTP/1.1" 304
+2026-09-04 18:09:28,657 INFO    [uvicorn.access] 127.0.0.1:60967 - "GET /static/js/search.js HTTP/1.1" 304
+2026-09-04 18:09:28,657 INFO    [uvicorn.access] 127.0.0.1:60232 - "GET /static/js/compare/index.js HTTP/1.1" 304
+2026-09-04 18:09:28,660 INFO    [uvicorn.access] 127.0.0.1:53992 - "GET /static/js/document.js HTTP/1.1" 304
+2026-09-04 18:09:28,663 INFO    [uvicorn.access] 127.0.0.1:53832 - "GET /static/js/search-chat.js?v=20260628cookbook1 HTTP/1.1" 304
+2026-09-04 18:09:28,663 INFO    [uvicorn.access] 127.0.0.1:51594 - "GET /static/js/windowDrag.js HTTP/1.1" 304
+2026-09-04 18:09:28,664 INFO    [uvicorn.access] 127.0.0.1:60232 - "GET /static/js/voiceRecorder.js HTTP/1.1" 304
+2026-09-04 18:09:28,665 INFO    [uvicorn.access] 127.0.0.1:60967 - "GET /static/js/memory.js?v=20260620evo3 HTTP/1.1" 304
+2026-09-04 18:09:28,665 INFO    [uvicorn.access] 127.0.0.1:53970 - "GET /static/js/chatRenderer.js HTTP/1.1" 304
+2026-09-04 18:09:28,667 INFO    [uvicorn.access] 127.0.0.1:53992 - "GET /static/js/censor.js HTTP/1.1" 304
+2026-09-04 18:09:28,672 INFO    [uvicorn.access] 127.0.0.1:60232 - "GET /static/js/notes.js HTTP/1.1" 304
+2026-09-04 18:09:28,673 INFO    [uvicorn.access] 127.0.0.1:53832 - "GET /static/js/tasks.js HTTP/1.1" 304
+2026-09-04 18:09:28,673 INFO    [uvicorn.access] 127.0.0.1:60967 - "GET /static/js/admin.js HTTP/1.1" 304
+2026-09-04 18:09:28,673 INFO    [uvicorn.access] 127.0.0.1:53992 - "GET /static/js/modalManager.js HTTP/1.1" 304
+2026-09-04 18:09:28,674 INFO    [uvicorn.access] 127.0.0.1:53970 - "GET /static/js/settings.js HTTP/1.1" 304
+2026-09-04 18:09:28,674 INFO    [uvicorn.access] 127.0.0.1:51594 - "GET /static/js/calendar.js HTTP/1.1" 304
+2026-09-04 18:09:28,680 INFO    [uvicorn.access] 127.0.0.1:60967 - "GET /static/js/sorting.js HTTP/1.1" 304
+2026-09-04 18:09:28,680 INFO    [uvicorn.access] 127.0.0.1:60232 - "GET /static/js/tileManager.js HTTP/1.1" 304
+2026-09-04 18:09:28,682 INFO    [uvicorn.access] 127.0.0.1:51594 - "GET /static/js/research/panel.js HTTP/1.1" 304
+2026-09-04 18:09:28,687 INFO    [uvicorn.access] 127.0.0.1:53832 - "GET /static/js/theme.js HTTP/1.1" 304
+2026-09-04 18:09:28,687 INFO    [uvicorn.access] 127.0.0.1:53970 - "GET /static/js/group.js HTTP/1.1" 304
+2026-09-04 18:09:28,690 INFO    [uvicorn.access] 127.0.0.1:53992 - "GET /static/js/cookbook.js HTTP/1.1" 304
+2026-09-04 18:09:28,693 INFO    [uvicorn.access] 127.0.0.1:60967 - "GET /static/js/tts-ai.js HTTP/1.1" 304
+2026-09-04 18:09:28,698 INFO    [uvicorn.access] 127.0.0.1:53970 - "GET /static/js/section-management.js HTTP/1.1" 304
+2026-09-04 18:09:28,698 INFO    [uvicorn.access] 127.0.0.1:53832 - "GET /static/js/sidebar-layout.js HTTP/1.1" 304
+2026-09-04 18:09:28,698 INFO    [uvicorn.access] 127.0.0.1:60232 - "GET /static/js/spinner.js HTTP/1.1" 304
+2026-09-04 18:09:28,699 INFO    [uvicorn.access] 127.0.0.1:51594 - "GET /static/js/keyboard-shortcuts.js HTTP/1.1" 304
+2026-09-04 18:09:28,700 INFO    [uvicorn.access] 127.0.0.1:53992 - "GET /static/js/slashCommands.js HTTP/1.1" 304
+2026-09-04 18:09:28,702 INFO    [uvicorn.access] 127.0.0.1:60967 - "GET /static/js/modelSort.js HTTP/1.1" 304
+2026-09-04 18:09:28,712 INFO    [uvicorn.access] 127.0.0.1:51594 - "GET /static/js/chatStream.js HTTP/1.1" 304
+2026-09-04 18:09:28,712 INFO    [uvicorn.access] 127.0.0.1:53992 - "GET /static/js/emailInbox.js HTTP/1.1" 304
+2026-09-04 18:09:28,712 INFO    [uvicorn.access] 127.0.0.1:53832 - "GET /static/js/researchSynapse.js HTTP/1.1" 304
+2026-09-04 18:09:28,713 INFO    [uvicorn.access] 127.0.0.1:60967 - "GET /static/js/escMenuStack.js HTTP/1.1" 304
+2026-09-04 18:09:28,713 INFO    [uvicorn.access] 127.0.0.1:60232 - "GET /static/js/codeRunner.js HTTP/1.1" 304
+2026-09-04 18:09:28,713 INFO    [uvicorn.access] 127.0.0.1:53970 - "GET /static/js/streamingRenderer.js HTTP/1.1" 304
+2026-09-04 18:09:28,721 INFO    [uvicorn.access] 127.0.0.1:60967 - "GET /static/js/providers.js HTTP/1.1" 304
+2026-09-04 18:09:28,722 INFO    [uvicorn.access] 127.0.0.1:60232 - "GET /static/js/modelPicker.js HTTP/1.1" 304
+2026-09-04 18:09:28,722 INFO    [uvicorn.access] 127.0.0.1:53832 - "GET /static/js/emojiShortcodes.js HTTP/1.1" 304
+2026-09-04 18:09:28,723 INFO    [uvicorn.access] 127.0.0.1:51594 - "GET /static/js/composerArrowUpRecall.js HTTP/1.1" 304
+2026-09-04 18:09:28,724 INFO    [uvicorn.access] 127.0.0.1:53992 - "GET /static/js/markdown/tableRow.js HTTP/1.1" 304
+2026-09-04 18:09:28,734 INFO    [uvicorn.access] 127.0.0.1:53970 - "GET /static/js/compare/probe.js HTTP/1.1" 304
+2026-09-04 18:09:28,735 INFO    [uvicorn.access] 127.0.0.1:60232 - "GET /static/js/compare/models.js HTTP/1.1" 304
+2026-09-04 18:09:28,737 INFO    [uvicorn.access] 127.0.0.1:51594 - "GET /static/js/compare/state.js HTTP/1.1" 304
+2026-09-04 18:09:28,737 INFO    [uvicorn.access] 127.0.0.1:53832 - "GET /static/js/compare/icons.js HTTP/1.1" 304
+2026-09-04 18:09:28,738 INFO    [uvicorn.access] 127.0.0.1:53992 - "GET /static/js/dragSort.js HTTP/1.1" 304
+2026-09-04 18:09:28,738 INFO    [uvicorn.access] 127.0.0.1:60967 - "GET /static/js/compare/selector.js HTTP/1.1" 304
+2026-09-04 18:09:28,741 INFO    [uvicorn.access] 127.0.0.1:53970 - "GET /static/js/compare/stream.js HTTP/1.1" 304
+2026-09-04 18:09:28,744 INFO    [uvicorn.access] 127.0.0.1:60967 - "GET /static/js/windowResize.js HTTP/1.1" 304
+2026-09-04 18:09:28,744 INFO    [uvicorn.access] 127.0.0.1:60232 - "GET /static/js/compare/panes.js HTTP/1.1" 304
+2026-09-04 18:09:28,745 INFO    [uvicorn.access] 127.0.0.1:53832 - "GET /static/js/compare/scoreboard.js HTTP/1.1" 304
+2026-09-04 18:09:28,745 INFO    [uvicorn.access] 127.0.0.1:53992 - "GET /static/js/modalSnap.js HTTP/1.1" 304
+2026-09-04 18:09:28,747 INFO    [uvicorn.access] 127.0.0.1:51594 - "GET /static/js/compare/vote.js HTTP/1.1" 304
+2026-09-04 18:09:28,749 INFO    [uvicorn.access] 127.0.0.1:53970 - "GET /static/js/emojiPicker.js HTTP/1.1" 304
+2026-09-04 18:09:28,751 INFO    [uvicorn.access] 127.0.0.1:53832 - "GET /static/js/signature.js HTTP/1.1" 304
+2026-09-04 18:09:28,751 INFO    [uvicorn.access] 127.0.0.1:60967 - "GET /static/js/langIcons.js HTTP/1.1" 304
+2026-09-04 18:09:28,753 INFO    [uvicorn.access] 127.0.0.1:60232 - "GET /static/js/documentLibrary.js HTTP/1.1" 304
+2026-09-04 18:09:28,753 INFO    [uvicorn.access] 127.0.0.1:53970 - "GET /static/js/colorPicker.js HTTP/1.1" 304
+2026-09-04 18:09:28,753 INFO    [uvicorn.access] 127.0.0.1:53992 - "GET /static/js/model/matchKey.js HTTP/1.1" 304
+2026-09-04 18:09:28,754 INFO    [uvicorn.access] 127.0.0.1:51594 - "GET /static/js/util/ordinal.js HTTP/1.1" 304
+2026-09-04 18:09:28,758 INFO    [uvicorn.access] 127.0.0.1:53832 - "GET /static/js/calendar/utils.js HTTP/1.1" 304
+2026-09-04 18:09:28,760 INFO    [uvicorn.access] 127.0.0.1:60967 - "GET /static/js/platform.js HTTP/1.1" 304
+2026-09-04 18:09:28,760 INFO    [uvicorn.access] 127.0.0.1:51594 - "GET /static/js/cookbook-diagnosis.js HTTP/1.1" 304
+2026-09-04 18:09:28,761 INFO    [uvicorn.access] 127.0.0.1:53970 - "GET /static/js/research/jobs.js HTTP/1.1" 304
+2026-09-04 18:09:28,761 INFO    [uvicorn.access] 127.0.0.1:60232 - "GET /static/js/providerDeviceFlow.js HTTP/1.1" 304
+2026-09-04 18:09:28,762 INFO    [uvicorn.access] 127.0.0.1:53992 - "GET /static/js/color/hex.js HTTP/1.1" 304
+2026-09-04 18:09:28,764 INFO    [uvicorn.access] 127.0.0.1:53832 - "GET /static/js/cookbook-hwfit.js HTTP/1.1" 304
+2026-09-04 18:09:28,767 INFO    [uvicorn.access] 127.0.0.1:53992 - "GET /static/js/emailLibrary/replyRecipients.js HTTP/1.1" 304
+2026-09-04 18:09:28,767 INFO    [uvicorn.access] 127.0.0.1:60967 - "GET /static/js/cookbookRunning.js HTTP/1.1" 304
+2026-09-04 18:09:28,767 INFO    [uvicorn.access] 127.0.0.1:51594 - "GET /static/js/cookbookDownload.js HTTP/1.1" 304
+2026-09-04 18:09:28,768 INFO    [uvicorn.access] 127.0.0.1:60232 - "GET /static/js/emailLibrary.js HTTP/1.1" 304
+2026-09-04 18:09:28,768 INFO    [uvicorn.access] 127.0.0.1:53970 - "GET /static/js/cookbookServe.js HTTP/1.1" 304
+2026-09-04 18:09:28,769 INFO    [uvicorn.access] 127.0.0.1:53832 - "GET /static/js/streamingSegmenter.js HTTP/1.1" 304
+2026-09-04 18:09:28,776 INFO    [uvicorn.access] 127.0.0.1:53832 - "GET /static/js/cookbookProgressSignal.js HTTP/1.1" 304
+2026-09-04 18:09:28,779 INFO    [uvicorn.access] 127.0.0.1:60232 - "GET /static/js/emailLibrary/state.js HTTP/1.1" 304
+2026-09-04 18:09:28,779 INFO    [uvicorn.access] 127.0.0.1:53970 - "GET /static/js/emailLibrary/signatureFold.js HTTP/1.1" 304
+2026-09-04 18:09:28,780 INFO    [uvicorn.access] 127.0.0.1:53832 - "GET /static/js/emailLibrary/utils.js HTTP/1.1" 304
+2026-09-04 18:09:28,787 INFO    [uvicorn.access] 127.0.0.1:53832 - "GET /api/prefs/theme HTTP/1.1" 200
+2026-09-04 18:09:28,803 INFO    [uvicorn.access] 127.0.0.1:53832 - "GET /api/auth/settings HTTP/1.1" 200
+2026-09-04 18:09:28,815 INFO    [uvicorn.access] 127.0.0.1:53970 - "GET /api/cookbook/state HTTP/1.1" 200
+2026-09-04 18:09:28,816 INFO    [uvicorn.access] 127.0.0.1:60232 - "GET /api/calendar/calendars HTTP/1.1" 200
+2026-09-04 18:09:28,823 INFO    [uvicorn.access] 127.0.0.1:53992 - "GET /api/auth/status HTTP/1.1" 200
+2026-09-04 18:09:28,824 INFO    [uvicorn.access] 127.0.0.1:51594 - "GET /api/default-chat HTTP/1.1" 200
+2026-09-04 18:09:28,825 INFO    [uvicorn.access] 127.0.0.1:53832 - "GET /api/auth/features HTTP/1.1" 200
+2026-09-04 18:09:28,827 INFO    [uvicorn.access] 127.0.0.1:60967 - "GET /api/notes HTTP/1.1" 200
+2026-09-04 18:09:28,829 INFO    [uvicorn.access] 127.0.0.1:53970 - "GET /api/auth/settings HTTP/1.1" 200
+2026-09-04 18:09:28,841 INFO    [uvicorn.access] 127.0.0.1:53832 - "GET /api/presets/templates HTTP/1.1" 200
+2026-09-04 18:09:28,841 INFO    [routes.email_pollers] Started scheduled email poller
+2026-09-04 18:09:28,847 INFO    [uvicorn.access] 127.0.0.1:60967 - "GET /api/research/active HTTP/1.1" 200
+2026-09-04 18:09:28,847 INFO    [uvicorn.access] 127.0.0.1:53970 - "GET /api/presets HTTP/1.1" 200
+2026-09-04 18:09:28,848 INFO    [uvicorn.access] 127.0.0.1:53992 - "GET /api/email/urgency-state HTTP/1.1" 200
+2026-09-04 18:09:28,849 WARNING [routes.email_helpers] SMTP not configured — add an Email Account in Settings or set env vars
+2026-09-04 18:09:28,849 INFO    [uvicorn.access] 127.0.0.1:60232 - "GET /static/js/slashAutocomplete.js HTTP/1.1" 304
+2026-09-04 18:09:28,849 WARNING [routes.email_helpers] IMAP not configured — add an Email Account in Settings or set env vars
+2026-09-04 18:09:28,855 INFO    [uvicorn.access] 127.0.0.1:53832 - "GET /api/auth/settings HTTP/1.1" 200
+2026-09-04 18:09:28,860 INFO    [uvicorn.access] 127.0.0.1:60232 - "GET /api/stt/stats HTTP/1.1" 200
+2026-09-04 18:09:28,860 INFO    [uvicorn.access] 127.0.0.1:53992 - "GET /api/auth/features HTTP/1.1" 200
+2026-09-04 18:09:28,868 INFO    [uvicorn.access] 127.0.0.1:53970 - "GET /api/memory HTTP/1.1" 200
+2026-09-04 18:09:28,869 INFO    [uvicorn.access] 127.0.0.1:60967 - "GET /api/models?refresh=true HTTP/1.1" 200
+2026-09-04 18:09:28,870 INFO    [uvicorn.access] 127.0.0.1:60232 - "GET /api/auth/settings HTTP/1.1" 200
+2026-09-04 18:09:28,872 INFO    [uvicorn.access] 127.0.0.1:53992 - "GET /api/auth/status HTTP/1.1" 200
+2026-09-04 18:09:28,875 INFO    [uvicorn.access] 127.0.0.1:60232 - "GET /api/skills HTTP/1.1" 200
+2026-09-04 18:09:28,876 INFO    [uvicorn.access] 127.0.0.1:53832 - "GET /api/sessions HTTP/1.1" 200
+2026-09-04 18:09:28,897 WARNING [src.tool_index] ToolIndex init failed (will retry in 30.0s): ChromaDB is not reachable at localhost:8100. Start the ChromaDB service (e.g. `docker compose up chromadb`) or set CHROMADB_HOST / CHROMADB_PORT to point at a running instance.
+2026-09-04 18:09:28,948 INFO    [uvicorn.access] 127.0.0.1:53832 - "POST /api/calendar/sync HTTP/1.1" 200
+2026-09-04 18:09:28,948 INFO    [uvicorn.access] 127.0.0.1:60232 - "GET /api/prefs/custom-themes HTTP/1.1" 200
+2026-09-04 18:09:28,949 INFO    [uvicorn.access] 127.0.0.1:53992 - "GET /api/tts/stats HTTP/1.1" 200
+2026-09-04 18:09:28,949 INFO    [uvicorn.access] 127.0.0.1:60967 - "GET /api/cookbook/state HTTP/1.1" 200
+2026-09-04 18:09:28,949 INFO    [uvicorn.access] 127.0.0.1:53970 - "GET /api/calendar/events?start=2026-08-31&end=2026-10-12 HTTP/1.1" 200
+2026-09-04 18:09:28,956 INFO    [uvicorn.access] 127.0.0.1:60232 - "GET /api/research/library?sort=recent&limit=20 HTTP/1.1" 200
+2026-09-04 18:09:28,956 INFO    [uvicorn.access] 127.0.0.1:53970 - "GET /api/prefs/memory_enabled HTTP/1.1" 200
+2026-09-04 18:09:28,957 INFO    [uvicorn.access] 127.0.0.1:53992 - "GET /api/prefs HTTP/1.1" 200
+2026-09-04 18:09:28,957 INFO    [uvicorn.access] 127.0.0.1:60967 - "GET /api/skills/audit-all/status HTTP/1.1" 200
+2026-09-04 18:09:28,957 INFO    [uvicorn.access] 127.0.0.1:53832 - "GET /static/favicon.png?v=roundel1 HTTP/1.1" 304
+2026-09-04 18:09:28,986 INFO    [uvicorn.access] 127.0.0.1:53832 - "GET /api/skills/slash-catalog HTTP/1.1" 200
+2026-09-04 18:09:28,987 INFO    [uvicorn.access] 127.0.0.1:53970 - "GET /api/fonts/custom HTTP/1.1" 200
+2026-09-04 18:09:28,991 INFO    [routes.cookbook_routes] orphan sweep starting: 0 server(s), known_sids=0
+2026-09-04 18:09:28,991 INFO    [uvicorn.access] 127.0.0.1:53970 - "GET /api/prefs/skills_enabled HTTP/1.1" 200
+2026-09-04 18:09:28,992 INFO    [uvicorn.access] 127.0.0.1:53832 - "GET /api/cookbook/tasks/status HTTP/1.1" 200
+2026-09-04 18:09:28,995 INFO    [uvicorn.access] 127.0.0.1:53992 - "GET /api/history/838eb441-911e-40a1-b111-8ba383a4a155 HTTP/1.1" 200
+2026-09-04 18:09:29,010 INFO    [uvicorn.access] 127.0.0.1:53992 - "GET /api/prefs/auto_memory HTTP/1.1" 200
+2026-09-04 18:09:29,019 INFO    [uvicorn.access] 127.0.0.1:53992 - "GET /api/prefs/auto_skills HTTP/1.1" 200
+2026-09-04 18:09:29,026 INFO    [uvicorn.access] 127.0.0.1:53992 - "GET /api/prefs/auto_approve_skills HTTP/1.1" 200
+2026-09-04 18:09:29,031 INFO    [uvicorn.access] 127.0.0.1:53992 - "GET /api/prefs/skill_min_confidence HTTP/1.1" 200
+2026-09-04 18:09:29,035 INFO    [uvicorn.access] 127.0.0.1:53992 - "GET /api/prefs/skill_max_injected HTTP/1.1" 200
+2026-09-04 18:09:29,161 INFO    [uvicorn.access] 127.0.0.1:53992 - "GET /api/research/status/838eb441-911e-40a1-b111-8ba383a4a155 HTTP/1.1" 404
+2026-09-04 18:09:29,162 INFO    [uvicorn.access] 127.0.0.1:53832 - "GET /api/chat/stream_status/838eb441-911e-40a1-b111-8ba383a4a155 HTTP/1.1" 404
+2026-09-04 18:09:29,162 INFO    [uvicorn.access] 127.0.0.1:53970 - "GET /api/memory HTTP/1.1" 200
+2026-09-04 18:09:29,167 INFO    [uvicorn.access] 127.0.0.1:53970 - "GET /api/prefs/memory_enabled HTTP/1.1" 200
+2026-09-04 18:09:29,169 INFO    [uvicorn.access] 127.0.0.1:53832 - "GET /static/js/greatHall.js?v=20260706gh11 HTTP/1.1" 304
+2026-09-04 18:09:29,178 INFO    [uvicorn.access] 127.0.0.1:53832 - "GET /api/prefs/skills_enabled HTTP/1.1" 200
+2026-09-04 18:09:29,183 INFO    [uvicorn.access] 127.0.0.1:53832 - "GET /api/prefs/auto_memory HTTP/1.1" 200
+2026-09-04 18:09:29,187 INFO    [uvicorn.access] 127.0.0.1:53832 - "GET /api/prefs/auto_skills HTTP/1.1" 200
+2026-09-04 18:09:29,193 INFO    [uvicorn.access] 127.0.0.1:53832 - "GET /api/prefs/auto_approve_skills HTTP/1.1" 200
+2026-09-04 18:09:29,201 INFO    [uvicorn.access] 127.0.0.1:53832 - "GET /api/prefs/skill_min_confidence HTTP/1.1" 200
+2026-09-04 18:09:29,209 INFO    [uvicorn.access] 127.0.0.1:53832 - "GET /api/prefs/skill_max_injected HTTP/1.1" 200
+2026-09-04 18:09:29,600 INFO    [uvicorn.access] 127.0.0.1:53832 - "GET /api/auth/status HTTP/1.1" 200
+2026-09-04 18:09:29,609 INFO    [uvicorn.access] 127.0.0.1:53992 - "GET /api/tasks HTTP/1.1" 200
+2026-09-04 18:09:29,609 INFO    [uvicorn.access] 127.0.0.1:60967 - "GET /api/calendar/events?start=2026-09-03T23%3A00%3A00.000Z&end=2026-09-04T23%3A00%3A00.000Z HTTP/1.1" 200
+2026-09-04 18:09:29,614 INFO    [uvicorn.access] 127.0.0.1:60232 - "GET /api/memory HTTP/1.1" 200
+2026-09-04 18:09:29,615 INFO    [uvicorn.access] 127.0.0.1:53832 - "GET /api/research/library?sort=recent&limit=30 HTTP/1.1" 200
+2026-09-04 18:09:29,615 INFO    [uvicorn.access] 127.0.0.1:53970 - "GET /api/sessions HTTP/1.1" 200
+2026-09-04 18:09:29,617 INFO    [uvicorn.access] 127.0.0.1:53992 - "GET /api/models HTTP/1.1" 200
+2026-09-04 18:09:29,621 INFO    [uvicorn.access] 127.0.0.1:60967 - "GET /api/notes HTTP/1.1" 200
+2026-09-04 18:09:29,622 INFO    [uvicorn.access] 127.0.0.1:60232 - "GET /api/presets/groups HTTP/1.1" 200
+2026-09-04 18:09:29,622 INFO    [uvicorn.access] 127.0.0.1:53832 - "GET /api/tasks/runs/recent?limit=30 HTTP/1.1" 200
+2026-09-04 18:09:29,622 INFO    [uvicorn.access] 127.0.0.1:53970 - "GET /api/research/active HTTP/1.1" 200
+2026-09-04 18:09:30,252 INFO    [httpx] HTTP Request: GET http://localhost:11434/api/v1/models "HTTP/1.1 404 Not Found"
+2026-09-04 18:09:30,328 INFO    [uvicorn.access] 127.0.0.1:53992 - "GET /api/ecosystem/status HTTP/1.1" 200
+2026-09-04 18:09:30,332 INFO    [uvicorn.access] 127.0.0.1:60232 - "GET /api/memory HTTP/1.1" 200
+2026-09-04 18:09:30,343 INFO    [uvicorn.access] 127.0.0.1:60232 - "GET /api/prefs/memory_enabled HTTP/1.1" 200
+2026-09-04 18:09:30,349 INFO    [uvicorn.access] 127.0.0.1:60967 - "GET /api/finance/snapshot HTTP/1.1" 200
+2026-09-04 18:09:30,362 INFO    [uvicorn.access] 127.0.0.1:60967 - "GET /api/prefs/skills_enabled HTTP/1.1" 200
+2026-09-04 18:09:30,370 INFO    [uvicorn.access] 127.0.0.1:60232 - "GET /api/wizengamot/runs?limit=3 HTTP/1.1" 200
+2026-09-04 18:09:30,370 INFO    [uvicorn.access] 127.0.0.1:53992 - "GET /api/growth/snapshot HTTP/1.1" 200
+2026-09-04 18:09:30,378 INFO    [uvicorn.access] 127.0.0.1:53992 - "GET /api/prefs/auto_memory HTTP/1.1" 200
+2026-09-04 18:09:30,383 INFO    [uvicorn.access] 127.0.0.1:53992 - "GET /api/prefs/auto_skills HTTP/1.1" 200
+2026-09-04 18:09:30,387 INFO    [uvicorn.access] 127.0.0.1:53992 - "GET /api/prefs/auto_approve_skills HTTP/1.1" 200
+2026-09-04 18:09:30,390 INFO    [uvicorn.access] 127.0.0.1:53992 - "GET /api/prefs/skill_min_confidence HTTP/1.1" 200
+2026-09-04 18:09:30,393 INFO    [uvicorn.access] 127.0.0.1:53992 - "GET /api/prefs/skill_max_injected HTTP/1.1" 200
+2026-09-04 18:09:30,926 INFO    [src.model_discovery] Discovered 1 model endpoints across 2 hosts
+2026-09-04 18:09:31,113 INFO    [httpx] HTTP Request: GET http://localhost:11434/api/tags "HTTP/1.1 200 OK"
+2026-09-04 18:09:31,359 INFO    [httpx] HTTP Request: GET http://localhost:11434/v1/models "HTTP/1.1 200 OK"
+2026-09-04 18:09:31,360 INFO    [app] Warmup ping OK: http://localhost:11434/v1/models
+2026-09-04 18:09:31,806 INFO    [uvicorn.access] 127.0.0.1:53992 - "GET /api/notes HTTP/1.1" 200
+2026-09-04 18:09:31,850 INFO    [uvicorn.access] 127.0.0.1:53992 - "GET /api/email/accounts HTTP/1.1" 200
+2026-09-04 18:09:31,856 WARNING [routes.email_helpers] SMTP not configured — add an Email Account in Settings or set env vars
+2026-09-04 18:09:31,856 WARNING [routes.email_helpers] IMAP not configured — add an Email Account in Settings or set env vars
+2026-09-04 18:09:32,853 ERROR   [routes.email_routes] Failed to list emails: [WinError 10061] No connection could be made because the target machine actively refused it
+2026-09-04 18:09:32,853 INFO    [uvicorn.access] 127.0.0.1:51594 - "GET /api/email/list?folder=INBOX&limit=50&filter=unread HTTP/1.1" 200
+2026-09-04 18:09:34,966 INFO    [uvicorn.access] 127.0.0.1:57142 - "GET / HTTP/1.1" 200
+2026-09-04 18:09:35,008 INFO    [uvicorn.access] 127.0.0.1:57142 - "GET /static/lib/highlight.min.js HTTP/1.1" 200
+2026-09-04 18:09:35,016 INFO    [uvicorn.access] 127.0.0.1:57142 - "GET /static/style.css HTTP/1.1" 200
+2026-09-04 18:09:35,027 INFO    [uvicorn.access] 127.0.0.1:64733 - "GET /static/great-hall.css?v=20260706nav11 HTTP/1.1" 200
+2026-09-04 18:09:35,040 INFO    [uvicorn.access] 127.0.0.1:64733 - "GET /static/premium-tokens.css?v=20260703p4 HTTP/1.1" 200
+2026-09-04 18:09:35,051 INFO    [uvicorn.access] 127.0.0.1:64733 - "GET /static/motifs.css?v=20260703motif3 HTTP/1.1" 200
+2026-09-04 18:09:35,058 INFO    [uvicorn.access] 127.0.0.1:64733 - "GET /static/premium-components.css?v=20260703c3 HTTP/1.1" 200
+2026-09-04 18:09:35,061 INFO    [uvicorn.access] 127.0.0.1:64733 - "GET /static/premium-surfaces.css?v=20260706p43 HTTP/1.1" 200
+2026-09-04 18:09:35,076 INFO    [uvicorn.access] 127.0.0.1:57142 - "GET /static/css/style-hyprrice.css?v=redesign1 HTTP/1.1" 200
+2026-09-04 18:09:35,076 INFO    [uvicorn.access] 127.0.0.1:64733 - "GET /static/css/tokens.css?v=redesign1 HTTP/1.1" 200
+2026-09-04 18:09:35,081 INFO    [uvicorn.access] 127.0.0.1:64733 - "GET /static/css/style-packs.css?v=redesign1 HTTP/1.1" 200
+2026-09-04 18:09:35,083 INFO    [uvicorn.access] 127.0.0.1:57142 - "GET /static/css/style-calm.css?v=redesign1 HTTP/1.1" 200
+2026-09-04 18:09:35,085 INFO    [uvicorn.access] 127.0.0.1:64733 - "GET /static/css/components.css?v=redesign1 HTTP/1.1" 200
+2026-09-04 18:09:35,087 INFO    [uvicorn.access] 127.0.0.1:57142 - "GET /static/css/typography.css?v=redesign1 HTTP/1.1" 200
+2026-09-04 18:09:35,090 INFO    [uvicorn.access] 127.0.0.1:64733 - "GET /static/css/shell-bridge.css?v=redesign1 HTTP/1.1" 200
+2026-09-04 18:09:35,091 INFO    [uvicorn.access] 127.0.0.1:57142 - "GET /static/css/hyprrice-skin.css?v=redesign2 HTTP/1.1" 200
+2026-09-04 18:09:35,092 INFO    [uvicorn.access] 127.0.0.1:65049 - "GET /static/css/style-switcher.css?v=redesign1 HTTP/1.1" 200
+2026-09-04 18:09:35,100 INFO    [uvicorn.access] 127.0.0.1:65049 - "GET /static/css/council.css?v=20260703co8 HTTP/1.1" 200
+2026-09-04 18:09:35,100 INFO    [uvicorn.access] 127.0.0.1:57142 - "GET /static/css/growth.css?v=20260703g4 HTTP/1.1" 200
+2026-09-04 18:09:35,100 INFO    [uvicorn.access] 127.0.0.1:64733 - "GET /static/css/gringotts.css?v=20260703gr3 HTTP/1.1" 200
+2026-09-04 18:09:35,107 INFO    [uvicorn.access] 127.0.0.1:65049 - "GET /static/retro/retro16.css?v=20260824r16a HTTP/1.1" 200
+2026-09-04 18:09:35,107 INFO    [uvicorn.access] 127.0.0.1:64733 - "GET /static/css/mission.css?v=20260706m26 HTTP/1.1" 200
+2026-09-04 18:09:35,107 INFO    [uvicorn.access] 127.0.0.1:57142 - "GET /static/css/calmail.css?v=20260706cm11 HTTP/1.1" 200
+2026-09-04 18:09:35,112 INFO    [uvicorn.access] 127.0.0.1:57142 - "GET /static/retro/retro16-ui.css?v=20260824r16a HTTP/1.1" 200
+2026-09-04 18:09:35,113 INFO    [uvicorn.access] 127.0.0.1:64733 - "GET /static/js/stylePacks.js?v=redesign1 HTTP/1.1" 200
+2026-09-04 18:09:35,113 INFO    [uvicorn.access] 127.0.0.1:65049 - "GET /static/js/styleSwitcher.js?v=redesign1 HTTP/1.1" 200
+2026-09-04 18:09:35,116 INFO    [uvicorn.access] 127.0.0.1:64733 - "GET /static/retro/characters.js?v=20260824r16a HTTP/1.1" 200
+2026-09-04 18:09:35,117 INFO    [uvicorn.access] 127.0.0.1:65049 - "GET /static/retro/toggle.js?v=20260824r16a HTTP/1.1" 200
+2026-09-04 18:09:35,125 INFO    [uvicorn.access] 127.0.0.1:65049 - "GET /api/version HTTP/1.1" 200
+2026-09-04 18:09:35,133 INFO    [uvicorn.access] 127.0.0.1:57142 - "GET /static/js/ui.js HTTP/1.1" 200
+2026-09-04 18:09:35,134 INFO    [uvicorn.access] 127.0.0.1:64733 - "GET /static/js/chat.js?v=20260609ws HTTP/1.1" 200
+2026-09-04 18:09:35,134 INFO    [uvicorn.access] 127.0.0.1:65049 - "GET /static/app.js?v=20260706tk2 HTTP/1.1" 200
+2026-09-04 18:09:35,225 INFO    [uvicorn.access] 127.0.0.1:65049 - "GET /static/fonts/Inter-SemiBold.woff2 HTTP/1.1" 200
+2026-09-04 18:09:35,225 INFO    [uvicorn.access] 127.0.0.1:57142 - "GET /static/fonts/Inter-Medium.woff2 HTTP/1.1" 200
+2026-09-04 18:09:35,226 INFO    [uvicorn.access] 127.0.0.1:64733 - "GET /static/fonts/Inter-Regular.woff2 HTTP/1.1" 200
+2026-09-04 18:09:35,249 INFO    [uvicorn.access] 127.0.0.1:65049 - "GET /static/js/sessions.js HTTP/1.1" 200
+2026-09-04 18:09:35,254 INFO    [uvicorn.access] 127.0.0.1:57142 - "GET /static/js/markdown.js HTTP/1.1" 200
+2026-09-04 18:09:35,257 INFO    [uvicorn.access] 127.0.0.1:64733 - "GET /static/js/skills.js HTTP/1.1" 200
+2026-09-04 18:09:35,266 INFO    [uvicorn.access] 127.0.0.1:64733 - "GET /static/js/tourHints.js HTTP/1.1" 200
+2026-09-04 18:09:35,268 INFO    [uvicorn.access] 127.0.0.1:65049 - "GET /static/js/assistant.js HTTP/1.1" 200
+2026-09-04 18:09:35,268 INFO    [uvicorn.access] 127.0.0.1:57142 - "GET /static/js/tourAutoplay.js HTTP/1.1" 200
+2026-09-04 18:09:35,271 INFO    [uvicorn.access] 127.0.0.1:65049 - "GET /static/js/init.js HTTP/1.1" 200
+2026-09-04 18:09:35,274 INFO    [uvicorn.access] 127.0.0.1:64733 - "GET /static/js/stylePacks.js HTTP/1.1" 200
+2026-09-04 18:09:35,274 INFO    [uvicorn.access] 127.0.0.1:57142 - "GET /static/js/a11y.js HTTP/1.1" 200
+2026-09-04 18:09:35,275 INFO    [uvicorn.access] 127.0.0.1:65049 - "GET /static/js/storage.js HTTP/1.1" 200
+2026-09-04 18:09:35,278 INFO    [uvicorn.access] 127.0.0.1:57142 - "GET /static/js/workspace.js HTTP/1.1" 200
+2026-09-04 18:09:35,281 INFO    [uvicorn.access] 127.0.0.1:65049 - "GET /static/js/fileHandler.js HTTP/1.1" 200
+2026-09-04 18:09:35,281 INFO    [uvicorn.access] 127.0.0.1:64733 - "GET /static/js/models.js HTTP/1.1" 200
+2026-09-04 18:09:35,284 INFO    [uvicorn.access] 127.0.0.1:57142 - "GET /static/js/rag.js HTTP/1.1" 200
+2026-09-04 18:09:35,287 INFO    [uvicorn.access] 127.0.0.1:64733 - "GET /static/js/presets.js HTTP/1.1" 200
+2026-09-04 18:09:35,288 INFO    [uvicorn.access] 127.0.0.1:65049 - "GET /static/js/search.js HTTP/1.1" 200
+2026-09-04 18:09:35,290 INFO    [uvicorn.access] 127.0.0.1:57142 - "GET /static/js/compare/index.js HTTP/1.1" 200
+2026-09-04 18:09:35,296 INFO    [uvicorn.access] 127.0.0.1:64733 - "GET /static/js/document.js HTTP/1.1" 200
+2026-09-04 18:09:35,296 INFO    [uvicorn.access] 127.0.0.1:65049 - "GET /static/js/search-chat.js?v=20260628cookbook1 HTTP/1.1" 200
+2026-09-04 18:09:35,299 INFO    [uvicorn.access] 127.0.0.1:57142 - "GET /static/js/windowDrag.js HTTP/1.1" 200
+2026-09-04 18:09:35,311 INFO    [uvicorn.access] 127.0.0.1:65049 - "GET /static/js/chatRenderer.js HTTP/1.1" 200
+2026-09-04 18:09:35,317 INFO    [uvicorn.access] 127.0.0.1:57142 - "GET /static/js/memory.js?v=20260620evo3 HTTP/1.1" 200
+2026-09-04 18:09:35,320 INFO    [uvicorn.access] 127.0.0.1:64733 - "GET /static/js/voiceRecorder.js HTTP/1.1" 200
+2026-09-04 18:09:35,323 INFO    [uvicorn.access] 127.0.0.1:57142 - "GET /static/js/censor.js HTTP/1.1" 200
+2026-09-04 18:09:35,324 INFO    [uvicorn.access] 127.0.0.1:65049 - "GET /static/js/tasks.js HTTP/1.1" 200
+2026-09-04 18:09:35,330 INFO    [uvicorn.access] 127.0.0.1:64733 - "GET /static/js/calendar.js HTTP/1.1" 200
+2026-09-04 18:09:35,335 INFO    [uvicorn.access] 127.0.0.1:57142 - "GET /static/js/notes.js HTTP/1.1" 200
+2026-09-04 18:09:35,341 INFO    [uvicorn.access] 127.0.0.1:65049 - "GET /static/js/admin.js HTTP/1.1" 200
+2026-09-04 18:09:35,353 INFO    [uvicorn.access] 127.0.0.1:64733 - "GET /static/js/settings.js HTTP/1.1" 200
+2026-09-04 18:09:35,362 INFO    [uvicorn.access] 127.0.0.1:65049 - "GET /static/js/modalManager.js HTTP/1.1" 200
+2026-09-04 18:09:35,362 INFO    [uvicorn.access] 127.0.0.1:57142 - "GET /static/js/tileManager.js HTTP/1.1" 200
+2026-09-04 18:09:35,454 INFO    [uvicorn.access] 127.0.0.1:65049 - "GET /static/js/theme.js HTTP/1.1" 200
+2026-09-04 18:09:35,454 INFO    [uvicorn.access] 127.0.0.1:57142 - "GET /static/js/cookbook.js HTTP/1.1" 200
+2026-09-04 18:09:35,454 INFO    [uvicorn.access] 127.0.0.1:64733 - "GET /static/js/sorting.js HTTP/1.1" 200
+2026-09-04 18:09:35,462 INFO    [uvicorn.access] 127.0.0.1:64733 - "GET /static/js/group.js HTTP/1.1" 200
+2026-09-04 18:09:35,466 INFO    [uvicorn.access] 127.0.0.1:65049 - "GET /static/js/tts-ai.js HTTP/1.1" 200
+2026-09-04 18:09:35,466 INFO    [uvicorn.access] 127.0.0.1:57142 - "GET /static/js/research/panel.js HTTP/1.1" 200
+2026-09-04 18:09:35,468 INFO    [uvicorn.access] 127.0.0.1:64733 - "GET /static/js/spinner.js HTTP/1.1" 200
+2026-09-04 18:09:35,472 INFO    [uvicorn.access] 127.0.0.1:64733 - "GET /static/js/keyboard-shortcuts.js HTTP/1.1" 200
+2026-09-04 18:09:35,474 INFO    [uvicorn.access] 127.0.0.1:57142 - "GET /static/js/sidebar-layout.js HTTP/1.1" 200
+2026-09-04 18:09:35,474 INFO    [uvicorn.access] 127.0.0.1:65049 - "GET /static/js/section-management.js HTTP/1.1" 200
+2026-09-04 18:09:35,477 INFO    [uvicorn.access] 127.0.0.1:64733 - "GET /static/js/escMenuStack.js HTTP/1.1" 200
+2026-09-04 18:09:35,480 INFO    [uvicorn.access] 127.0.0.1:65049 - "GET /static/js/chatStream.js HTTP/1.1" 200
+2026-09-04 18:09:35,480 INFO    [uvicorn.access] 127.0.0.1:57142 - "GET /static/js/emailInbox.js HTTP/1.1" 200
+2026-09-04 18:09:35,483 INFO    [uvicorn.access] 127.0.0.1:64733 - "GET /static/js/codeRunner.js HTTP/1.1" 200
+2026-09-04 18:09:35,487 INFO    [uvicorn.access] 127.0.0.1:57142 - "GET /static/js/slashCommands.js HTTP/1.1" 200
+2026-09-04 18:09:35,487 INFO    [uvicorn.access] 127.0.0.1:65049 - "GET /static/js/researchSynapse.js HTTP/1.1" 200
+2026-09-04 18:09:35,491 INFO    [uvicorn.access] 127.0.0.1:64733 - "GET /static/js/streamingRenderer.js HTTP/1.1" 200
+2026-09-04 18:09:35,496 INFO    [uvicorn.access] 127.0.0.1:65049 - "GET /static/js/composerArrowUpRecall.js HTTP/1.1" 200
+2026-09-04 18:09:35,498 INFO    [uvicorn.access] 127.0.0.1:64733 - "GET /static/js/providers.js HTTP/1.1" 200
+2026-09-04 18:09:35,502 INFO    [uvicorn.access] 127.0.0.1:65049 - "GET /static/js/markdown/tableRow.js HTTP/1.1" 200
+2026-09-04 18:09:35,502 INFO    [uvicorn.access] 127.0.0.1:57142 - "GET /static/js/modelPicker.js HTTP/1.1" 200
+2026-09-04 18:09:35,504 INFO    [uvicorn.access] 127.0.0.1:64733 - "GET /static/js/emojiShortcodes.js HTTP/1.1" 200
+2026-09-04 18:09:35,507 INFO    [uvicorn.access] 127.0.0.1:65049 - "GET /static/js/modelSort.js HTTP/1.1" 200
+2026-09-04 18:09:35,508 INFO    [uvicorn.access] 127.0.0.1:64733 - "GET /static/js/dragSort.js HTTP/1.1" 200
+2026-09-04 18:09:35,508 INFO    [uvicorn.access] 127.0.0.1:57142 - "GET /static/js/compare/state.js HTTP/1.1" 200
+2026-09-04 18:09:35,512 INFO    [uvicorn.access] 127.0.0.1:64733 - "GET /static/js/compare/icons.js HTTP/1.1" 200
+2026-09-04 18:09:35,514 INFO    [uvicorn.access] 127.0.0.1:65049 - "GET /static/js/compare/selector.js HTTP/1.1" 200
+2026-09-04 18:09:35,514 INFO    [uvicorn.access] 127.0.0.1:57142 - "GET /static/js/compare/models.js HTTP/1.1" 200
+2026-09-04 18:09:35,518 INFO    [uvicorn.access] 127.0.0.1:64733 - "GET /static/js/compare/probe.js HTTP/1.1" 200
+2026-09-04 18:09:35,521 INFO    [uvicorn.access] 127.0.0.1:57142 - "GET /static/js/compare/panes.js HTTP/1.1" 200
+2026-09-04 18:09:35,521 INFO    [uvicorn.access] 127.0.0.1:65049 - "GET /static/js/compare/stream.js HTTP/1.1" 200
+2026-09-04 18:09:35,524 INFO    [uvicorn.access] 127.0.0.1:64733 - "GET /static/js/compare/vote.js HTTP/1.1" 200
+2026-09-04 18:09:35,526 INFO    [uvicorn.access] 127.0.0.1:65049 - "GET /static/js/compare/scoreboard.js HTTP/1.1" 200
+2026-09-04 18:09:35,529 INFO    [uvicorn.access] 127.0.0.1:57142 - "GET /static/js/modalSnap.js HTTP/1.1" 200
+2026-09-04 18:09:35,530 INFO    [uvicorn.access] 127.0.0.1:64733 - "GET /static/js/windowResize.js HTTP/1.1" 200
+2026-09-04 18:09:35,532 INFO    [uvicorn.access] 127.0.0.1:65049 - "GET /static/js/emojiPicker.js HTTP/1.1" 200
+2026-09-04 18:09:35,536 INFO    [uvicorn.access] 127.0.0.1:64733 - "GET /static/js/langIcons.js HTTP/1.1" 200
+2026-09-04 18:09:35,537 INFO    [uvicorn.access] 127.0.0.1:57142 - "GET /static/js/documentLibrary.js HTTP/1.1" 200
+2026-09-04 18:09:35,538 INFO    [uvicorn.access] 127.0.0.1:65049 - "GET /static/js/signature.js HTTP/1.1" 200
+2026-09-04 18:09:35,543 INFO    [uvicorn.access] 127.0.0.1:64733 - "GET /static/js/model/matchKey.js HTTP/1.1" 200
+2026-09-04 18:09:35,545 INFO    [uvicorn.access] 127.0.0.1:65049 - "GET /static/js/util/ordinal.js HTTP/1.1" 200
+2026-09-04 18:09:35,547 INFO    [uvicorn.access] 127.0.0.1:64733 - "GET /static/js/colorPicker.js HTTP/1.1" 200
+2026-09-04 18:09:35,548 INFO    [uvicorn.access] 127.0.0.1:57142 - "GET /static/js/calendar/utils.js HTTP/1.1" 200
+2026-09-04 18:09:35,550 INFO    [uvicorn.access] 127.0.0.1:65049 - "GET /static/js/providerDeviceFlow.js HTTP/1.1" 200
+2026-09-04 18:09:35,552 INFO    [uvicorn.access] 127.0.0.1:57142 - "GET /static/js/platform.js HTTP/1.1" 200
+2026-09-04 18:09:35,553 INFO    [uvicorn.access] 127.0.0.1:64733 - "GET /static/js/color/hex.js HTTP/1.1" 200
+2026-09-04 18:09:35,557 INFO    [uvicorn.access] 127.0.0.1:65049 - "GET /static/js/cookbook-diagnosis.js HTTP/1.1" 200
+2026-09-04 18:09:35,559 INFO    [uvicorn.access] 127.0.0.1:64733 - "GET /static/js/cookbook-hwfit.js HTTP/1.1" 200
+2026-09-04 18:09:35,562 INFO    [uvicorn.access] 127.0.0.1:57142 - "GET /static/js/cookbookRunning.js HTTP/1.1" 200
+2026-09-04 18:09:35,569 INFO    [uvicorn.access] 127.0.0.1:65049 - "GET /static/js/cookbookDownload.js HTTP/1.1" 200
+2026-09-04 18:09:35,572 INFO    [uvicorn.access] 127.0.0.1:64733 - "GET /static/js/cookbookServe.js HTTP/1.1" 200
+2026-09-04 18:09:35,577 INFO    [uvicorn.access] 127.0.0.1:57142 - "GET /static/js/research/jobs.js HTTP/1.1" 200
+2026-09-04 18:09:35,580 INFO    [uvicorn.access] 127.0.0.1:65049 - "GET /static/js/emailLibrary.js HTTP/1.1" 200
+2026-09-04 18:09:35,587 INFO    [uvicorn.access] 127.0.0.1:64733 - "GET /static/js/emailLibrary/replyRecipients.js HTTP/1.1" 200
+2026-09-04 18:09:35,588 INFO    [uvicorn.access] 127.0.0.1:57142 - "GET /static/js/streamingSegmenter.js HTTP/1.1" 200
+2026-09-04 18:09:35,592 INFO    [uvicorn.access] 127.0.0.1:57142 - "GET /static/js/cookbookProgressSignal.js HTTP/1.1" 200
+2026-09-04 18:09:35,592 INFO    [uvicorn.access] 127.0.0.1:65049 - "GET /static/assets/dobby-elf-mark.png?v=roundel1 HTTP/1.1" 200
+2026-09-04 18:09:35,593 INFO    [uvicorn.access] 127.0.0.1:64733 - "GET /static/assets/pensieve-logo.svg HTTP/1.1" 200
+2026-09-04 18:09:35,595 INFO    [uvicorn.access] 127.0.0.1:64733 - "GET /static/js/emailLibrary/utils.js HTTP/1.1" 200
+2026-09-04 18:09:35,600 INFO    [uvicorn.access] 127.0.0.1:64733 - "GET /static/js/emailLibrary/signatureFold.js HTTP/1.1" 200
+2026-09-04 18:09:35,601 INFO    [uvicorn.access] 127.0.0.1:65049 - "GET /static/js/emailLibrary/state.js HTTP/1.1" 200
+2026-09-04 18:09:35,602 INFO    [uvicorn.access] 127.0.0.1:57142 - "GET /static/assets/dobby-os-logo.svg HTTP/1.1" 200
+2026-09-04 18:09:35,602 INFO    [uvicorn.access] 127.0.0.1:64512 - "GET /static/assets/dobby-elf-mark.png HTTP/1.1" 200
+2026-09-04 18:09:35,611 INFO    [uvicorn.access] 127.0.0.1:64512 - "GET /static/js/council.js?v=20260627council4 HTTP/1.1" 200
+2026-09-04 18:09:35,614 INFO    [uvicorn.access] 127.0.0.1:57142 - "GET /static/js/growth.js?v=20260628growth5 HTTP/1.1" 200
+2026-09-04 18:09:35,615 INFO    [uvicorn.access] 127.0.0.1:64512 - "GET /static/js/gringotts.js?v=20260628gringotts10 HTTP/1.1" 200
+2026-09-04 18:09:35,619 INFO    [uvicorn.access] 127.0.0.1:57142 - "GET /static/js/missionControl.js?v=20260706m21 HTTP/1.1" 200
+2026-09-04 18:09:35,624 INFO    [uvicorn.access] 127.0.0.1:64512 - "GET /static/js/calendar-views.js?v=20260706cal6 HTTP/1.1" 200
+2026-09-04 18:09:35,626 INFO    [uvicorn.access] 127.0.0.1:57142 - "GET /static/js/mailbox.js?v=20260706mail5 HTTP/1.1" 200
+2026-09-04 18:09:35,631 INFO    [uvicorn.access] 127.0.0.1:57142 - "GET /static/js/naming.js?v=20260703naming7 HTTP/1.1" 200
+2026-09-04 18:09:35,632 INFO    [uvicorn.access] 127.0.0.1:64512 - "GET /static/js/dobby-metrics.js?v=20260701metrics4 HTTP/1.1" 200
+2026-09-04 18:09:35,634 INFO    [uvicorn.access] 127.0.0.1:64512 - "GET /static/js/dobby-ui.js?v=20260701ui6 HTTP/1.1" 200
+2026-09-04 18:09:35,637 INFO    [uvicorn.access] 127.0.0.1:57142 - "GET /static/assets/crest-gryffindor.svg HTTP/1.1" 200
+2026-09-04 18:09:35,638 INFO    [uvicorn.access] 127.0.0.1:64512 - "GET /static/assets/ministry-settings-logo.svg HTTP/1.1" 200
+2026-09-04 18:09:35,642 INFO    [uvicorn.access] 127.0.0.1:64512 - "GET /api/prefs/theme HTTP/1.1" 200
+2026-09-04 18:09:35,654 INFO    [uvicorn.access] 127.0.0.1:64512 - "GET /api/auth/settings HTTP/1.1" 200
+2026-09-04 18:09:35,656 INFO    [uvicorn.access] 127.0.0.1:64512 - "GET /api/cookbook/state HTTP/1.1" 200
+2026-09-04 18:09:35,659 INFO    [uvicorn.access] 127.0.0.1:64512 - "GET /api/calendar/calendars HTTP/1.1" 200
+2026-09-04 18:09:35,661 INFO    [uvicorn.access] 127.0.0.1:57142 - "GET /api/default-chat HTTP/1.1" 200
+2026-09-04 18:09:35,668 INFO    [uvicorn.access] 127.0.0.1:64512 - "GET /api/auth/status HTTP/1.1" 200
+2026-09-04 18:09:35,668 INFO    [uvicorn.access] 127.0.0.1:65049 - "GET /api/auth/features HTTP/1.1" 200
+2026-09-04 18:09:35,668 INFO    [uvicorn.access] 127.0.0.1:64733 - "GET /api/auth/settings HTTP/1.1" 200
+2026-09-04 18:09:35,669 INFO    [uvicorn.access] 127.0.0.1:57142 - "GET /api/notes HTTP/1.1" 200
+2026-09-04 18:09:35,690 INFO    [uvicorn.access] 127.0.0.1:57142 - "GET /api/auth/settings HTTP/1.1" 200
+2026-09-04 18:09:35,693 INFO    [uvicorn.access] 127.0.0.1:64733 - "GET /api/presets/templates HTTP/1.1" 200
+2026-09-04 18:09:35,699 INFO    [uvicorn.access] 127.0.0.1:64512 - "GET /api/email/urgency-state HTTP/1.1" 200
+2026-09-04 18:09:35,700 INFO    [uvicorn.access] 127.0.0.1:62736 - "GET /api/research/active HTTP/1.1" 200
+2026-09-04 18:09:35,700 INFO    [uvicorn.access] 127.0.0.1:57142 - "GET /api/presets HTTP/1.1" 200
+2026-09-04 18:09:35,700 WARNING [routes.email_helpers] SMTP not configured — add an Email Account in Settings or set env vars
+2026-09-04 18:09:35,700 INFO    [uvicorn.access] 127.0.0.1:56372 - "GET /api/auth/settings HTTP/1.1" 200
+2026-09-04 18:09:35,700 WARNING [routes.email_helpers] IMAP not configured — add an Email Account in Settings or set env vars
+2026-09-04 18:09:35,706 INFO    [uvicorn.access] 127.0.0.1:64733 - "GET /api/models?refresh=true HTTP/1.1" 200
+2026-09-04 18:09:35,708 INFO    [uvicorn.access] 127.0.0.1:62736 - "GET /api/stt/stats HTTP/1.1" 200
+2026-09-04 18:09:35,708 INFO    [uvicorn.access] 127.0.0.1:57142 - "GET /api/auth/features HTTP/1.1" 200
+2026-09-04 18:09:35,710 INFO    [uvicorn.access] 127.0.0.1:64512 - "GET /api/memory HTTP/1.1" 200
+2026-09-04 18:09:35,716 INFO    [uvicorn.access] 127.0.0.1:56372 - "GET /api/sessions HTTP/1.1" 200
+2026-09-04 18:09:35,716 INFO    [uvicorn.access] 127.0.0.1:57142 - "GET /api/prefs/custom-themes HTTP/1.1" 200
+2026-09-04 18:09:35,717 INFO    [uvicorn.access] 127.0.0.1:64512 - "GET /api/tts/stats HTTP/1.1" 200
+2026-09-04 18:09:35,721 INFO    [uvicorn.access] 127.0.0.1:56372 - "GET /api/cookbook/state HTTP/1.1" 200
+2026-09-04 18:09:35,724 INFO    [uvicorn.access] 127.0.0.1:62736 - "GET /static/assets/gringotts-logo.svg HTTP/1.1" 200
+2026-09-04 18:09:35,724 INFO    [uvicorn.access] 127.0.0.1:57142 - "POST /api/calendar/sync HTTP/1.1" 200
+2026-09-04 18:09:35,725 INFO    [uvicorn.access] 127.0.0.1:64733 - "GET /static/js/slashAutocomplete.js HTTP/1.1" 200
+2026-09-04 18:09:35,725 INFO    [uvicorn.access] 127.0.0.1:64512 - "GET /api/calendar/events?start=2026-08-31&end=2026-10-12 HTTP/1.1" 200
+2026-09-04 18:09:35,728 INFO    [uvicorn.access] 127.0.0.1:56372 - "GET /api/research/library?sort=recent&limit=20 HTTP/1.1" 200
+2026-09-04 18:09:35,729 INFO    [uvicorn.access] 127.0.0.1:62736 - "GET /api/prefs/memory_enabled HTTP/1.1" 200
+2026-09-04 18:09:35,731 INFO    [uvicorn.access] 127.0.0.1:64512 - "GET /api/fonts/custom HTTP/1.1" 200
+2026-09-04 18:09:35,736 INFO    [uvicorn.access] 127.0.0.1:64512 - "GET /static/js/cookbookSchedule.js HTTP/1.1" 200
+2026-09-04 18:09:35,742 INFO    [uvicorn.access] 127.0.0.1:57142 - "GET /api/history/838eb441-911e-40a1-b111-8ba383a4a155 HTTP/1.1" 200
+2026-09-04 18:09:35,744 INFO    [uvicorn.access] 127.0.0.1:57142 - "GET /api/auth/status HTTP/1.1" 200
+2026-09-04 18:09:35,751 INFO    [uvicorn.access] 127.0.0.1:57142 - "GET /api/skills HTTP/1.1" 200
+2026-09-04 18:09:35,754 INFO    [uvicorn.access] 127.0.0.1:57142 - "GET /api/prefs/skills_enabled HTTP/1.1" 200
+2026-09-04 18:09:35,754 INFO    [uvicorn.access] 127.0.0.1:64512 - "GET /api/cookbook/tasks/status HTTP/1.1" 200
+2026-09-04 18:09:35,757 INFO    [uvicorn.access] 127.0.0.1:57142 - "GET /api/skills/slash-catalog HTTP/1.1" 200
+2026-09-04 18:09:35,759 INFO    [uvicorn.access] 127.0.0.1:64512 - "GET /api/prefs HTTP/1.1" 200
+2026-09-04 18:09:35,759 INFO    [uvicorn.access] 127.0.0.1:62736 - "GET /api/skills/audit-all/status HTTP/1.1" 200
+2026-09-04 18:09:35,760 INFO    [uvicorn.access] 127.0.0.1:56372 - "GET /api/prefs/auto_memory HTTP/1.1" 200
+2026-09-04 18:09:35,801 INFO    [uvicorn.access] 127.0.0.1:56372 - "GET /api/prefs/auto_skills HTTP/1.1" 200
+2026-09-04 18:09:35,802 INFO    [uvicorn.access] 127.0.0.1:62736 - "GET /static/favicon.png HTTP/1.1" 200
+2026-09-04 18:09:35,808 INFO    [uvicorn.access] 127.0.0.1:62736 - "GET /api/prefs/auto_approve_skills HTTP/1.1" 200
+2026-09-04 18:09:35,810 INFO    [uvicorn.access] 127.0.0.1:62736 - "GET /api/prefs/skill_min_confidence HTTP/1.1" 200
+2026-09-04 18:09:35,812 INFO    [uvicorn.access] 127.0.0.1:62736 - "GET /api/prefs/skill_max_injected HTTP/1.1" 200
+2026-09-04 18:09:35,860 ERROR   [routes.email_routes] Failed to list emails: [WinError 10061] No connection could be made because the target machine actively refused it
+2026-09-04 18:09:35,860 INFO    [uvicorn.access] 127.0.0.1:53992 - "GET /api/email/list?folder=INBOX&limit=100&offset=0&filter=all HTTP/1.1" 200
+2026-09-04 18:09:35,922 INFO    [uvicorn.access] 127.0.0.1:62736 - "GET /api/research/status/838eb441-911e-40a1-b111-8ba383a4a155 HTTP/1.1" 404
+2026-09-04 18:09:35,922 INFO    [uvicorn.access] 127.0.0.1:56372 - "GET /api/chat/stream_status/838eb441-911e-40a1-b111-8ba383a4a155 HTTP/1.1" 404
+2026-09-04 18:09:35,924 INFO    [uvicorn.access] 127.0.0.1:64512 - "GET /api/memory HTTP/1.1" 200
+2026-09-04 18:09:35,927 INFO    [uvicorn.access] 127.0.0.1:64512 - "GET /api/prefs/memory_enabled HTTP/1.1" 200
+2026-09-04 18:09:35,932 INFO    [uvicorn.access] 127.0.0.1:64512 - "GET /api/prefs/skills_enabled HTTP/1.1" 200
+2026-09-04 18:09:35,932 INFO    [uvicorn.access] 127.0.0.1:56372 - "GET /static/js/greatHall.js?v=20260706gh11 HTTP/1.1" 200
+2026-09-04 18:09:35,936 INFO    [uvicorn.access] 127.0.0.1:64512 - "GET /api/prefs/auto_memory HTTP/1.1" 200
+2026-09-04 18:09:35,939 INFO    [uvicorn.access] 127.0.0.1:56372 - "GET /api/prefs/auto_skills HTTP/1.1" 200
+2026-09-04 18:09:35,941 INFO    [uvicorn.access] 127.0.0.1:56372 - "GET /api/prefs/auto_approve_skills HTTP/1.1" 200
+2026-09-04 18:09:35,944 INFO    [uvicorn.access] 127.0.0.1:56372 - "GET /api/prefs/skill_min_confidence HTTP/1.1" 200
+2026-09-04 18:09:35,946 INFO    [uvicorn.access] 127.0.0.1:56372 - "GET /api/prefs/skill_max_injected HTTP/1.1" 200
+2026-09-04 18:09:36,892 INFO    [uvicorn.access] 127.0.0.1:56372 - "GET /api/auth/status HTTP/1.1" 200
+2026-09-04 18:09:36,895 INFO    [uvicorn.access] 127.0.0.1:62736 - "GET /api/tasks HTTP/1.1" 200
+2026-09-04 18:09:36,896 INFO    [uvicorn.access] 127.0.0.1:57142 - "GET /api/calendar/events?start=2026-09-03T23%3A00%3A00.000Z&end=2026-09-04T23%3A00%3A00.000Z HTTP/1.1" 200
+2026-09-04 18:09:36,899 INFO    [uvicorn.access] 127.0.0.1:64512 - "GET /api/sessions HTTP/1.1" 200
+2026-09-04 18:09:36,900 INFO    [uvicorn.access] 127.0.0.1:56372 - "GET /api/research/library?sort=recent&limit=30 HTTP/1.1" 200
+2026-09-04 18:09:36,901 INFO    [uvicorn.access] 127.0.0.1:64733 - "GET /api/memory HTTP/1.1" 200
+2026-09-04 18:09:36,903 INFO    [uvicorn.access] 127.0.0.1:62736 - "GET /api/models HTTP/1.1" 200
+2026-09-04 18:09:36,905 INFO    [uvicorn.access] 127.0.0.1:57142 - "GET /api/notes HTTP/1.1" 200
+2026-09-04 18:09:36,906 INFO    [uvicorn.access] 127.0.0.1:64512 - "GET /api/presets/groups HTTP/1.1" 200
+2026-09-04 18:09:36,906 INFO    [uvicorn.access] 127.0.0.1:56372 - "GET /api/tasks/runs/recent?limit=30 HTTP/1.1" 200
+2026-09-04 18:09:36,907 INFO    [uvicorn.access] 127.0.0.1:64733 - "GET /api/research/active HTTP/1.1" 200
+2026-09-04 18:09:37,610 INFO    [uvicorn.access] 127.0.0.1:62736 - "GET /api/ecosystem/status HTTP/1.1" 200
+2026-09-04 18:09:37,613 INFO    [uvicorn.access] 127.0.0.1:64512 - "GET /api/memory HTTP/1.1" 200
+2026-09-04 18:09:37,617 INFO    [uvicorn.access] 127.0.0.1:64512 - "GET /api/prefs/memory_enabled HTTP/1.1" 200
+2026-09-04 18:09:37,618 INFO    [uvicorn.access] 127.0.0.1:57142 - "GET /api/finance/snapshot HTTP/1.1" 200
+2026-09-04 18:09:37,620 INFO    [uvicorn.access] 127.0.0.1:57142 - "GET /api/prefs/skills_enabled HTTP/1.1" 200
+2026-09-04 18:09:37,623 INFO    [uvicorn.access] 127.0.0.1:57142 - "GET /api/wizengamot/runs?limit=3 HTTP/1.1" 200
+2026-09-04 18:09:37,628 INFO    [uvicorn.access] 127.0.0.1:64512 - "GET /api/prefs/auto_memory HTTP/1.1" 200
+2026-09-04 18:09:37,630 INFO    [uvicorn.access] 127.0.0.1:57142 - "GET /api/growth/snapshot HTTP/1.1" 200
+2026-09-04 18:09:37,631 INFO    [uvicorn.access] 127.0.0.1:64512 - "GET /api/prefs/auto_skills HTTP/1.1" 200
+2026-09-04 18:09:37,633 INFO    [uvicorn.access] 127.0.0.1:64512 - "GET /api/prefs/auto_approve_skills HTTP/1.1" 200
+2026-09-04 18:09:37,636 INFO    [uvicorn.access] 127.0.0.1:64512 - "GET /api/prefs/skill_min_confidence HTTP/1.1" 200
+2026-09-04 18:09:37,638 INFO    [uvicorn.access] 127.0.0.1:64512 - "GET /api/prefs/skill_max_injected HTTP/1.1" 200
+2026-09-04 18:09:37,896 INFO    [httpx] HTTP Request: GET http://localhost:11434/api/tags "HTTP/1.1 200 OK"
+2026-09-04 18:09:38,890 INFO    [uvicorn.access] 127.0.0.1:57142 - "GET /api/email/accounts HTTP/1.1" 200
+2026-09-04 18:09:38,890 INFO    [uvicorn.access] 127.0.0.1:64512 - "GET /api/notes HTTP/1.1" 200
+2026-09-04 18:09:38,895 WARNING [routes.email_helpers] SMTP not configured — add an Email Account in Settings or set env vars
+2026-09-04 18:09:38,895 WARNING [routes.email_helpers] IMAP not configured — add an Email Account in Settings or set env vars
+2026-09-04 18:09:39,062 INFO    [uvicorn.access] 127.0.0.1:57142 - "GET /api/calendar/events?start=2026-08-31&end=2026-10-12 HTTP/1.1" 200
+2026-09-04 18:09:39,706 ERROR   [routes.email_routes] Failed to list emails: [WinError 10061] No connection could be made because the target machine actively refused it
+2026-09-04 18:09:39,706 INFO    [uvicorn.access] 127.0.0.1:65049 - "GET /api/email/list?folder=INBOX&limit=50&filter=unread HTTP/1.1" 200
+2026-09-04 18:09:40,832 INFO    [uvicorn.access] 127.0.0.1:58140 - "GET /api/research/active HTTP/1.1" 200
+2026-09-04 18:09:40,835 INFO    [uvicorn.access] 127.0.0.1:58140 - "GET /api/research/library?sort=recent&limit=20 HTTP/1.1" 200
+2026-09-04 18:09:42,900 ERROR   [routes.email_routes] Failed to list emails: [WinError 10061] No connection could be made because the target machine actively refused it
+2026-09-04 18:09:42,901 INFO    [uvicorn.access] 127.0.0.1:64512 - "GET /api/email/list?folder=INBOX&limit=100&offset=0&filter=all HTTP/1.1" 200
+2026-09-04 18:09:47,693 INFO    [uvicorn.access] 127.0.0.1:64512 - "GET /api/research/active HTTP/1.1" 200
+2026-09-04 18:09:47,696 INFO    [uvicorn.access] 127.0.0.1:64512 - "GET /api/research/library?sort=recent&limit=20 HTTP/1.1" 200
+2026-09-04 18:09:52,714 INFO    [uvicorn.access] 127.0.0.1:62763 - "GET /api/calendar/events?start=2026-08-31&end=2026-10-12 HTTP/1.1" 200
+2026-09-04 18:09:52,832 INFO    [uvicorn.access] 127.0.0.1:59851 - "GET /api/research/active HTTP/1.1" 200
+2026-09-04 18:09:52,836 INFO    [uvicorn.access] 127.0.0.1:59851 - "GET /api/research/library?sort=recent&limit=20 HTTP/1.1" 200
+2026-09-04 18:09:58,806 INFO    [uvicorn.access] 127.0.0.1:51593 - "GET /api/tasks/notifications HTTP/1.1" 200
+2026-09-04 18:09:59,693 INFO    [uvicorn.access] 127.0.0.1:58857 - "GET /api/research/active HTTP/1.1" 200
+2026-09-04 18:09:59,696 INFO    [uvicorn.access] 127.0.0.1:58857 - "GET /api/research/library?sort=recent&limit=20 HTTP/1.1" 200
+2026-09-04 18:10:04,832 INFO    [uvicorn.access] 127.0.0.1:65067 - "GET /api/research/active HTTP/1.1" 200
+2026-09-04 18:10:04,836 INFO    [uvicorn.access] 127.0.0.1:65067 - "GET /api/research/library?sort=recent&limit=20 HTTP/1.1" 200
+2026-09-04 18:10:05,659 INFO    [uvicorn.access] 127.0.0.1:49774 - "GET /api/tasks/notifications HTTP/1.1" 200
+2026-09-04 18:10:11,694 INFO    [uvicorn.access] 127.0.0.1:59612 - "GET /api/research/active HTTP/1.1" 200
+2026-09-04 18:10:11,697 INFO    [uvicorn.access] 127.0.0.1:59612 - "GET /api/research/library?sort=recent&limit=20 HTTP/1.1" 200
+2026-09-04 18:10:16,832 INFO    [uvicorn.access] 127.0.0.1:65410 - "GET /api/research/active HTTP/1.1" 200
+2026-09-04 18:10:16,835 INFO    [uvicorn.access] 127.0.0.1:65410 - "GET /api/research/library?sort=recent&limit=20 HTTP/1.1" 200
+2026-09-04 18:10:21,407 INFO    [uvicorn.access] 127.0.0.1:61368 - "GET / HTTP/1.1" 200
+2026-09-04 18:10:21,419 INFO    [uvicorn.access] 127.0.0.1:61368 - "GET /static/lib/highlight.min.js HTTP/1.1" 304
+2026-09-04 18:10:21,421 INFO    [uvicorn.access] 127.0.0.1:50568 - "GET /static/style.css HTTP/1.1" 304
+2026-09-04 18:10:21,430 INFO    [uvicorn.access] 127.0.0.1:50568 - "GET /static/great-hall.css?v=20260706nav11 HTTP/1.1" 304
+2026-09-04 18:10:21,431 INFO    [uvicorn.access] 127.0.0.1:61368 - "GET /static/premium-tokens.css?v=20260703p4 HTTP/1.1" 304
+2026-09-04 18:10:21,432 INFO    [uvicorn.access] 127.0.0.1:64270 - "GET /static/motifs.css?v=20260703motif3 HTTP/1.1" 304
+2026-09-04 18:10:21,441 INFO    [uvicorn.access] 127.0.0.1:64270 - "GET /static/premium-components.css?v=20260703c3 HTTP/1.1" 304
+2026-09-04 18:10:21,441 INFO    [uvicorn.access] 127.0.0.1:61368 - "GET /static/premium-surfaces.css?v=20260706p43 HTTP/1.1" 304
+2026-09-04 18:10:21,442 INFO    [uvicorn.access] 127.0.0.1:50568 - "GET /static/css/tokens.css?v=redesign1 HTTP/1.1" 304
+2026-09-04 18:10:21,445 INFO    [uvicorn.access] 127.0.0.1:50568 - "GET /static/css/style-hyprrice.css?v=redesign1 HTTP/1.1" 304
+2026-09-04 18:10:21,446 INFO    [uvicorn.access] 127.0.0.1:61368 - "GET /static/css/style-packs.css?v=redesign1 HTTP/1.1" 304
+2026-09-04 18:10:21,446 INFO    [uvicorn.access] 127.0.0.1:64270 - "GET /static/css/style-calm.css?v=redesign1 HTTP/1.1" 304
+2026-09-04 18:10:21,449 INFO    [uvicorn.access] 127.0.0.1:50568 - "GET /static/css/components.css?v=redesign1 HTTP/1.1" 304
+2026-09-04 18:10:21,450 INFO    [uvicorn.access] 127.0.0.1:64270 - "GET /static/css/typography.css?v=redesign1 HTTP/1.1" 304
+2026-09-04 18:10:21,450 INFO    [uvicorn.access] 127.0.0.1:61368 - "GET /static/css/shell-bridge.css?v=redesign1 HTTP/1.1" 304
+2026-09-04 18:10:21,453 INFO    [uvicorn.access] 127.0.0.1:64270 - "GET /static/css/hyprrice-skin.css?v=redesign2 HTTP/1.1" 304
+2026-09-04 18:10:21,454 INFO    [uvicorn.access] 127.0.0.1:61368 - "GET /static/css/style-switcher.css?v=redesign1 HTTP/1.1" 304
+2026-09-04 18:10:21,454 INFO    [uvicorn.access] 127.0.0.1:50568 - "GET /static/css/council.css?v=20260703co8 HTTP/1.1" 304
+2026-09-04 18:10:21,457 INFO    [uvicorn.access] 127.0.0.1:64270 - "GET /static/css/growth.css?v=20260703g4 HTTP/1.1" 304
+2026-09-04 18:10:21,457 INFO    [uvicorn.access] 127.0.0.1:50568 - "GET /static/css/gringotts.css?v=20260703gr3 HTTP/1.1" 304
+2026-09-04 18:10:21,459 INFO    [uvicorn.access] 127.0.0.1:61368 - "GET /static/css/mission.css?v=20260706m26 HTTP/1.1" 304
+2026-09-04 18:10:21,460 INFO    [uvicorn.access] 127.0.0.1:50568 - "GET /static/css/calmail.css?v=20260706cm11 HTTP/1.1" 304
+2026-09-04 18:10:21,461 INFO    [uvicorn.access] 127.0.0.1:64270 - "GET /static/retro/retro16.css?v=20260824r16a HTTP/1.1" 304
+2026-09-04 18:10:21,464 INFO    [uvicorn.access] 127.0.0.1:61368 - "GET /static/retro/retro16-ui.css?v=20260824r16a HTTP/1.1" 304
+2026-09-04 18:10:21,464 INFO    [uvicorn.access] 127.0.0.1:50568 - "GET /static/js/stylePacks.js?v=redesign1 HTTP/1.1" 304
+2026-09-04 18:10:21,466 INFO    [uvicorn.access] 127.0.0.1:64270 - "GET /static/js/styleSwitcher.js?v=redesign1 HTTP/1.1" 304
+2026-09-04 18:10:21,467 INFO    [uvicorn.access] 127.0.0.1:50568 - "GET /static/retro/characters.js?v=20260824r16a HTTP/1.1" 304
+2026-09-04 18:10:21,472 INFO    [uvicorn.access] 127.0.0.1:50568 - "GET /api/version HTTP/1.1" 200
+2026-09-04 18:10:21,505 INFO    [uvicorn.access] 127.0.0.1:50568 - "GET /static/retro/toggle.js?v=20260824r16a HTTP/1.1" 304
+2026-09-04 18:10:21,505 INFO    [uvicorn.access] 127.0.0.1:64270 - "GET /static/app.js?v=20260706tk2 HTTP/1.1" 304
+2026-09-04 18:10:21,509 INFO    [uvicorn.access] 127.0.0.1:64270 - "GET /static/js/chat.js?v=20260609ws HTTP/1.1" 304
+2026-09-04 18:10:21,509 INFO    [uvicorn.access] 127.0.0.1:50568 - "GET /static/js/ui.js HTTP/1.1" 304
+2026-09-04 18:10:21,520 INFO    [uvicorn.access] 127.0.0.1:50568 - "GET /static/js/sessions.js HTTP/1.1" 304
+2026-09-04 18:10:21,521 INFO    [uvicorn.access] 127.0.0.1:64270 - "GET /static/js/markdown.js HTTP/1.1" 304
+2026-09-04 18:10:21,521 INFO    [uvicorn.access] 127.0.0.1:61368 - "GET /static/js/skills.js HTTP/1.1" 304
+2026-09-04 18:10:21,526 INFO    [uvicorn.access] 127.0.0.1:61368 - "GET /static/js/tourHints.js HTTP/1.1" 304
+2026-09-04 18:10:21,527 INFO    [uvicorn.access] 127.0.0.1:64270 - "GET /static/js/tourAutoplay.js HTTP/1.1" 304
+2026-09-04 18:10:21,527 INFO    [uvicorn.access] 127.0.0.1:50568 - "GET /static/js/assistant.js HTTP/1.1" 304
+2026-09-04 18:10:21,530 INFO    [uvicorn.access] 127.0.0.1:64270 - "GET /static/js/init.js HTTP/1.1" 304
+2026-09-04 18:10:21,531 INFO    [uvicorn.access] 127.0.0.1:50568 - "GET /static/js/a11y.js HTTP/1.1" 304
+2026-09-04 18:10:21,531 INFO    [uvicorn.access] 127.0.0.1:61368 - "GET /static/js/stylePacks.js HTTP/1.1" 304
+2026-09-04 18:10:21,535 INFO    [uvicorn.access] 127.0.0.1:50568 - "GET /static/js/workspace.js HTTP/1.1" 304
+2026-09-04 18:10:21,536 INFO    [uvicorn.access] 127.0.0.1:64270 - "GET /static/js/fileHandler.js HTTP/1.1" 304
+2026-09-04 18:10:21,536 INFO    [uvicorn.access] 127.0.0.1:61368 - "GET /static/js/storage.js HTTP/1.1" 304
+2026-09-04 18:10:21,539 INFO    [uvicorn.access] 127.0.0.1:61368 - "GET /static/js/models.js HTTP/1.1" 304
+2026-09-04 18:10:21,540 INFO    [uvicorn.access] 127.0.0.1:64270 - "GET /static/js/rag.js HTTP/1.1" 304
+2026-09-04 18:10:21,540 INFO    [uvicorn.access] 127.0.0.1:50568 - "GET /static/js/presets.js HTTP/1.1" 304
+2026-09-04 18:10:21,544 INFO    [uvicorn.access] 127.0.0.1:50568 - "GET /static/js/search.js HTTP/1.1" 304
+2026-09-04 18:10:21,544 INFO    [uvicorn.access] 127.0.0.1:64270 - "GET /static/js/compare/index.js HTTP/1.1" 304
+2026-09-04 18:10:21,545 INFO    [uvicorn.access] 127.0.0.1:61368 - "GET /static/js/document.js HTTP/1.1" 304
+2026-09-04 18:10:21,547 INFO    [uvicorn.access] 127.0.0.1:64270 - "GET /static/js/search-chat.js?v=20260628cookbook1 HTTP/1.1" 304
+2026-09-04 18:10:21,549 INFO    [uvicorn.access] 127.0.0.1:61368 - "GET /static/js/windowDrag.js HTTP/1.1" 304
+2026-09-04 18:10:21,550 INFO    [uvicorn.access] 127.0.0.1:64270 - "GET /static/js/chatRenderer.js HTTP/1.1" 304
+2026-09-04 18:10:21,552 INFO    [uvicorn.access] 127.0.0.1:61368 - "GET /static/js/memory.js?v=20260620evo3 HTTP/1.1" 304
+2026-09-04 18:10:21,556 INFO    [uvicorn.access] 127.0.0.1:61368 - "GET /static/js/voiceRecorder.js HTTP/1.1" 304
+2026-09-04 18:10:21,557 INFO    [uvicorn.access] 127.0.0.1:64270 - "GET /static/js/censor.js HTTP/1.1" 304
+2026-09-04 18:10:21,557 INFO    [uvicorn.access] 127.0.0.1:50568 - "GET /static/js/tasks.js HTTP/1.1" 304
+2026-09-04 18:10:21,560 INFO    [uvicorn.access] 127.0.0.1:50568 - "GET /static/js/calendar.js HTTP/1.1" 304
+2026-09-04 18:10:21,561 INFO    [uvicorn.access] 127.0.0.1:64270 - "GET /static/js/notes.js HTTP/1.1" 304
+2026-09-04 18:10:21,562 INFO    [uvicorn.access] 127.0.0.1:64270 - "GET /static/js/admin.js HTTP/1.1" 304
+2026-09-04 18:10:21,567 INFO    [uvicorn.access] 127.0.0.1:64270 - "GET /static/js/settings.js HTTP/1.1" 304
+2026-09-04 18:10:21,568 INFO    [uvicorn.access] 127.0.0.1:50568 - "GET /static/js/modalManager.js HTTP/1.1" 304
+2026-09-04 18:10:21,568 INFO    [uvicorn.access] 127.0.0.1:61368 - "GET /static/js/tileManager.js HTTP/1.1" 304
+2026-09-04 18:10:21,572 INFO    [uvicorn.access] 127.0.0.1:61368 - "GET /static/js/theme.js HTTP/1.1" 304
+2026-09-04 18:10:21,573 INFO    [uvicorn.access] 127.0.0.1:50568 - "GET /static/js/sorting.js HTTP/1.1" 304
+2026-09-04 18:10:21,576 INFO    [uvicorn.access] 127.0.0.1:50568 - "GET /static/js/cookbook.js HTTP/1.1" 304
+2026-09-04 18:10:21,577 INFO    [uvicorn.access] 127.0.0.1:61368 - "GET /static/js/group.js HTTP/1.1" 304
+2026-09-04 18:10:21,577 INFO    [uvicorn.access] 127.0.0.1:64270 - "GET /static/js/research/panel.js HTTP/1.1" 304
+2026-09-04 18:10:21,582 INFO    [uvicorn.access] 127.0.0.1:64270 - "GET /static/js/tts-ai.js HTTP/1.1" 304
+2026-09-04 18:10:21,582 INFO    [uvicorn.access] 127.0.0.1:61368 - "GET /static/js/spinner.js HTTP/1.1" 304
+2026-09-04 18:10:21,583 INFO    [uvicorn.access] 127.0.0.1:50568 - "GET /static/js/keyboard-shortcuts.js HTTP/1.1" 304
+2026-09-04 18:10:21,587 INFO    [uvicorn.access] 127.0.0.1:61368 - "GET /static/js/section-management.js HTTP/1.1" 304
+2026-09-04 18:10:21,587 INFO    [uvicorn.access] 127.0.0.1:64270 - "GET /static/js/escMenuStack.js HTTP/1.1" 304
+2026-09-04 18:10:21,587 INFO    [uvicorn.access] 127.0.0.1:50568 - "GET /static/js/sidebar-layout.js HTTP/1.1" 304
+2026-09-04 18:10:21,591 INFO    [uvicorn.access] 127.0.0.1:50568 - "GET /static/js/chatStream.js HTTP/1.1" 304
+2026-09-04 18:10:21,591 INFO    [uvicorn.access] 127.0.0.1:64270 - "GET /static/js/emailInbox.js HTTP/1.1" 304
+2026-09-04 18:10:21,592 INFO    [uvicorn.access] 127.0.0.1:61368 - "GET /static/js/codeRunner.js HTTP/1.1" 304
+2026-09-04 18:10:21,595 INFO    [uvicorn.access] 127.0.0.1:61368 - "GET /static/js/slashCommands.js HTTP/1.1" 304
+2026-09-04 18:10:21,597 INFO    [uvicorn.access] 127.0.0.1:64270 - "GET /static/js/researchSynapse.js HTTP/1.1" 304
+2026-09-04 18:10:21,597 INFO    [uvicorn.access] 127.0.0.1:50568 - "GET /static/js/streamingRenderer.js HTTP/1.1" 304
+2026-09-04 18:10:21,601 INFO    [uvicorn.access] 127.0.0.1:50568 - "GET /static/js/composerArrowUpRecall.js HTTP/1.1" 304
+2026-09-04 18:10:21,601 INFO    [uvicorn.access] 127.0.0.1:64270 - "GET /static/js/markdown/tableRow.js HTTP/1.1" 304
+2026-09-04 18:10:21,603 INFO    [uvicorn.access] 127.0.0.1:64270 - "GET /static/js/emojiShortcodes.js HTTP/1.1" 304
+2026-09-04 18:10:21,605 INFO    [uvicorn.access] 127.0.0.1:50568 - "GET /static/js/providers.js HTTP/1.1" 304
+2026-09-04 18:10:21,605 INFO    [uvicorn.access] 127.0.0.1:61368 - "GET /static/js/modelPicker.js HTTP/1.1" 304
+2026-09-04 18:10:21,607 INFO    [uvicorn.access] 127.0.0.1:64270 - "GET /static/js/modelSort.js HTTP/1.1" 304
+2026-09-04 18:10:21,609 INFO    [uvicorn.access] 127.0.0.1:61368 - "GET /static/js/dragSort.js HTTP/1.1" 304
+2026-09-04 18:10:21,610 INFO    [uvicorn.access] 127.0.0.1:50568 - "GET /static/js/compare/state.js HTTP/1.1" 304
+2026-09-04 18:10:21,612 INFO    [uvicorn.access] 127.0.0.1:64270 - "GET /static/js/compare/icons.js HTTP/1.1" 304
+2026-09-04 18:10:21,613 INFO    [uvicorn.access] 127.0.0.1:61368 - "GET /static/js/compare/models.js HTTP/1.1" 304
+2026-09-04 18:10:21,614 INFO    [uvicorn.access] 127.0.0.1:50568 - "GET /static/js/compare/selector.js HTTP/1.1" 304
+2026-09-04 18:10:21,616 INFO    [uvicorn.access] 127.0.0.1:61368 - "GET /static/js/compare/probe.js HTTP/1.1" 304
+2026-09-04 18:10:21,617 INFO    [uvicorn.access] 127.0.0.1:50568 - "GET /static/js/compare/stream.js HTTP/1.1" 304
+2026-09-04 18:10:21,619 INFO    [uvicorn.access] 127.0.0.1:61368 - "GET /static/js/compare/panes.js HTTP/1.1" 304
+2026-09-04 18:10:21,620 INFO    [uvicorn.access] 127.0.0.1:50568 - "GET /static/js/compare/vote.js HTTP/1.1" 304
+2026-09-04 18:10:21,621 INFO    [uvicorn.access] 127.0.0.1:64270 - "GET /static/js/compare/scoreboard.js HTTP/1.1" 304
+2026-09-04 18:10:21,624 INFO    [uvicorn.access] 127.0.0.1:64270 - "GET /static/js/windowResize.js HTTP/1.1" 304
+2026-09-04 18:10:21,624 INFO    [uvicorn.access] 127.0.0.1:50568 - "GET /static/js/modalSnap.js HTTP/1.1" 304
+2026-09-04 18:10:21,626 INFO    [uvicorn.access] 127.0.0.1:61368 - "GET /static/js/emojiPicker.js HTTP/1.1" 304
+2026-09-04 18:10:21,628 INFO    [uvicorn.access] 127.0.0.1:50568 - "GET /static/js/langIcons.js HTTP/1.1" 304
+2026-09-04 18:10:21,629 INFO    [uvicorn.access] 127.0.0.1:64270 - "GET /static/js/signature.js HTTP/1.1" 304
+2026-09-04 18:10:21,630 INFO    [uvicorn.access] 127.0.0.1:61368 - "GET /static/js/documentLibrary.js HTTP/1.1" 304
+2026-09-04 18:10:21,631 INFO    [uvicorn.access] 127.0.0.1:50568 - "GET /static/js/model/matchKey.js HTTP/1.1" 304
+2026-09-04 18:10:21,633 INFO    [uvicorn.access] 127.0.0.1:61368 - "GET /static/js/util/ordinal.js HTTP/1.1" 304
+2026-09-04 18:10:21,635 INFO    [uvicorn.access] 127.0.0.1:50568 - "GET /static/js/colorPicker.js HTTP/1.1" 304
+2026-09-04 18:10:21,637 INFO    [uvicorn.access] 127.0.0.1:64270 - "GET /static/js/providerDeviceFlow.js HTTP/1.1" 304
+2026-09-04 18:10:21,637 INFO    [uvicorn.access] 127.0.0.1:61368 - "GET /static/js/calendar/utils.js HTTP/1.1" 304
+2026-09-04 18:10:21,639 INFO    [uvicorn.access] 127.0.0.1:50568 - "GET /static/js/platform.js HTTP/1.1" 304
+2026-09-04 18:10:21,641 INFO    [uvicorn.access] 127.0.0.1:61368 - "GET /static/js/color/hex.js HTTP/1.1" 304
+2026-09-04 18:10:21,642 INFO    [uvicorn.access] 127.0.0.1:50568 - "GET /static/js/cookbook-diagnosis.js HTTP/1.1" 304
+2026-09-04 18:10:21,642 INFO    [uvicorn.access] 127.0.0.1:64270 - "GET /static/js/cookbook-hwfit.js HTTP/1.1" 304
+2026-09-04 18:10:21,644 INFO    [uvicorn.access] 127.0.0.1:64270 - "GET /static/js/cookbookRunning.js HTTP/1.1" 304
+2026-09-04 18:10:21,646 INFO    [uvicorn.access] 127.0.0.1:50568 - "GET /static/js/cookbookDownload.js HTTP/1.1" 304
+2026-09-04 18:10:21,647 INFO    [uvicorn.access] 127.0.0.1:64270 - "GET /static/js/cookbookServe.js HTTP/1.1" 304
+2026-09-04 18:10:21,651 INFO    [uvicorn.access] 127.0.0.1:64270 - "GET /static/js/research/jobs.js HTTP/1.1" 304
+2026-09-04 18:10:21,651 INFO    [uvicorn.access] 127.0.0.1:50568 - "GET /static/js/emailLibrary.js HTTP/1.1" 304
+2026-09-04 18:10:21,654 INFO    [uvicorn.access] 127.0.0.1:50568 - "GET /static/js/emailLibrary/replyRecipients.js HTTP/1.1" 304
+2026-09-04 18:10:21,654 INFO    [uvicorn.access] 127.0.0.1:64270 - "GET /static/js/streamingSegmenter.js HTTP/1.1" 304
+2026-09-04 18:10:21,658 INFO    [uvicorn.access] 127.0.0.1:64270 - "GET /static/js/cookbookProgressSignal.js HTTP/1.1" 304
+2026-09-04 18:10:21,659 INFO    [uvicorn.access] 127.0.0.1:50568 - "GET /static/js/emailLibrary/utils.js HTTP/1.1" 304
+2026-09-04 18:10:21,660 INFO    [uvicorn.access] 127.0.0.1:61368 - "GET /static/js/emailLibrary/signatureFold.js HTTP/1.1" 304
+2026-09-04 18:10:21,662 INFO    [uvicorn.access] 127.0.0.1:61368 - "GET /static/js/emailLibrary/state.js HTTP/1.1" 304
+2026-09-04 18:10:21,666 INFO    [uvicorn.access] 127.0.0.1:61368 - "GET /static/js/council.js?v=20260627council4 HTTP/1.1" 304
+2026-09-04 18:10:21,672 INFO    [uvicorn.access] 127.0.0.1:61368 - "GET /static/js/growth.js?v=20260628growth5 HTTP/1.1" 304
+2026-09-04 18:10:21,672 INFO    [uvicorn.access] 127.0.0.1:50568 - "GET /static/js/gringotts.js?v=20260628gringotts10 HTTP/1.1" 304
+2026-09-04 18:10:21,677 INFO    [uvicorn.access] 127.0.0.1:50568 - "GET /static/js/missionControl.js?v=20260706m21 HTTP/1.1" 304
+2026-09-04 18:10:21,678 INFO    [uvicorn.access] 127.0.0.1:61368 - "GET /static/js/calendar-views.js?v=20260706cal6 HTTP/1.1" 304
+2026-09-04 18:10:21,682 INFO    [uvicorn.access] 127.0.0.1:61368 - "GET /static/js/mailbox.js?v=20260706mail5 HTTP/1.1" 304
+2026-09-04 18:10:21,683 INFO    [uvicorn.access] 127.0.0.1:50568 - "GET /static/js/naming.js?v=20260703naming7 HTTP/1.1" 304
+2026-09-04 18:10:21,686 INFO    [uvicorn.access] 127.0.0.1:50568 - "GET /static/js/dobby-metrics.js?v=20260701metrics4 HTTP/1.1" 304
+2026-09-04 18:10:21,687 INFO    [uvicorn.access] 127.0.0.1:61368 - "GET /static/js/dobby-ui.js?v=20260701ui6 HTTP/1.1" 304
+2026-09-04 18:10:21,691 INFO    [uvicorn.access] 127.0.0.1:61368 - "GET /api/prefs/theme HTTP/1.1" 200
+2026-09-04 18:10:21,696 INFO    [uvicorn.access] 127.0.0.1:61368 - "GET /api/auth/settings HTTP/1.1" 200
+2026-09-04 18:10:21,705 INFO    [uvicorn.access] 127.0.0.1:50568 - "GET /api/cookbook/state HTTP/1.1" 200
+2026-09-04 18:10:21,705 INFO    [uvicorn.access] 127.0.0.1:64270 - "GET /api/calendar/calendars HTTP/1.1" 200
+2026-09-04 18:10:21,711 INFO    [uvicorn.access] 127.0.0.1:57735 - "GET /api/auth/status HTTP/1.1" 200
+2026-09-04 18:10:21,711 INFO    [uvicorn.access] 127.0.0.1:61368 - "GET /api/auth/features HTTP/1.1" 200
+2026-09-04 18:10:21,713 INFO    [uvicorn.access] 127.0.0.1:63325 - "GET /api/default-chat HTTP/1.1" 200
+2026-09-04 18:10:21,714 INFO    [uvicorn.access] 127.0.0.1:50568 - "GET /api/auth/settings HTTP/1.1" 200
+2026-09-04 18:10:21,714 INFO    [uvicorn.access] 127.0.0.1:55302 - "GET /api/notes HTTP/1.1" 200
+2026-09-04 18:10:21,721 INFO    [uvicorn.access] 127.0.0.1:55302 - "GET /api/auth/settings HTTP/1.1" 200
+2026-09-04 18:10:21,729 INFO    [uvicorn.access] 127.0.0.1:50568 - "GET /api/presets/templates HTTP/1.1" 200
+2026-09-04 18:10:21,730 INFO    [uvicorn.access] 127.0.0.1:57735 - "GET /api/research/active HTTP/1.1" 200
+2026-09-04 18:10:21,731 INFO    [uvicorn.access] 127.0.0.1:64270 - "GET /api/presets HTTP/1.1" 200
+2026-09-04 18:10:21,733 INFO    [uvicorn.access] 127.0.0.1:61368 - "GET /api/email/urgency-state HTTP/1.1" 200
+2026-09-04 18:10:21,734 WARNING [routes.email_helpers] SMTP not configured — add an Email Account in Settings or set env vars
+2026-09-04 18:10:21,734 WARNING [routes.email_helpers] IMAP not configured — add an Email Account in Settings or set env vars
+2026-09-04 18:10:21,737 INFO    [uvicorn.access] 127.0.0.1:57735 - "GET /api/stt/stats HTTP/1.1" 200
+2026-09-04 18:10:21,739 INFO    [uvicorn.access] 127.0.0.1:64270 - "GET /api/auth/features HTTP/1.1" 200
+2026-09-04 18:10:21,741 INFO    [uvicorn.access] 127.0.0.1:61368 - "GET /api/auth/settings HTTP/1.1" 200
+2026-09-04 18:10:21,742 INFO    [uvicorn.access] 127.0.0.1:55302 - "GET /api/models?refresh=true HTTP/1.1" 200
+2026-09-04 18:10:21,743 INFO    [uvicorn.access] 127.0.0.1:50568 - "GET /api/memory HTTP/1.1" 200
+2026-09-04 18:10:21,751 INFO    [uvicorn.access] 127.0.0.1:61368 - "GET /api/prefs/custom-themes HTTP/1.1" 200
+2026-09-04 18:10:21,752 INFO    [uvicorn.access] 127.0.0.1:55302 - "GET /api/tts/stats HTTP/1.1" 200
+2026-09-04 18:10:21,753 INFO    [uvicorn.access] 127.0.0.1:50568 - "GET /api/cookbook/state HTTP/1.1" 200
+2026-09-04 18:10:21,753 INFO    [uvicorn.access] 127.0.0.1:64270 - "GET /static/js/slashAutocomplete.js HTTP/1.1" 304
+2026-09-04 18:10:21,754 INFO    [uvicorn.access] 127.0.0.1:57735 - "GET /api/sessions HTTP/1.1" 200
+2026-09-04 18:10:21,763 INFO    [uvicorn.access] 127.0.0.1:61368 - "POST /api/calendar/sync HTTP/1.1" 200
+2026-09-04 18:10:21,765 INFO    [uvicorn.access] 127.0.0.1:64270 - "GET /api/calendar/events?start=2026-08-31&end=2026-10-12 HTTP/1.1" 200
+2026-09-04 18:10:21,765 INFO    [uvicorn.access] 127.0.0.1:55302 - "GET /api/research/library?sort=recent&limit=20 HTTP/1.1" 200
+2026-09-04 18:10:21,766 INFO    [uvicorn.access] 127.0.0.1:50568 - "GET /api/prefs/memory_enabled HTTP/1.1" 200
+2026-09-04 18:10:21,766 INFO    [uvicorn.access] 127.0.0.1:57735 - "GET /api/fonts/custom HTTP/1.1" 200
+2026-09-04 18:10:21,771 INFO    [uvicorn.access] 127.0.0.1:57735 - "GET /static/js/cookbookSchedule.js HTTP/1.1" 304
+2026-09-04 18:10:21,772 INFO    [uvicorn.access] 127.0.0.1:50568 - "GET /api/cookbook/tasks/status HTTP/1.1" 200
+2026-09-04 18:10:21,782 INFO    [uvicorn.access] 127.0.0.1:57735 - "GET /api/auth/status HTTP/1.1" 200
+2026-09-04 18:10:21,793 INFO    [uvicorn.access] 127.0.0.1:50568 - "GET /api/history/838eb441-911e-40a1-b111-8ba383a4a155 HTTP/1.1" 200
+2026-09-04 18:10:21,795 INFO    [uvicorn.access] 127.0.0.1:57735 - "GET /api/skills HTTP/1.1" 200
+2026-09-04 18:10:21,801 INFO    [uvicorn.access] 127.0.0.1:57735 - "GET /api/prefs/skills_enabled HTTP/1.1" 200
+2026-09-04 18:10:21,804 INFO    [uvicorn.access] 127.0.0.1:50568 - "GET /api/skills/slash-catalog HTTP/1.1" 200
+2026-09-04 18:10:21,804 INFO    [uvicorn.access] 127.0.0.1:55302 - "GET /api/prefs HTTP/1.1" 200
+2026-09-04 18:10:21,805 INFO    [uvicorn.access] 127.0.0.1:64270 - "GET /api/skills/audit-all/status HTTP/1.1" 200
+2026-09-04 18:10:21,829 INFO    [uvicorn.access] 127.0.0.1:64270 - "GET /api/prefs/auto_memory HTTP/1.1" 200
+2026-09-04 18:10:21,829 INFO    [uvicorn.access] 127.0.0.1:55302 - "GET /favicon.ico HTTP/1.1" 404
+2026-09-04 18:10:21,833 INFO    [uvicorn.access] 127.0.0.1:55302 - "GET /api/prefs/auto_skills HTTP/1.1" 200
+2026-09-04 18:10:21,836 INFO    [uvicorn.access] 127.0.0.1:55302 - "GET /api/prefs/auto_approve_skills HTTP/1.1" 200
+2026-09-04 18:10:21,840 INFO    [uvicorn.access] 127.0.0.1:55302 - "GET /api/prefs/skill_min_confidence HTTP/1.1" 200
+2026-09-04 18:10:21,843 INFO    [uvicorn.access] 127.0.0.1:55302 - "GET /api/prefs/skill_max_injected HTTP/1.1" 200
+2026-09-04 18:10:22,901 INFO    [uvicorn.access] 127.0.0.1:55302 - "GET /api/research/status/838eb441-911e-40a1-b111-8ba383a4a155 HTTP/1.1" 404
+2026-09-04 18:10:22,901 INFO    [uvicorn.access] 127.0.0.1:64270 - "GET /api/chat/stream_status/838eb441-911e-40a1-b111-8ba383a4a155 HTTP/1.1" 404
+2026-09-04 18:10:22,902 INFO    [uvicorn.access] 127.0.0.1:50568 - "GET /api/memory HTTP/1.1" 200
+2026-09-04 18:10:22,904 INFO    [uvicorn.access] 127.0.0.1:64270 - "GET /api/memory HTTP/1.1" 200
+2026-09-04 18:10:22,906 INFO    [uvicorn.access] 127.0.0.1:64270 - "GET /api/prefs/memory_enabled HTTP/1.1" 200
+2026-09-04 18:10:22,909 INFO    [uvicorn.access] 127.0.0.1:55302 - "GET /api/prefs/memory_enabled HTTP/1.1" 200
+2026-09-04 18:10:22,910 INFO    [uvicorn.access] 127.0.0.1:64270 - "GET /api/prefs/skills_enabled HTTP/1.1" 200
+2026-09-04 18:10:22,911 INFO    [uvicorn.access] 127.0.0.1:50568 - "GET /static/js/greatHall.js?v=20260706gh11 HTTP/1.1" 304
+2026-09-04 18:10:22,912 INFO    [uvicorn.access] 127.0.0.1:50568 - "GET /api/prefs/skills_enabled HTTP/1.1" 200
+2026-09-04 18:10:22,914 INFO    [uvicorn.access] 127.0.0.1:64270 - "GET /api/prefs/auto_memory HTTP/1.1" 200
+2026-09-04 18:10:22,916 INFO    [uvicorn.access] 127.0.0.1:64270 - "GET /api/prefs/auto_memory HTTP/1.1" 200
+2026-09-04 18:10:22,918 INFO    [uvicorn.access] 127.0.0.1:50568 - "GET /api/prefs/auto_skills HTTP/1.1" 200
+2026-09-04 18:10:22,920 INFO    [uvicorn.access] 127.0.0.1:50568 - "GET /api/prefs/auto_skills HTTP/1.1" 200
+2026-09-04 18:10:22,922 INFO    [uvicorn.access] 127.0.0.1:64270 - "GET /api/prefs/auto_approve_skills HTTP/1.1" 200
+2026-09-04 18:10:22,925 INFO    [uvicorn.access] 127.0.0.1:64270 - "GET /api/prefs/auto_approve_skills HTTP/1.1" 200
+2026-09-04 18:10:22,927 INFO    [uvicorn.access] 127.0.0.1:50568 - "GET /api/prefs/skill_min_confidence HTTP/1.1" 200
+2026-09-04 18:10:22,929 INFO    [uvicorn.access] 127.0.0.1:50568 - "GET /api/prefs/skill_min_confidence HTTP/1.1" 200
+2026-09-04 18:10:22,931 INFO    [uvicorn.access] 127.0.0.1:64270 - "GET /api/prefs/skill_max_injected HTTP/1.1" 200
+2026-09-04 18:10:22,933 INFO    [uvicorn.access] 127.0.0.1:64270 - "GET /api/prefs/skill_max_injected HTTP/1.1" 200
+2026-09-04 18:10:23,890 INFO    [uvicorn.access] 127.0.0.1:64270 - "GET /api/auth/status HTTP/1.1" 200
+2026-09-04 18:10:23,895 INFO    [uvicorn.access] 127.0.0.1:55302 - "GET /api/tasks HTTP/1.1" 200
+2026-09-04 18:10:23,896 INFO    [uvicorn.access] 127.0.0.1:57735 - "GET /api/calendar/events?start=2026-09-03T23%3A00%3A00.000Z&end=2026-09-04T23%3A00%3A00.000Z HTTP/1.1" 200
+2026-09-04 18:10:23,898 INFO    [uvicorn.access] 127.0.0.1:64270 - "GET /api/research/library?sort=recent&limit=30 HTTP/1.1" 200
+2026-09-04 18:10:23,900 INFO    [uvicorn.access] 127.0.0.1:61368 - "GET /api/memory HTTP/1.1" 200
+2026-09-04 18:10:23,901 INFO    [uvicorn.access] 127.0.0.1:50568 - "GET /api/sessions HTTP/1.1" 200
+2026-09-04 18:10:23,905 INFO    [uvicorn.access] 127.0.0.1:55302 - "GET /api/models HTTP/1.1" 200
+2026-09-04 18:10:23,905 INFO    [uvicorn.access] 127.0.0.1:57735 - "GET /api/notes HTTP/1.1" 200
+2026-09-04 18:10:23,905 INFO    [uvicorn.access] 127.0.0.1:64270 - "GET /api/presets/groups HTTP/1.1" 200
+2026-09-04 18:10:23,906 INFO    [uvicorn.access] 127.0.0.1:61368 - "GET /api/tasks/runs/recent?limit=30 HTTP/1.1" 200
+2026-09-04 18:10:23,906 INFO    [uvicorn.access] 127.0.0.1:50568 - "GET /api/research/active HTTP/1.1" 200
+2026-09-04 18:10:23,994 INFO    [httpx] HTTP Request: GET http://localhost:11434/api/tags "HTTP/1.1 200 OK"
+2026-09-04 18:10:24,611 INFO    [uvicorn.access] 127.0.0.1:55302 - "GET /api/ecosystem/status HTTP/1.1" 200
+2026-09-04 18:10:24,617 INFO    [uvicorn.access] 127.0.0.1:57735 - "GET /api/finance/snapshot HTTP/1.1" 200
+2026-09-04 18:10:24,625 INFO    [uvicorn.access] 127.0.0.1:57735 - "GET /api/wizengamot/runs?limit=3 HTTP/1.1" 200
+2026-09-04 18:10:24,627 INFO    [uvicorn.access] 127.0.0.1:55302 - "GET /api/growth/snapshot HTTP/1.1" 200
+2026-09-04 18:10:24,890 INFO    [uvicorn.access] 127.0.0.1:57735 - "GET /api/email/accounts HTTP/1.1" 200
+2026-09-04 18:10:24,890 INFO    [uvicorn.access] 127.0.0.1:55302 - "GET /api/notes HTTP/1.1" 200
+2026-09-04 18:10:24,895 INFO    [src.model_discovery] Scanning 2 hosts for models: ['localhost', 'host.docker.internal']
+2026-09-04 18:10:24,896 WARNING [routes.email_helpers] SMTP not configured — add an Email Account in Settings or set env vars
+2026-09-04 18:10:24,896 WARNING [routes.email_helpers] IMAP not configured — add an Email Account in Settings or set env vars
+2026-09-04 18:10:25,745 ERROR   [routes.email_routes] Failed to list emails: [WinError 10061] No connection could be made because the target machine actively refused it
+2026-09-04 18:10:25,746 INFO    [uvicorn.access] 127.0.0.1:63325 - "GET /api/email/list?folder=INBOX&limit=50&filter=unread HTTP/1.1" 200
+2026-09-04 18:10:28,363 INFO    [httpx] HTTP Request: GET http://localhost:11434/v1/models "HTTP/1.1 200 OK"
+2026-09-04 18:10:28,427 INFO    [uvicorn.access] 127.0.0.1:63325 - "GET /api/calendar/events?start=2026-08-31&end=2026-10-12 HTTP/1.1" 200
+2026-09-04 18:10:28,806 INFO    [uvicorn.access] 127.0.0.1:56374 - "GET /api/tasks/notifications HTTP/1.1" 200
+2026-09-04 18:10:28,833 INFO    [uvicorn.access] 127.0.0.1:49774 - "GET /api/research/active HTTP/1.1" 200
+2026-09-04 18:10:28,835 INFO    [uvicorn.access] 127.0.0.1:50897 - "GET /api/email/urgency-state HTTP/1.1" 200
+2026-09-04 18:10:28,836 WARNING [routes.email_helpers] SMTP not configured — add an Email Account in Settings or set env vars
+2026-09-04 18:10:28,836 WARNING [routes.email_helpers] IMAP not configured — add an Email Account in Settings or set env vars
+2026-09-04 18:10:28,838 INFO    [uvicorn.access] 127.0.0.1:50897 - "GET /api/research/library?sort=recent&limit=20 HTTP/1.1" 200
+2026-09-04 18:10:28,902 ERROR   [routes.email_routes] Failed to list emails: [WinError 10061] No connection could be made because the target machine actively refused it
+2026-09-04 18:10:28,903 INFO    [uvicorn.access] 127.0.0.1:55302 - "GET /api/email/list?folder=INBOX&limit=100&offset=0&filter=all HTTP/1.1" 200
+2026-09-04 18:10:29,179 INFO    [uvicorn.access] 127.0.0.1:50897 - "GET /api/auth/status HTTP/1.1" 200
+2026-09-04 18:10:29,189 INFO    [uvicorn.access] 127.0.0.1:50391 - "GET /api/tasks HTTP/1.1" 200
+2026-09-04 18:10:29,190 INFO    [uvicorn.access] 127.0.0.1:59839 - "GET /api/calendar/events?start=2026-09-03T23%3A00%3A00.000Z&end=2026-09-04T23%3A00%3A00.000Z HTTP/1.1" 200
+2026-09-04 18:10:29,190 INFO    [uvicorn.access] 127.0.0.1:50897 - "GET /api/research/library?sort=recent&limit=30 HTTP/1.1" 200
+2026-09-04 18:10:29,190 INFO    [uvicorn.access] 127.0.0.1:49774 - "GET /api/sessions HTTP/1.1" 200
+2026-09-04 18:10:29,195 INFO    [uvicorn.access] 127.0.0.1:61702 - "GET /api/memory HTTP/1.1" 200
+2026-09-04 18:10:29,198 INFO    [uvicorn.access] 127.0.0.1:50897 - "GET /api/presets/groups HTTP/1.1" 200
+2026-09-04 18:10:29,199 INFO    [uvicorn.access] 127.0.0.1:49774 - "GET /api/tasks/runs/recent?limit=30 HTTP/1.1" 200
+2026-09-04 18:10:29,201 INFO    [uvicorn.access] 127.0.0.1:59839 - "GET /api/notes HTTP/1.1" 200
+2026-09-04 18:10:29,904 INFO    [uvicorn.access] 127.0.0.1:50391 - "GET /api/models HTTP/1.1" 200
+2026-09-04 18:10:29,904 INFO    [uvicorn.access] 127.0.0.1:61702 - "GET /api/research/active HTTP/1.1" 200
+2026-09-04 18:10:29,907 INFO    [uvicorn.access] 127.0.0.1:50897 - "GET /api/ecosystem/status HTTP/1.1" 200
+2026-09-04 18:10:29,911 INFO    [uvicorn.access] 127.0.0.1:49774 - "GET /api/finance/snapshot HTTP/1.1" 200
+2026-09-04 18:10:29,921 INFO    [uvicorn.access] 127.0.0.1:49774 - "GET /api/wizengamot/runs?limit=3 HTTP/1.1" 200
+2026-09-04 18:10:29,924 INFO    [uvicorn.access] 127.0.0.1:50897 - "GET /api/growth/snapshot HTTP/1.1" 200
+2026-09-04 18:10:30,056 INFO    [httpx] HTTP Request: GET http://localhost:11434/api/v1/models "HTTP/1.1 404 Not Found"
+2026-09-04 18:10:30,864 INFO    [src.model_discovery] Discovered 1 model endpoints across 2 hosts
+2026-09-04 18:10:31,356 INFO    [httpx] HTTP Request: GET http://localhost:11434/v1/models "HTTP/1.1 200 OK"
+2026-09-04 18:10:31,358 INFO    [app] Warmup ping OK: http://localhost:11434/v1/models
+2026-09-04 18:10:32,840 ERROR   [routes.email_routes] Failed to list emails: [WinError 10061] No connection could be made because the target machine actively refused it
+2026-09-04 18:10:32,840 INFO    [uvicorn.access] 127.0.0.1:56374 - "GET /api/email/list?folder=INBOX&limit=50&filter=unread HTTP/1.1" 200
+2026-09-04 18:10:33,721 INFO    [uvicorn.access] 127.0.0.1:55302 - "GET /api/research/active HTTP/1.1" 200
+2026-09-04 18:10:33,725 INFO    [uvicorn.access] 127.0.0.1:55302 - "GET /api/research/library?sort=recent&limit=20 HTTP/1.1" 200
+2026-09-04 18:10:40,833 INFO    [uvicorn.access] 127.0.0.1:53875 - "GET /api/research/active HTTP/1.1" 200
+2026-09-04 18:10:40,836 INFO    [uvicorn.access] 127.0.0.1:53875 - "GET /api/research/library?sort=recent&limit=20 HTTP/1.1" 200
+2026-09-04 18:10:45,722 INFO    [uvicorn.access] 127.0.0.1:57518 - "GET /api/research/active HTTP/1.1" 200
+2026-09-04 18:10:45,725 INFO    [uvicorn.access] 127.0.0.1:57518 - "GET /api/research/library?sort=recent&limit=20 HTTP/1.1" 200
+2026-09-04 18:10:51,698 INFO    [uvicorn.access] 127.0.0.1:64342 - "GET /api/tasks/notifications HTTP/1.1" 200
+2026-09-04 18:10:52,832 INFO    [uvicorn.access] 127.0.0.1:51650 - "GET /api/research/active HTTP/1.1" 200
+2026-09-04 18:10:52,835 INFO    [uvicorn.access] 127.0.0.1:51650 - "GET /api/research/library?sort=recent&limit=20 HTTP/1.1" 200
+2026-09-04 18:10:57,722 INFO    [uvicorn.access] 127.0.0.1:55470 - "GET /api/research/active HTTP/1.1" 200
+2026-09-04 18:10:57,726 INFO    [uvicorn.access] 127.0.0.1:55470 - "GET /api/research/library?sort=recent&limit=20 HTTP/1.1" 200
+2026-09-04 18:10:58,829 INFO    [uvicorn.access] 127.0.0.1:63558 - "GET /api/tasks/notifications HTTP/1.1" 200
+2026-09-04 18:11:04,832 INFO    [uvicorn.access] 127.0.0.1:55895 - "GET /api/research/active HTTP/1.1" 200
+2026-09-04 18:11:04,836 INFO    [uvicorn.access] 127.0.0.1:55895 - "GET /api/research/library?sort=recent&limit=20 HTTP/1.1" 200
+2026-09-04 18:11:09,723 INFO    [uvicorn.access] 127.0.0.1:51589 - "GET /api/research/active HTTP/1.1" 200
+2026-09-04 18:11:09,726 INFO    [uvicorn.access] 127.0.0.1:51589 - "GET /api/research/library?sort=recent&limit=20 HTTP/1.1" 200
+2026-09-04 18:11:16,831 INFO    [uvicorn.access] 127.0.0.1:49381 - "GET /api/research/active HTTP/1.1" 200
+2026-09-04 18:11:16,835 INFO    [uvicorn.access] 127.0.0.1:49381 - "GET /api/research/library?sort=recent&limit=20 HTTP/1.1" 200
+2026-09-04 18:11:21,699 INFO    [uvicorn.access] 127.0.0.1:65468 - "GET /api/tasks/notifications HTTP/1.1" 200
+2026-09-04 18:11:21,725 INFO    [uvicorn.access] 127.0.0.1:59651 - "GET /api/research/active HTTP/1.1" 200
+2026-09-04 18:11:21,727 INFO    [uvicorn.access] 127.0.0.1:61724 - "GET /api/email/urgency-state HTTP/1.1" 200
+2026-09-04 18:11:21,728 WARNING [routes.email_helpers] SMTP not configured — add an Email Account in Settings or set env vars
+2026-09-04 18:11:21,728 WARNING [routes.email_helpers] IMAP not configured — add an Email Account in Settings or set env vars
+2026-09-04 18:11:21,729 INFO    [uvicorn.access] 127.0.0.1:61724 - "GET /api/research/library?sort=recent&limit=20 HTTP/1.1" 200
+2026-09-04 18:11:22,919 INFO    [uvicorn.access] 127.0.0.1:61724 - "GET /api/auth/status HTTP/1.1" 200
+2026-09-04 18:11:22,927 INFO    [uvicorn.access] 127.0.0.1:58554 - "GET /api/tasks HTTP/1.1" 200
+2026-09-04 18:11:22,928 INFO    [uvicorn.access] 127.0.0.1:59651 - "GET /api/sessions HTTP/1.1" 200
+2026-09-04 18:11:22,928 INFO    [uvicorn.access] 127.0.0.1:50901 - "GET /api/calendar/events?start=2026-09-03T23%3A00%3A00.000Z&end=2026-09-04T23%3A00%3A00.000Z HTTP/1.1" 200
+2026-09-04 18:11:22,928 INFO    [uvicorn.access] 127.0.0.1:61724 - "GET /api/research/library?sort=recent&limit=30 HTTP/1.1" 200
+2026-09-04 18:11:22,934 INFO    [uvicorn.access] 127.0.0.1:53634 - "GET /api/memory HTTP/1.1" 200
+2026-09-04 18:11:22,937 INFO    [uvicorn.access] 127.0.0.1:50901 - "GET /api/presets/groups HTTP/1.1" 200
+2026-09-04 18:11:22,937 INFO    [uvicorn.access] 127.0.0.1:61724 - "GET /api/tasks/runs/recent?limit=30 HTTP/1.1" 200
+2026-09-04 18:11:22,938 INFO    [uvicorn.access] 127.0.0.1:58554 - "GET /api/models HTTP/1.1" 200
+2026-09-04 18:11:22,939 INFO    [uvicorn.access] 127.0.0.1:59651 - "GET /api/notes HTTP/1.1" 200
+2026-09-04 18:11:22,940 INFO    [uvicorn.access] 127.0.0.1:53634 - "GET /api/research/active HTTP/1.1" 200
+2026-09-04 18:11:23,645 INFO    [uvicorn.access] 127.0.0.1:50901 - "GET /api/ecosystem/status HTTP/1.1" 200
+2026-09-04 18:11:23,649 INFO    [uvicorn.access] 127.0.0.1:61724 - "GET /api/finance/snapshot HTTP/1.1" 200
+2026-09-04 18:11:23,656 INFO    [uvicorn.access] 127.0.0.1:61724 - "GET /api/wizengamot/runs?limit=3 HTTP/1.1" 200
+2026-09-04 18:11:23,657 INFO    [uvicorn.access] 127.0.0.1:50901 - "GET /api/growth/snapshot HTTP/1.1" 200
+2026-09-04 18:11:25,732 ERROR   [routes.email_routes] Failed to list emails: [WinError 10061] No connection could be made because the target machine actively refused it
+2026-09-04 18:11:25,733 INFO    [uvicorn.access] 127.0.0.1:65468 - "GET /api/email/list?folder=INBOX&limit=50&filter=unread HTTP/1.1" 200
+2026-09-04 18:11:28,621 INFO    [uvicorn.access] 127.0.0.1:65468 - "GET / HTTP/1.1" 200
+2026-09-04 18:11:28,636 INFO    [uvicorn.access] 127.0.0.1:50901 - "GET /static/style.css HTTP/1.1" 304
+2026-09-04 18:11:28,637 INFO    [uvicorn.access] 127.0.0.1:65468 - "GET /static/lib/highlight.min.js HTTP/1.1" 304
+2026-09-04 18:11:28,637 INFO    [uvicorn.access] 127.0.0.1:61724 - "GET /static/great-hall.css?v=20260706nav11 HTTP/1.1" 304
+2026-09-04 18:11:28,645 INFO    [uvicorn.access] 127.0.0.1:65468 - "GET /static/premium-tokens.css?v=20260703p4 HTTP/1.1" 304
+2026-09-04 18:11:28,646 INFO    [uvicorn.access] 127.0.0.1:50901 - "GET /static/premium-components.css?v=20260703c3 HTTP/1.1" 304
+2026-09-04 18:11:28,646 INFO    [uvicorn.access] 127.0.0.1:61724 - "GET /static/motifs.css?v=20260703motif3 HTTP/1.1" 304
+2026-09-04 18:11:28,657 INFO    [uvicorn.access] 127.0.0.1:65468 - "GET /static/css/style-hyprrice.css?v=redesign1 HTTP/1.1" 304
+2026-09-04 18:11:28,657 INFO    [uvicorn.access] 127.0.0.1:50901 - "GET /static/css/tokens.css?v=redesign1 HTTP/1.1" 304
+2026-09-04 18:11:28,658 INFO    [uvicorn.access] 127.0.0.1:61724 - "GET /static/premium-surfaces.css?v=20260706p43 HTTP/1.1" 304
+2026-09-04 18:11:28,661 INFO    [uvicorn.access] 127.0.0.1:61724 - "GET /static/css/style-packs.css?v=redesign1 HTTP/1.1" 304
+2026-09-04 18:11:28,683 INFO    [uvicorn.access] 127.0.0.1:61724 - "GET /static/css/style-calm.css?v=redesign1 HTTP/1.1" 304
+2026-09-04 18:11:28,684 INFO    [uvicorn.access] 127.0.0.1:65468 - "GET /static/css/typography.css?v=redesign1 HTTP/1.1" 304
+2026-09-04 18:11:28,684 INFO    [uvicorn.access] 127.0.0.1:50901 - "GET /static/css/components.css?v=redesign1 HTTP/1.1" 304
+2026-09-04 18:11:28,687 INFO    [uvicorn.access] 127.0.0.1:50901 - "GET /static/css/shell-bridge.css?v=redesign1 HTTP/1.1" 304
+2026-09-04 18:11:28,689 INFO    [uvicorn.access] 127.0.0.1:65468 - "GET /static/css/hyprrice-skin.css?v=redesign2 HTTP/1.1" 304
+2026-09-04 18:11:28,689 INFO    [uvicorn.access] 127.0.0.1:61724 - "GET /static/css/style-switcher.css?v=redesign1 HTTP/1.1" 304
+2026-09-04 18:11:28,691 INFO    [uvicorn.access] 127.0.0.1:65468 - "GET /static/css/council.css?v=20260703co8 HTTP/1.1" 304
+2026-09-04 18:11:28,693 INFO    [uvicorn.access] 127.0.0.1:61724 - "GET /static/css/growth.css?v=20260703g4 HTTP/1.1" 304
+2026-09-04 18:11:28,693 INFO    [uvicorn.access] 127.0.0.1:50901 - "GET /static/css/gringotts.css?v=20260703gr3 HTTP/1.1" 304
+2026-09-04 18:11:28,696 INFO    [uvicorn.access] 127.0.0.1:65468 - "GET /static/css/mission.css?v=20260706m26 HTTP/1.1" 304
+2026-09-04 18:11:28,697 INFO    [uvicorn.access] 127.0.0.1:61724 - "GET /static/retro/retro16.css?v=20260824r16a HTTP/1.1" 304
+2026-09-04 18:11:28,698 INFO    [uvicorn.access] 127.0.0.1:50901 - "GET /static/css/calmail.css?v=20260706cm11 HTTP/1.1" 304
+2026-09-04 18:11:28,701 INFO    [uvicorn.access] 127.0.0.1:65468 - "GET /static/retro/retro16-ui.css?v=20260824r16a HTTP/1.1" 304
+2026-09-04 18:11:28,701 INFO    [uvicorn.access] 127.0.0.1:61724 - "GET /static/js/styleSwitcher.js?v=redesign1 HTTP/1.1" 304
+2026-09-04 18:11:28,701 INFO    [uvicorn.access] 127.0.0.1:50901 - "GET /static/js/stylePacks.js?v=redesign1 HTTP/1.1" 304
+2026-09-04 18:11:28,704 INFO    [uvicorn.access] 127.0.0.1:50901 - "GET /static/retro/characters.js?v=20260824r16a HTTP/1.1" 304
+2026-09-04 18:11:28,709 INFO    [uvicorn.access] 127.0.0.1:50901 - "GET /api/version HTTP/1.1" 200
+2026-09-04 18:11:28,725 INFO    [uvicorn.access] 127.0.0.1:50901 - "GET /static/fonts/Inter-Regular.woff2 HTTP/1.1" 304
+2026-09-04 18:11:28,725 INFO    [uvicorn.access] 127.0.0.1:65468 - "GET /static/fonts/Inter-Medium.woff2 HTTP/1.1" 304
+2026-09-04 18:11:28,725 INFO    [uvicorn.access] 127.0.0.1:61724 - "GET /static/fonts/Inter-SemiBold.woff2 HTTP/1.1" 304
+2026-09-04 18:11:28,735 INFO    [uvicorn.access] 127.0.0.1:50901 - "GET /static/assets/dobby-os-logo.svg HTTP/1.1" 304
+2026-09-04 18:11:28,735 INFO    [uvicorn.access] 127.0.0.1:61724 - "GET /static/assets/dobby-elf-mark.png HTTP/1.1" 304
+2026-09-04 18:11:28,736 INFO    [uvicorn.access] 127.0.0.1:65468 - "GET /static/assets/dobby-elf-mark.png?v=roundel1 HTTP/1.1" 304
+2026-09-04 18:11:28,741 INFO    [uvicorn.access] 127.0.0.1:50901 - "GET /static/js/chat.js?v=20260609ws HTTP/1.1" 304
+2026-09-04 18:11:28,741 INFO    [uvicorn.access] 127.0.0.1:61724 - "GET /static/app.js?v=20260706tk2 HTTP/1.1" 304
+2026-09-04 18:11:28,741 INFO    [uvicorn.access] 127.0.0.1:65468 - "GET /static/retro/toggle.js?v=20260824r16a HTTP/1.1" 304
+2026-09-04 18:11:28,745 INFO    [uvicorn.access] 127.0.0.1:65468 - "GET /static/js/ui.js HTTP/1.1" 304
+2026-09-04 18:11:28,748 INFO    [uvicorn.access] 127.0.0.1:65468 - "GET /static/js/sessions.js HTTP/1.1" 304
+2026-09-04 18:11:28,748 INFO    [uvicorn.access] 127.0.0.1:61724 - "GET /static/js/markdown.js HTTP/1.1" 304
+2026-09-04 18:11:28,752 INFO    [uvicorn.access] 127.0.0.1:61724 - "GET /static/js/skills.js HTTP/1.1" 304
+2026-09-04 18:11:28,753 INFO    [uvicorn.access] 127.0.0.1:65468 - "GET /static/js/tourHints.js HTTP/1.1" 304
+2026-09-04 18:11:28,754 INFO    [uvicorn.access] 127.0.0.1:50901 - "GET /static/js/tourAutoplay.js HTTP/1.1" 304
+2026-09-04 18:11:28,758 INFO    [uvicorn.access] 127.0.0.1:61724 - "GET /static/js/a11y.js HTTP/1.1" 304
+2026-09-04 18:11:28,758 INFO    [uvicorn.access] 127.0.0.1:65468 - "GET /static/js/init.js HTTP/1.1" 304
+2026-09-04 18:11:28,759 INFO    [uvicorn.access] 127.0.0.1:50901 - "GET /static/js/assistant.js HTTP/1.1" 304
+2026-09-04 18:11:28,762 INFO    [uvicorn.access] 127.0.0.1:50901 - "GET /static/js/stylePacks.js HTTP/1.1" 304
+2026-09-04 18:11:28,763 INFO    [uvicorn.access] 127.0.0.1:61724 - "GET /static/js/workspace.js HTTP/1.1" 304
+2026-09-04 18:11:28,763 INFO    [uvicorn.access] 127.0.0.1:65468 - "GET /static/js/storage.js HTTP/1.1" 304
+2026-09-04 18:11:28,766 INFO    [uvicorn.access] 127.0.0.1:65468 - "GET /static/js/fileHandler.js HTTP/1.1" 304
+2026-09-04 18:11:28,767 INFO    [uvicorn.access] 127.0.0.1:61724 - "GET /static/js/models.js HTTP/1.1" 304
+2026-09-04 18:11:28,768 INFO    [uvicorn.access] 127.0.0.1:50901 - "GET /static/js/rag.js HTTP/1.1" 304
+2026-09-04 18:11:28,770 INFO    [uvicorn.access] 127.0.0.1:65468 - "GET /static/js/presets.js HTTP/1.1" 304
+2026-09-04 18:11:28,771 INFO    [uvicorn.access] 127.0.0.1:50901 - "GET /static/js/search.js HTTP/1.1" 304
+2026-09-04 18:11:28,772 INFO    [uvicorn.access] 127.0.0.1:61724 - "GET /static/js/compare/index.js HTTP/1.1" 304
+2026-09-04 18:11:28,775 INFO    [uvicorn.access] 127.0.0.1:61724 - "GET /static/js/document.js HTTP/1.1" 304
+2026-09-04 18:11:28,775 INFO    [uvicorn.access] 127.0.0.1:50901 - "GET /static/js/search-chat.js?v=20260628cookbook1 HTTP/1.1" 304
+2026-09-04 18:11:28,777 INFO    [uvicorn.access] 127.0.0.1:65468 - "GET /static/js/windowDrag.js HTTP/1.1" 304
+2026-09-04 18:11:28,780 INFO    [uvicorn.access] 127.0.0.1:65468 - "GET /static/js/chatRenderer.js HTTP/1.1" 304
+2026-09-04 18:11:28,780 INFO    [uvicorn.access] 127.0.0.1:50901 - "GET /static/js/memory.js?v=20260620evo3 HTTP/1.1" 304
+2026-09-04 18:11:28,786 INFO    [uvicorn.access] 127.0.0.1:50901 - "GET /static/js/voiceRecorder.js HTTP/1.1" 304
+2026-09-04 18:11:28,786 INFO    [uvicorn.access] 127.0.0.1:65468 - "GET /static/js/censor.js HTTP/1.1" 304
+2026-09-04 18:11:28,787 INFO    [uvicorn.access] 127.0.0.1:61724 - "GET /static/js/tasks.js HTTP/1.1" 304
+2026-09-04 18:11:28,790 INFO    [uvicorn.access] 127.0.0.1:65468 - "GET /static/js/notes.js HTTP/1.1" 304
+2026-09-04 18:11:28,790 INFO    [uvicorn.access] 127.0.0.1:61724 - "GET /static/js/calendar.js HTTP/1.1" 304
+2026-09-04 18:11:28,792 INFO    [uvicorn.access] 127.0.0.1:61724 - "GET /static/js/admin.js HTTP/1.1" 304
+2026-09-04 18:11:28,798 INFO    [uvicorn.access] 127.0.0.1:61724 - "GET /static/js/settings.js HTTP/1.1" 304
+2026-09-04 18:11:28,798 INFO    [uvicorn.access] 127.0.0.1:50901 - "GET /static/js/tileManager.js HTTP/1.1" 304
+2026-09-04 18:11:28,799 INFO    [uvicorn.access] 127.0.0.1:65468 - "GET /static/js/modalManager.js HTTP/1.1" 304
+2026-09-04 18:11:28,802 INFO    [uvicorn.access] 127.0.0.1:65468 - "GET /static/js/theme.js HTTP/1.1" 304
+2026-09-04 18:11:28,803 INFO    [uvicorn.access] 127.0.0.1:50901 - "GET /static/js/sorting.js HTTP/1.1" 304
+2026-09-04 18:11:28,807 INFO    [uvicorn.access] 127.0.0.1:51029 - "GET /api/tasks/notifications HTTP/1.1" 200
+2026-09-04 18:11:28,808 INFO    [uvicorn.access] 127.0.0.1:50901 - "GET /static/js/cookbook.js HTTP/1.1" 304
+2026-09-04 18:11:28,809 INFO    [uvicorn.access] 127.0.0.1:61724 - "GET /static/js/research/panel.js HTTP/1.1" 304
+2026-09-04 18:11:28,810 INFO    [uvicorn.access] 127.0.0.1:65468 - "GET /static/js/group.js HTTP/1.1" 304
+2026-09-04 18:11:28,814 INFO    [uvicorn.access] 127.0.0.1:50901 - "GET /static/js/keyboard-shortcuts.js HTTP/1.1" 304
+2026-09-04 18:11:28,814 INFO    [uvicorn.access] 127.0.0.1:65468 - "GET /static/js/tts-ai.js HTTP/1.1" 304
+2026-09-04 18:11:28,815 INFO    [uvicorn.access] 127.0.0.1:61724 - "GET /static/js/spinner.js HTTP/1.1" 304
+2026-09-04 18:11:28,819 INFO    [uvicorn.access] 127.0.0.1:61724 - "GET /static/js/sidebar-layout.js HTTP/1.1" 304
+2026-09-04 18:11:28,819 INFO    [uvicorn.access] 127.0.0.1:50901 - "GET /static/js/chatStream.js HTTP/1.1" 304
+2026-09-04 18:11:28,819 INFO    [uvicorn.access] 127.0.0.1:65468 - "GET /static/js/section-management.js HTTP/1.1" 304
+2026-09-04 18:11:28,824 INFO    [uvicorn.access] 127.0.0.1:65468 - "GET /static/js/emailInbox.js HTTP/1.1" 304
+2026-09-04 18:11:28,824 INFO    [uvicorn.access] 127.0.0.1:50901 - "GET /static/js/codeRunner.js HTTP/1.1" 304
+2026-09-04 18:11:28,825 INFO    [uvicorn.access] 127.0.0.1:61724 - "GET /static/js/slashCommands.js HTTP/1.1" 304
+2026-09-04 18:11:28,829 INFO    [uvicorn.access] 127.0.0.1:61724 - "GET /static/js/researchSynapse.js HTTP/1.1" 304
+2026-09-04 18:11:28,829 INFO    [uvicorn.access] 127.0.0.1:50901 - "GET /static/js/streamingRenderer.js HTTP/1.1" 304
+2026-09-04 18:11:28,837 INFO    [uvicorn.access] 127.0.0.1:58802 - "GET /api/research/active HTTP/1.1" 200
+2026-09-04 18:11:28,838 INFO    [uvicorn.access] 127.0.0.1:65481 - "GET /api/email/urgency-state HTTP/1.1" 200
+2026-09-04 18:11:28,840 INFO    [uvicorn.access] 127.0.0.1:50901 - "GET /static/js/composerArrowUpRecall.js HTTP/1.1" 304
+2026-09-04 18:11:28,841 WARNING [routes.email_helpers] SMTP not configured — add an Email Account in Settings or set env vars
+2026-09-04 18:11:28,841 WARNING [routes.email_helpers] IMAP not configured — add an Email Account in Settings or set env vars
+2026-09-04 18:11:28,842 INFO    [uvicorn.access] 127.0.0.1:65468 - "GET /static/js/markdown/tableRow.js HTTP/1.1" 304
+2026-09-04 18:11:28,843 INFO    [uvicorn.access] 127.0.0.1:61724 - "GET /static/js/escMenuStack.js HTTP/1.1" 304
+2026-09-04 18:11:28,843 INFO    [uvicorn.access] 127.0.0.1:58802 - "GET /api/research/library?sort=recent&limit=20 HTTP/1.1" 200
+2026-09-04 18:11:28,846 INFO    [uvicorn.access] 127.0.0.1:50901 - "GET /static/js/emojiShortcodes.js HTTP/1.1" 304
+2026-09-04 18:11:28,847 INFO    [uvicorn.access] 127.0.0.1:65468 - "GET /static/js/modelPicker.js HTTP/1.1" 304
+2026-09-04 18:11:28,847 INFO    [uvicorn.access] 127.0.0.1:61724 - "GET /static/js/providers.js HTTP/1.1" 304
+2026-09-04 18:11:28,851 INFO    [uvicorn.access] 127.0.0.1:61724 - "GET /static/js/modelSort.js HTTP/1.1" 304
+2026-09-04 18:11:28,852 INFO    [uvicorn.access] 127.0.0.1:50901 - "GET /static/js/compare/state.js HTTP/1.1" 304
+2026-09-04 18:11:28,852 INFO    [uvicorn.access] 127.0.0.1:65468 - "GET /static/js/dragSort.js HTTP/1.1" 304
+2026-09-04 18:11:28,855 INFO    [uvicorn.access] 127.0.0.1:61724 - "GET /static/js/compare/icons.js HTTP/1.1" 304
+2026-09-04 18:11:28,857 INFO    [uvicorn.access] 127.0.0.1:50901 - "GET /static/js/compare/selector.js HTTP/1.1" 304
+2026-09-04 18:11:28,857 INFO    [uvicorn.access] 127.0.0.1:65468 - "GET /static/js/compare/models.js HTTP/1.1" 304
+2026-09-04 18:11:28,858 INFO    [uvicorn.access] 127.0.0.1:50901 - "GET /static/js/compare/probe.js HTTP/1.1" 304
+2026-09-04 18:11:28,861 INFO    [uvicorn.access] 127.0.0.1:65468 - "GET /static/js/compare/stream.js HTTP/1.1" 304
+2026-09-04 18:11:28,862 INFO    [uvicorn.access] 127.0.0.1:50901 - "GET /static/js/compare/panes.js HTTP/1.1" 304
+2026-09-04 18:11:28,862 INFO    [uvicorn.access] 127.0.0.1:61724 - "GET /static/js/compare/vote.js HTTP/1.1" 304
+2026-09-04 18:11:28,865 INFO    [uvicorn.access] 127.0.0.1:61724 - "GET /static/js/compare/scoreboard.js HTTP/1.1" 304
+2026-09-04 18:11:28,866 INFO    [uvicorn.access] 127.0.0.1:50901 - "GET /static/js/modalSnap.js HTTP/1.1" 304
+2026-09-04 18:11:28,867 INFO    [uvicorn.access] 127.0.0.1:65468 - "GET /static/js/windowResize.js HTTP/1.1" 304
+2026-09-04 18:11:28,868 INFO    [uvicorn.access] 127.0.0.1:50901 - "GET /static/js/model/matchKey.js HTTP/1.1" 304
+2026-09-04 18:11:28,871 INFO    [uvicorn.access] 127.0.0.1:61724 - "GET /static/js/langIcons.js HTTP/1.1" 304
+2026-09-04 18:11:28,871 INFO    [uvicorn.access] 127.0.0.1:65468 - "GET /static/js/emojiPicker.js HTTP/1.1" 304
+2026-09-04 18:11:28,872 INFO    [uvicorn.access] 127.0.0.1:50901 - "GET /static/js/documentLibrary.js HTTP/1.1" 304
+2026-09-04 18:11:28,875 INFO    [uvicorn.access] 127.0.0.1:65468 - "GET /static/js/util/ordinal.js HTTP/1.1" 304
+2026-09-04 18:11:28,875 INFO    [uvicorn.access] 127.0.0.1:50901 - "GET /static/js/signature.js HTTP/1.1" 304
+2026-09-04 18:11:28,879 INFO    [uvicorn.access] 127.0.0.1:65468 - "GET /static/js/calendar/utils.js HTTP/1.1" 304
+2026-09-04 18:11:28,879 INFO    [uvicorn.access] 127.0.0.1:61724 - "GET /static/js/providerDeviceFlow.js HTTP/1.1" 304
+2026-09-04 18:11:28,880 INFO    [uvicorn.access] 127.0.0.1:50901 - "GET /static/js/colorPicker.js HTTP/1.1" 304
+2026-09-04 18:11:28,883 INFO    [uvicorn.access] 127.0.0.1:50901 - "GET /static/js/platform.js HTTP/1.1" 304
+2026-09-04 18:11:28,884 INFO    [uvicorn.access] 127.0.0.1:65468 - "GET /static/js/research/jobs.js HTTP/1.1" 304
+2026-09-04 18:11:28,884 INFO    [uvicorn.access] 127.0.0.1:61724 - "GET /static/js/color/hex.js HTTP/1.1" 304
+2026-09-04 18:11:28,888 INFO    [uvicorn.access] 127.0.0.1:61724 - "GET /static/js/cookbook-diagnosis.js HTTP/1.1" 304
+2026-09-04 18:11:28,889 INFO    [uvicorn.access] 127.0.0.1:65468 - "GET /static/js/cookbook-hwfit.js HTTP/1.1" 304
+2026-09-04 18:11:28,890 INFO    [uvicorn.access] 127.0.0.1:50901 - "GET /static/js/cookbookRunning.js HTTP/1.1" 304
+2026-09-04 18:11:28,892 INFO    [uvicorn.access] 127.0.0.1:50901 - "GET /static/js/cookbookDownload.js HTTP/1.1" 304
+2026-09-04 18:11:28,893 INFO    [uvicorn.access] 127.0.0.1:65468 - "GET /static/js/cookbookServe.js HTTP/1.1" 304
+2026-09-04 18:11:28,896 INFO    [uvicorn.access] 127.0.0.1:50901 - "GET /static/js/emailLibrary.js HTTP/1.1" 304
+2026-09-04 18:11:28,896 INFO    [uvicorn.access] 127.0.0.1:65468 - "GET /static/js/emailLibrary/replyRecipients.js HTTP/1.1" 304
+2026-09-04 18:11:28,898 INFO    [uvicorn.access] 127.0.0.1:65468 - "GET /static/js/streamingSegmenter.js HTTP/1.1" 304
+2026-09-04 18:11:28,900 INFO    [uvicorn.access] 127.0.0.1:50901 - "GET /static/js/cookbookProgressSignal.js HTTP/1.1" 304
+2026-09-04 18:11:28,900 INFO    [uvicorn.access] 127.0.0.1:61724 - "GET /static/assets/pensieve-logo.svg HTTP/1.1" 304
+2026-09-04 18:11:28,903 INFO    [uvicorn.access] 127.0.0.1:61724 - "GET /static/js/council.js?v=20260627council4 HTTP/1.1" 304
+2026-09-04 18:11:28,905 INFO    [uvicorn.access] 127.0.0.1:50901 - "GET /static/js/emailLibrary/utils.js HTTP/1.1" 304
+2026-09-04 18:11:28,905 INFO    [uvicorn.access] 127.0.0.1:65468 - "GET /static/js/emailLibrary/signatureFold.js HTTP/1.1" 304
+2026-09-04 18:11:28,907 INFO    [uvicorn.access] 127.0.0.1:61724 - "GET /static/js/emailLibrary/state.js HTTP/1.1" 304
+2026-09-04 18:11:28,910 INFO    [uvicorn.access] 127.0.0.1:65468 - "GET /static/js/growth.js?v=20260628growth5 HTTP/1.1" 304
+2026-09-04 18:11:28,911 INFO    [uvicorn.access] 127.0.0.1:61724 - "GET /static/js/gringotts.js?v=20260628gringotts10 HTTP/1.1" 304
+2026-09-04 18:11:28,911 INFO    [uvicorn.access] 127.0.0.1:50901 - "GET /static/js/missionControl.js?v=20260706m21 HTTP/1.1" 304
+2026-09-04 18:11:28,914 INFO    [uvicorn.access] 127.0.0.1:61724 - "GET /static/js/calendar-views.js?v=20260706cal6 HTTP/1.1" 304
+2026-09-04 18:11:28,915 INFO    [uvicorn.access] 127.0.0.1:50901 - "GET /static/js/mailbox.js?v=20260706mail5 HTTP/1.1" 304
+2026-09-04 18:11:28,915 INFO    [uvicorn.access] 127.0.0.1:65468 - "GET /static/js/naming.js?v=20260703naming7 HTTP/1.1" 304
+2026-09-04 18:11:28,919 INFO    [uvicorn.access] 127.0.0.1:50901 - "GET /static/js/dobby-ui.js?v=20260701ui6 HTTP/1.1" 304
+2026-09-04 18:11:28,919 INFO    [uvicorn.access] 127.0.0.1:61724 - "GET /static/assets/crest-gryffindor.svg HTTP/1.1" 304
+2026-09-04 18:11:28,919 INFO    [uvicorn.access] 127.0.0.1:65468 - "GET /static/js/dobby-metrics.js?v=20260701metrics4 HTTP/1.1" 304
+2026-09-04 18:11:28,924 INFO    [uvicorn.access] 127.0.0.1:65468 - "GET /static/assets/ministry-settings-logo.svg HTTP/1.1" 304
+2026-09-04 18:11:28,925 INFO    [uvicorn.access] 127.0.0.1:61724 - "GET /static/assets/gringotts-logo.svg HTTP/1.1" 304
+2026-09-04 18:11:28,926 INFO    [uvicorn.access] 127.0.0.1:50901 - "GET /static/js/cookbookSchedule.js HTTP/1.1" 304
+2026-09-04 18:11:28,927 INFO    [uvicorn.access] 127.0.0.1:64731 - "GET /api/prefs/theme HTTP/1.1" 200
+2026-09-04 18:11:28,932 INFO    [uvicorn.access] 127.0.0.1:64731 - "GET /api/auth/settings HTTP/1.1" 200
+2026-09-04 18:11:28,937 INFO    [uvicorn.access] 127.0.0.1:50901 - "GET /api/cookbook/state HTTP/1.1" 200
+2026-09-04 18:11:28,938 INFO    [uvicorn.access] 127.0.0.1:61724 - "GET /api/calendar/calendars HTTP/1.1" 200
+2026-09-04 18:11:28,941 INFO    [uvicorn.access] 127.0.0.1:65468 - "GET /api/default-chat HTTP/1.1" 200
+2026-09-04 18:11:28,941 INFO    [uvicorn.access] 127.0.0.1:64109 - "GET /api/auth/status HTTP/1.1" 200
+2026-09-04 18:11:28,942 INFO    [uvicorn.access] 127.0.0.1:64731 - "GET /api/auth/features HTTP/1.1" 200
+2026-09-04 18:11:28,945 INFO    [uvicorn.access] 127.0.0.1:50901 - "GET /api/auth/settings HTTP/1.1" 200
+2026-09-04 18:11:28,945 INFO    [uvicorn.access] 127.0.0.1:51287 - "GET /api/notes HTTP/1.1" 200
+2026-09-04 18:11:28,957 INFO    [uvicorn.access] 127.0.0.1:51287 - "GET /api/auth/settings HTTP/1.1" 200
+2026-09-04 18:11:28,963 INFO    [uvicorn.access] 127.0.0.1:50901 - "GET /api/presets/templates HTTP/1.1" 200
+2026-09-04 18:11:28,964 INFO    [uvicorn.access] 127.0.0.1:65468 - "GET /api/research/active HTTP/1.1" 200
+2026-09-04 18:11:28,964 INFO    [uvicorn.access] 127.0.0.1:61724 - "GET /api/presets HTTP/1.1" 200
+2026-09-04 18:11:28,969 INFO    [uvicorn.access] 127.0.0.1:64109 - "GET /api/email/urgency-state HTTP/1.1" 200
+2026-09-04 18:11:28,971 INFO    [uvicorn.access] 127.0.0.1:65468 - "GET /api/stt/stats HTTP/1.1" 200
+2026-09-04 18:11:28,972 INFO    [uvicorn.access] 127.0.0.1:61724 - "GET /api/auth/features HTTP/1.1" 200
+2026-09-04 18:11:28,973 WARNING [routes.email_helpers] SMTP not configured — add an Email Account in Settings or set env vars
+2026-09-04 18:11:28,973 WARNING [routes.email_helpers] IMAP not configured — add an Email Account in Settings or set env vars
+2026-09-04 18:11:28,976 INFO    [uvicorn.access] 127.0.0.1:51287 - "GET /api/models?refresh=true HTTP/1.1" 200
+2026-09-04 18:11:28,977 INFO    [uvicorn.access] 127.0.0.1:64109 - "GET /api/auth/settings HTTP/1.1" 200
+2026-09-04 18:11:28,977 INFO    [uvicorn.access] 127.0.0.1:50901 - "GET /api/memory HTTP/1.1" 200
+2026-09-04 18:11:28,984 INFO    [uvicorn.access] 127.0.0.1:51287 - "GET /api/auth/status HTTP/1.1" 200
+2026-09-04 18:11:28,984 INFO    [uvicorn.access] 127.0.0.1:64109 - "GET /api/skills HTTP/1.1" 200
+2026-09-04 18:11:28,985 INFO    [uvicorn.access] 127.0.0.1:61724 - "GET /static/js/slashAutocomplete.js HTTP/1.1" 304
+2026-09-04 18:11:28,985 INFO    [uvicorn.access] 127.0.0.1:50901 - "GET /api/prefs/custom-themes HTTP/1.1" 200
+2026-09-04 18:11:28,985 INFO    [uvicorn.access] 127.0.0.1:65468 - "GET /api/sessions HTTP/1.1" 200
+2026-09-04 18:11:28,994 INFO    [uvicorn.access] 127.0.0.1:51287 - "POST /api/calendar/sync HTTP/1.1" 200
+2026-09-04 18:11:28,994 INFO    [uvicorn.access] 127.0.0.1:61724 - "GET /api/tts/stats HTTP/1.1" 200
+2026-09-04 18:11:28,995 INFO    [uvicorn.access] 127.0.0.1:64109 - "GET /api/cookbook/state HTTP/1.1" 200
+2026-09-04 18:11:28,995 INFO    [uvicorn.access] 127.0.0.1:50901 - "GET /api/calendar/events?start=2026-08-31&end=2026-10-12 HTTP/1.1" 200
+2026-09-04 18:11:28,995 INFO    [uvicorn.access] 127.0.0.1:65468 - "GET /api/research/library?sort=recent&limit=20 HTTP/1.1" 200
+2026-09-04 18:11:29,001 INFO    [uvicorn.access] 127.0.0.1:51287 - "GET /api/prefs/memory_enabled HTTP/1.1" 200
+2026-09-04 18:11:29,001 INFO    [uvicorn.access] 127.0.0.1:61724 - "GET /api/prefs HTTP/1.1" 200
+2026-09-04 18:11:29,001 INFO    [uvicorn.access] 127.0.0.1:64109 - "GET /api/skills/audit-all/status HTTP/1.1" 200
+2026-09-04 18:11:29,001 INFO    [uvicorn.access] 127.0.0.1:50901 - "GET /api/fonts/custom HTTP/1.1" 200
+2026-09-04 18:11:29,003 INFO    [uvicorn.access] 127.0.0.1:65468 - "GET /static/favicon.png HTTP/1.1" 304
+2026-09-04 18:11:29,011 INFO    [routes.cookbook_routes] orphan sweep starting: 0 server(s), known_sids=0
+2026-09-04 18:11:29,013 INFO    [uvicorn.access] 127.0.0.1:64109 - "GET /api/prefs/skills_enabled HTTP/1.1" 200
+2026-09-04 18:11:29,013 INFO    [uvicorn.access] 127.0.0.1:61724 - "GET /api/skills/slash-catalog HTTP/1.1" 200
+2026-09-04 18:11:29,014 INFO    [uvicorn.access] 127.0.0.1:50901 - "GET /api/cookbook/tasks/status HTTP/1.1" 200
+2026-09-04 18:11:29,017 INFO    [uvicorn.access] 127.0.0.1:50901 - "GET /api/prefs/auto_memory HTTP/1.1" 200
+2026-09-04 18:11:29,020 INFO    [uvicorn.access] 127.0.0.1:50901 - "GET /api/prefs/auto_skills HTTP/1.1" 200
+2026-09-04 18:11:29,021 INFO    [uvicorn.access] 127.0.0.1:65468 - "GET /api/history/838eb441-911e-40a1-b111-8ba383a4a155 HTTP/1.1" 200
+2026-09-04 18:11:29,024 INFO    [uvicorn.access] 127.0.0.1:50901 - "GET /api/prefs/auto_approve_skills HTTP/1.1" 200
+2026-09-04 18:11:29,027 INFO    [uvicorn.access] 127.0.0.1:50901 - "GET /api/prefs/skill_min_confidence HTTP/1.1" 200
+2026-09-04 18:11:29,031 INFO    [uvicorn.access] 127.0.0.1:50901 - "GET /api/prefs/skill_max_injected HTTP/1.1" 200
+2026-09-04 18:11:29,178 INFO    [uvicorn.access] 127.0.0.1:58802 - "GET /api/auth/status HTTP/1.1" 200
+2026-09-04 18:11:29,186 INFO    [uvicorn.access] 127.0.0.1:55138 - "GET /api/tasks HTTP/1.1" 200
+2026-09-04 18:11:29,187 INFO    [uvicorn.access] 127.0.0.1:53228 - "GET /api/calendar/events?start=2026-09-03T23%3A00%3A00.000Z&end=2026-09-04T23%3A00%3A00.000Z HTTP/1.1" 200
+2026-09-04 18:11:29,190 INFO    [uvicorn.access] 127.0.0.1:58218 - "GET /api/research/library?sort=recent&limit=30 HTTP/1.1" 200
+2026-09-04 18:11:29,191 INFO    [uvicorn.access] 127.0.0.1:65481 - "GET /api/sessions HTTP/1.1" 200
+2026-09-04 18:11:29,195 INFO    [uvicorn.access] 127.0.0.1:58802 - "GET /api/memory HTTP/1.1" 200
+2026-09-04 18:11:29,199 INFO    [uvicorn.access] 127.0.0.1:58218 - "GET /api/presets/groups HTTP/1.1" 200
+2026-09-04 18:11:29,200 INFO    [uvicorn.access] 127.0.0.1:55138 - "GET /api/models HTTP/1.1" 200
+2026-09-04 18:11:29,201 INFO    [uvicorn.access] 127.0.0.1:65481 - "GET /api/tasks/runs/recent?limit=30 HTTP/1.1" 200
+2026-09-04 18:11:29,202 INFO    [uvicorn.access] 127.0.0.1:53228 - "GET /api/notes HTTP/1.1" 200
+2026-09-04 18:11:29,909 INFO    [uvicorn.access] 127.0.0.1:58802 - "GET /api/research/active HTTP/1.1" 200
+2026-09-04 18:11:29,911 INFO    [uvicorn.access] 127.0.0.1:58218 - "GET /api/ecosystem/status HTTP/1.1" 200
+2026-09-04 18:11:29,915 INFO    [uvicorn.access] 127.0.0.1:50901 - "GET /api/research/status/838eb441-911e-40a1-b111-8ba383a4a155 HTTP/1.1" 404
+2026-09-04 18:11:29,916 INFO    [uvicorn.access] 127.0.0.1:65468 - "GET /api/chat/stream_status/838eb441-911e-40a1-b111-8ba383a4a155 HTTP/1.1" 404
+2026-09-04 18:11:29,917 INFO    [uvicorn.access] 127.0.0.1:61724 - "GET /api/memory HTTP/1.1" 200
+2026-09-04 18:11:29,919 INFO    [uvicorn.access] 127.0.0.1:55138 - "GET /api/finance/snapshot HTTP/1.1" 200
+2026-09-04 18:11:29,922 INFO    [uvicorn.access] 127.0.0.1:61724 - "GET /api/prefs/memory_enabled HTTP/1.1" 200
+2026-09-04 18:11:29,928 INFO    [uvicorn.access] 127.0.0.1:61724 - "GET /api/prefs/skills_enabled HTTP/1.1" 200
+2026-09-04 18:11:29,930 INFO    [uvicorn.access] 127.0.0.1:55138 - "GET /api/wizengamot/runs?limit=3 HTTP/1.1" 200
+2026-09-04 18:11:29,934 INFO    [uvicorn.access] 127.0.0.1:65468 - "GET /static/js/greatHall.js?v=20260706gh11 HTTP/1.1" 304
+2026-09-04 18:11:29,935 INFO    [uvicorn.access] 127.0.0.1:61724 - "GET /api/prefs/auto_memory HTTP/1.1" 200
+2026-09-04 18:11:29,936 INFO    [uvicorn.access] 127.0.0.1:58218 - "GET /api/growth/snapshot HTTP/1.1" 200
+2026-09-04 18:11:29,939 INFO    [uvicorn.access] 127.0.0.1:61724 - "GET /api/prefs/auto_skills HTTP/1.1" 200
+2026-09-04 18:11:29,942 INFO    [uvicorn.access] 127.0.0.1:61724 - "GET /api/prefs/auto_approve_skills HTTP/1.1" 200
+2026-09-04 18:11:29,946 INFO    [uvicorn.access] 127.0.0.1:61724 - "GET /api/prefs/skill_min_confidence HTTP/1.1" 200
+2026-09-04 18:11:29,951 INFO    [uvicorn.access] 127.0.0.1:61724 - "GET /api/prefs/skill_max_injected HTTP/1.1" 200
+2026-09-04 18:11:30,892 INFO    [uvicorn.access] 127.0.0.1:65468 - "GET /api/auth/status HTTP/1.1" 200
+2026-09-04 18:11:30,894 INFO    [uvicorn.access] 127.0.0.1:64109 - "GET /api/tasks HTTP/1.1" 200
+2026-09-04 18:11:30,894 INFO    [uvicorn.access] 127.0.0.1:51287 - "GET /api/calendar/events?start=2026-09-03T23%3A00%3A00.000Z&end=2026-09-04T23%3A00%3A00.000Z HTTP/1.1" 200
+2026-09-04 18:11:30,895 INFO    [uvicorn.access] 127.0.0.1:61724 - "GET /api/memory HTTP/1.1" 200
+2026-09-04 18:11:30,900 INFO    [uvicorn.access] 127.0.0.1:65468 - "GET /api/research/library?sort=recent&limit=30 HTTP/1.1" 200
+2026-09-04 18:11:30,901 INFO    [uvicorn.access] 127.0.0.1:50901 - "GET /api/sessions HTTP/1.1" 200
+2026-09-04 18:11:30,901 INFO    [uvicorn.access] 127.0.0.1:61724 - "GET /api/presets/groups HTTP/1.1" 200
+2026-09-04 18:11:30,904 INFO    [uvicorn.access] 127.0.0.1:64109 - "GET /api/models HTTP/1.1" 200
+2026-09-04 18:11:30,904 INFO    [uvicorn.access] 127.0.0.1:51287 - "GET /api/notes HTTP/1.1" 200
+2026-09-04 18:11:30,906 INFO    [uvicorn.access] 127.0.0.1:65468 - "GET /api/tasks/runs/recent?limit=30 HTTP/1.1" 200
+2026-09-04 18:11:31,189 INFO    [httpx] HTTP Request: GET http://localhost:11434/api/tags "HTTP/1.1 200 OK"
+2026-09-04 18:11:31,609 INFO    [uvicorn.access] 127.0.0.1:50901 - "GET /api/research/active HTTP/1.1" 200
+2026-09-04 18:11:31,611 INFO    [uvicorn.access] 127.0.0.1:61724 - "GET /api/ecosystem/status HTTP/1.1" 200
+2026-09-04 18:11:31,619 INFO    [uvicorn.access] 127.0.0.1:65468 - "GET /api/prefs/memory_enabled HTTP/1.1" 200
+2026-09-04 18:11:31,620 INFO    [src.model_discovery] Scanning 2 hosts for models: ['localhost', 'host.docker.internal']
+2026-09-04 18:11:31,620 INFO    [uvicorn.access] 127.0.0.1:50901 - "GET /api/calendar/events?start=2026-08-31&end=2026-10-12 HTTP/1.1" 200
+2026-09-04 18:11:31,623 INFO    [uvicorn.access] 127.0.0.1:51287 - "GET /api/memory HTTP/1.1" 200
+2026-09-04 18:11:31,626 INFO    [uvicorn.access] 127.0.0.1:50901 - "GET /api/prefs/skills_enabled HTTP/1.1" 200
+2026-09-04 18:11:31,628 INFO    [uvicorn.access] 127.0.0.1:64109 - "GET /api/finance/snapshot HTTP/1.1" 200
+2026-09-04 18:11:31,631 INFO    [uvicorn.access] 127.0.0.1:50901 - "GET /api/prefs/auto_memory HTTP/1.1" 200
+2026-09-04 18:11:32,845 ERROR   [routes.email_routes] Failed to list emails: [WinError 10061] No connection could be made because the target machine actively refused it
+2026-09-04 18:11:32,846 INFO    [uvicorn.access] 127.0.0.1:51029 - "GET /api/email/list?folder=INBOX&limit=50&filter=unread HTTP/1.1" 200
+2026-09-04 18:11:32,984 ERROR   [routes.email_routes] Failed to list emails: [WinError 10061] No connection could be made because the target machine actively refused it
+2026-09-04 18:11:32,985 INFO    [uvicorn.access] 127.0.0.1:64731 - "GET /api/email/list?folder=INBOX&limit=50&filter=unread HTTP/1.1" 200
+2026-09-04 18:11:33,578 INFO    [uvicorn.access] 127.0.0.1:64731 - "GET /api/wizengamot/runs?limit=3 HTTP/1.1" 200
+2026-09-04 18:11:33,591 INFO    [uvicorn.access] 127.0.0.1:51287 - "GET /api/prefs/auto_skills HTTP/1.1" 200
+2026-09-04 18:11:33,594 INFO    [uvicorn.access] 127.0.0.1:64109 - "GET /api/email/accounts HTTP/1.1" 200
+2026-09-04 18:11:33,594 INFO    [uvicorn.access] 127.0.0.1:64731 - "GET /api/growth/snapshot HTTP/1.1" 200
+2026-09-04 18:11:33,594 INFO    [uvicorn.access] 127.0.0.1:50901 - "GET /api/notes HTTP/1.1" 200
+2026-09-04 18:11:33,599 INFO    [uvicorn.access] 127.0.0.1:50901 - "GET /api/prefs/auto_approve_skills HTTP/1.1" 200
+2026-09-04 18:11:33,604 INFO    [uvicorn.access] 127.0.0.1:64731 - "GET /api/prefs/skill_min_confidence HTTP/1.1" 200
+2026-09-04 18:11:33,606 WARNING [routes.email_helpers] SMTP not configured — add an Email Account in Settings or set env vars
+2026-09-04 18:11:33,606 WARNING [routes.email_helpers] IMAP not configured — add an Email Account in Settings or set env vars
+2026-09-04 18:11:33,609 INFO    [uvicorn.access] 127.0.0.1:64731 - "GET /api/prefs/skill_max_injected HTTP/1.1" 200
+2026-09-04 18:11:35,247 INFO    [httpx] HTTP Request: GET http://localhost:11434/v1/models "HTTP/1.1 200 OK"
+2026-09-04 18:11:36,931 INFO    [httpx] HTTP Request: GET http://localhost:11434/api/v1/models "HTTP/1.1 404 Not Found"
+2026-09-04 18:11:37,598 INFO    [src.model_discovery] Discovered 1 model endpoints across 2 hosts
+2026-09-04 18:11:37,611 ERROR   [routes.email_routes] Failed to list emails: [WinError 10061] No connection could be made because the target machine actively refused it
+2026-09-04 18:11:37,781 INFO    [uvicorn.access] 127.0.0.1:50901 - "GET /api/email/list?folder=INBOX&limit=100&offset=0&filter=all HTTP/1.1" 200
+2026-09-04 18:11:38,034 INFO    [httpx] HTTP Request: GET http://localhost:11434/v1/models "HTTP/1.1 200 OK"
+2026-09-04 18:11:38,036 INFO    [app] Warmup ping OK: http://localhost:11434/v1/models
+2026-09-04 18:11:40,832 INFO    [uvicorn.access] 127.0.0.1:56650 - "GET /api/research/active HTTP/1.1" 200
+2026-09-04 18:11:40,835 INFO    [uvicorn.access] 127.0.0.1:56650 - "GET /api/research/library?sort=recent&limit=20 HTTP/1.1" 200
+2026-09-04 18:11:40,954 INFO    [uvicorn.access] 127.0.0.1:50901 - "GET /api/research/active HTTP/1.1" 200
+2026-09-04 18:11:40,958 INFO    [uvicorn.access] 127.0.0.1:50901 - "GET /api/research/library?sort=recent&limit=20 HTTP/1.1" 200
+2026-09-04 18:11:52,832 INFO    [uvicorn.access] 127.0.0.1:53359 - "GET /api/research/active HTTP/1.1" 200
+2026-09-04 18:11:52,835 INFO    [uvicorn.access] 127.0.0.1:53359 - "GET /api/research/library?sort=recent&limit=20 HTTP/1.1" 200
+2026-09-04 18:11:52,955 INFO    [uvicorn.access] 127.0.0.1:55573 - "GET /api/research/active HTTP/1.1" 200
+2026-09-04 18:11:52,959 INFO    [uvicorn.access] 127.0.0.1:55573 - "GET /api/research/library?sort=recent&limit=20 HTTP/1.1" 200
+2026-09-04 18:11:58,805 INFO    [uvicorn.access] 127.0.0.1:59870 - "GET /api/tasks/notifications HTTP/1.1" 200
+2026-09-04 18:11:58,934 INFO    [uvicorn.access] 127.0.0.1:59343 - "GET /api/tasks/notifications HTTP/1.1" 200
+2026-09-04 18:12:04,845 INFO    [uvicorn.access] 127.0.0.1:58368 - "GET /api/research/active HTTP/1.1" 200
+2026-09-04 18:12:04,849 INFO    [uvicorn.access] 127.0.0.1:58368 - "GET /api/research/library?sort=recent&limit=20 HTTP/1.1" 200
+2026-09-04 18:12:04,955 INFO    [uvicorn.access] 127.0.0.1:63795 - "GET /api/research/active HTTP/1.1" 200
+2026-09-04 18:12:04,958 INFO    [uvicorn.access] 127.0.0.1:63795 - "GET /api/research/library?sort=recent&limit=20 HTTP/1.1" 200
+2026-09-04 18:12:16,833 INFO    [uvicorn.access] 127.0.0.1:64733 - "GET /api/research/active HTTP/1.1" 200
+2026-09-04 18:12:16,837 INFO    [uvicorn.access] 127.0.0.1:64733 - "GET /api/research/library?sort=recent&limit=20 HTTP/1.1" 200
+2026-09-04 18:12:16,956 INFO    [uvicorn.access] 127.0.0.1:49774 - "GET /api/research/active HTTP/1.1" 200
+2026-09-04 18:12:16,959 INFO    [uvicorn.access] 127.0.0.1:49774 - "GET /api/research/library?sort=recent&limit=20 HTTP/1.1" 200
+2026-09-04 18:12:28,805 INFO    [uvicorn.access] 127.0.0.1:49669 - "GET /api/tasks/notifications HTTP/1.1" 200
+2026-09-04 18:12:28,836 INFO    [uvicorn.access] 127.0.0.1:63555 - "GET /api/research/active HTTP/1.1" 200
+2026-09-04 18:12:28,837 INFO    [uvicorn.access] 127.0.0.1:55751 - "GET /api/email/urgency-state HTTP/1.1" 200
+2026-09-04 18:12:28,838 WARNING [routes.email_helpers] SMTP not configured — add an Email Account in Settings or set env vars
+2026-09-04 18:12:28,839 WARNING [routes.email_helpers] IMAP not configured — add an Email Account in Settings or set env vars
+2026-09-04 18:12:28,840 INFO    [uvicorn.access] 127.0.0.1:55751 - "GET /api/research/library?sort=recent&limit=20 HTTP/1.1" 200
+2026-09-04 18:12:28,935 INFO    [uvicorn.access] 127.0.0.1:50094 - "GET /api/tasks/notifications HTTP/1.1" 200
+2026-09-04 18:12:28,963 INFO    [uvicorn.access] 127.0.0.1:58517 - "GET /api/research/active HTTP/1.1" 200
+2026-09-04 18:12:28,965 INFO    [uvicorn.access] 127.0.0.1:53592 - "GET /api/email/urgency-state HTTP/1.1" 200
+2026-09-04 18:12:28,965 WARNING [routes.email_helpers] SMTP not configured — add an Email Account in Settings or set env vars
+2026-09-04 18:12:28,966 WARNING [routes.email_helpers] IMAP not configured — add an Email Account in Settings or set env vars
+2026-09-04 18:12:28,967 INFO    [uvicorn.access] 127.0.0.1:53592 - "GET /api/research/library?sort=recent&limit=20 HTTP/1.1" 200
+2026-09-04 18:12:29,179 INFO    [uvicorn.access] 127.0.0.1:55751 - "GET /api/auth/status HTTP/1.1" 200
+2026-09-04 18:12:29,188 INFO    [uvicorn.access] 127.0.0.1:61029 - "GET /api/tasks HTTP/1.1" 200
+2026-09-04 18:12:29,190 INFO    [uvicorn.access] 127.0.0.1:64671 - "GET /api/calendar/events?start=2026-09-03T23%3A00%3A00.000Z&end=2026-09-04T23%3A00%3A00.000Z HTTP/1.1" 200
+2026-09-04 18:12:29,190 INFO    [uvicorn.access] 127.0.0.1:63555 - "GET /api/sessions HTTP/1.1" 200
+2026-09-04 18:12:29,192 INFO    [uvicorn.access] 127.0.0.1:55751 - "GET /api/research/library?sort=recent&limit=30 HTTP/1.1" 200
+2026-09-04 18:12:29,199 INFO    [uvicorn.access] 127.0.0.1:51160 - "GET /api/memory HTTP/1.1" 200
+2026-09-04 18:12:29,200 INFO    [uvicorn.access] 127.0.0.1:63555 - "GET /api/presets/groups HTTP/1.1" 200
+2026-09-04 18:12:29,200 INFO    [uvicorn.access] 127.0.0.1:55751 - "GET /api/tasks/runs/recent?limit=30 HTTP/1.1" 200
+2026-09-04 18:12:29,201 INFO    [uvicorn.access] 127.0.0.1:64671 - "GET /api/notes HTTP/1.1" 200
+2026-09-04 18:12:29,201 INFO    [uvicorn.access] 127.0.0.1:61029 - "GET /api/models HTTP/1.1" 200
+2026-09-04 18:12:29,908 INFO    [uvicorn.access] 127.0.0.1:51160 - "GET /api/research/active HTTP/1.1" 200
+2026-09-04 18:12:29,909 INFO    [uvicorn.access] 127.0.0.1:63555 - "GET /api/ecosystem/status HTTP/1.1" 200
+2026-09-04 18:12:29,914 INFO    [uvicorn.access] 127.0.0.1:55751 - "GET /api/finance/snapshot HTTP/1.1" 200
+2026-09-04 18:12:29,922 INFO    [uvicorn.access] 127.0.0.1:55751 - "GET /api/wizengamot/runs?limit=3 HTTP/1.1" 200
+2026-09-04 18:12:29,924 INFO    [uvicorn.access] 127.0.0.1:63555 - "GET /api/growth/snapshot HTTP/1.1" 200
+2026-09-04 18:12:29,942 INFO    [uvicorn.access] 127.0.0.1:53592 - "GET /api/auth/status HTTP/1.1" 200
+2026-09-04 18:12:29,952 INFO    [uvicorn.access] 127.0.0.1:64941 - "GET /api/tasks HTTP/1.1" 200
+2026-09-04 18:12:29,953 INFO    [uvicorn.access] 127.0.0.1:54668 - "GET /api/calendar/events?start=2026-09-03T23%3A00%3A00.000Z&end=2026-09-04T23%3A00%3A00.000Z HTTP/1.1" 200
+2026-09-04 18:12:29,953 INFO    [uvicorn.access] 127.0.0.1:58517 - "GET /api/sessions HTTP/1.1" 200
+2026-09-04 18:12:29,953 INFO    [uvicorn.access] 127.0.0.1:53592 - "GET /api/research/library?sort=recent&limit=30 HTTP/1.1" 200
+2026-09-04 18:12:29,957 INFO    [uvicorn.access] 127.0.0.1:53914 - "GET /api/memory HTTP/1.1" 200
+2026-09-04 18:12:29,961 INFO    [uvicorn.access] 127.0.0.1:58517 - "GET /api/presets/groups HTTP/1.1" 200
+2026-09-04 18:12:29,962 INFO    [uvicorn.access] 127.0.0.1:53592 - "GET /api/tasks/runs/recent?limit=30 HTTP/1.1" 200
+2026-09-04 18:12:29,962 INFO    [uvicorn.access] 127.0.0.1:64941 - "GET /api/models HTTP/1.1" 200
+2026-09-04 18:12:29,964 INFO    [uvicorn.access] 127.0.0.1:54668 - "GET /api/notes HTTP/1.1" 200
+2026-09-04 18:12:29,964 INFO    [uvicorn.access] 127.0.0.1:53914 - "GET /api/research/active HTTP/1.1" 200
+2026-09-04 18:12:30,670 INFO    [uvicorn.access] 127.0.0.1:58517 - "GET /api/ecosystem/status HTTP/1.1" 200
+2026-09-04 18:12:30,673 INFO    [uvicorn.access] 127.0.0.1:53592 - "GET /api/finance/snapshot HTTP/1.1" 200
+2026-09-04 18:12:30,681 INFO    [uvicorn.access] 127.0.0.1:53592 - "GET /api/wizengamot/runs?limit=3 HTTP/1.1" 200
+2026-09-04 18:12:30,684 INFO    [uvicorn.access] 127.0.0.1:58517 - "GET /api/growth/snapshot HTTP/1.1" 200
+2026-09-04 18:12:32,841 ERROR   [routes.email_routes] Failed to list emails: [WinError 10061] No connection could be made because the target machine actively refused it
+2026-09-04 18:12:32,842 INFO    [uvicorn.access] 127.0.0.1:49669 - "GET /api/email/list?folder=INBOX&limit=50&filter=unread HTTP/1.1" 200
+2026-09-04 18:12:32,968 ERROR   [routes.email_routes] Failed to list emails: [WinError 10061] No connection could be made because the target machine actively refused it
+2026-09-04 18:12:32,969 INFO    [uvicorn.access] 127.0.0.1:50094 - "GET /api/email/list?folder=INBOX&limit=50&filter=unread HTTP/1.1" 200
+2026-09-04 18:12:38,036 INFO    [src.model_discovery] Scanning 2 hosts for models: ['localhost', 'host.docker.internal']
+2026-09-04 18:12:40,832 INFO    [uvicorn.access] 127.0.0.1:61554 - "GET /api/research/active HTTP/1.1" 200
+2026-09-04 18:12:40,835 INFO    [uvicorn.access] 127.0.0.1:61554 - "GET /api/research/library?sort=recent&limit=20 HTTP/1.1" 200
+2026-09-04 18:12:40,956 INFO    [uvicorn.access] 127.0.0.1:52527 - "GET /api/research/active HTTP/1.1" 200
+2026-09-04 18:12:40,959 INFO    [uvicorn.access] 127.0.0.1:52527 - "GET /api/research/library?sort=recent&limit=20 HTTP/1.1" 200
+2026-09-04 18:12:41,917 INFO    [httpx] HTTP Request: GET http://localhost:11434/v1/models "HTTP/1.1 200 OK"
+2026-09-04 18:12:43,602 INFO    [httpx] HTTP Request: GET http://localhost:11434/api/v1/models "HTTP/1.1 404 Not Found"
+2026-09-04 18:12:43,995 INFO    [src.model_discovery] Discovered 1 model endpoints across 2 hosts
+2026-09-04 18:12:44,430 INFO    [httpx] HTTP Request: GET http://localhost:11434/v1/models "HTTP/1.1 200 OK"
+2026-09-04 18:12:44,432 INFO    [app] Warmup ping OK: http://localhost:11434/v1/models
+2026-09-04 18:12:52,833 INFO    [uvicorn.access] 127.0.0.1:65130 - "GET /api/research/active HTTP/1.1" 200
+2026-09-04 18:12:52,836 INFO    [uvicorn.access] 127.0.0.1:65130 - "GET /api/research/library?sort=recent&limit=20 HTTP/1.1" 200
+2026-09-04 18:12:52,955 INFO    [uvicorn.access] 127.0.0.1:50752 - "GET /api/research/active HTTP/1.1" 200
+2026-09-04 18:12:52,958 INFO    [uvicorn.access] 127.0.0.1:50752 - "GET /api/research/library?sort=recent&limit=20 HTTP/1.1" 200
+2026-09-04 18:12:58,806 INFO    [uvicorn.access] 127.0.0.1:62763 - "GET /api/tasks/notifications HTTP/1.1" 200
+2026-09-04 18:12:58,935 INFO    [uvicorn.access] 127.0.0.1:63596 - "GET /api/tasks/notifications HTTP/1.1" 200
+2026-09-04 18:13:04,832 INFO    [uvicorn.access] 127.0.0.1:50576 - "GET /api/research/active HTTP/1.1" 200
+2026-09-04 18:13:04,846 INFO    [uvicorn.access] 127.0.0.1:50576 - "GET /api/research/library?sort=recent&limit=20 HTTP/1.1" 200
+2026-09-04 18:13:04,956 INFO    [uvicorn.access] 127.0.0.1:50077 - "GET /api/research/active HTTP/1.1" 200
+2026-09-04 18:13:04,959 INFO    [uvicorn.access] 127.0.0.1:50077 - "GET /api/research/library?sort=recent&limit=20 HTTP/1.1" 200
+2026-09-04 18:13:16,831 INFO    [uvicorn.access] 127.0.0.1:54486 - "GET /api/research/active HTTP/1.1" 200
+2026-09-04 18:13:16,835 INFO    [uvicorn.access] 127.0.0.1:54486 - "GET /api/research/library?sort=recent&limit=20 HTTP/1.1" 200
+2026-09-04 18:13:16,955 INFO    [uvicorn.access] 127.0.0.1:49774 - "GET /api/research/active HTTP/1.1" 200
+2026-09-04 18:13:16,958 INFO    [uvicorn.access] 127.0.0.1:49774 - "GET /api/research/library?sort=recent&limit=20 HTTP/1.1" 200
+2026-09-04 18:13:28,805 INFO    [uvicorn.access] 127.0.0.1:61865 - "GET /api/tasks/notifications HTTP/1.1" 200
+2026-09-04 18:13:28,835 INFO    [uvicorn.access] 127.0.0.1:51471 - "GET /api/research/active HTTP/1.1" 200
+2026-09-04 18:13:28,837 INFO    [uvicorn.access] 127.0.0.1:52487 - "GET /api/email/urgency-state HTTP/1.1" 200
+2026-09-04 18:13:28,838 WARNING [routes.email_helpers] SMTP not configured — add an Email Account in Settings or set env vars
+2026-09-04 18:13:28,838 WARNING [routes.email_helpers] IMAP not configured — add an Email Account in Settings or set env vars
+2026-09-04 18:13:28,838 INFO    [uvicorn.access] 127.0.0.1:51471 - "GET /api/research/library?sort=recent&limit=20 HTTP/1.1" 200
+2026-09-04 18:13:28,934 INFO    [uvicorn.access] 127.0.0.1:52270 - "GET /api/tasks/notifications HTTP/1.1" 200
+2026-09-04 18:13:28,958 INFO    [uvicorn.access] 127.0.0.1:63482 - "GET /api/research/active HTTP/1.1" 200
+2026-09-04 18:13:28,959 INFO    [uvicorn.access] 127.0.0.1:64407 - "GET /api/email/urgency-state HTTP/1.1" 200
+2026-09-04 18:13:28,960 WARNING [routes.email_helpers] SMTP not configured — add an Email Account in Settings or set env vars
+2026-09-04 18:13:28,960 WARNING [routes.email_helpers] IMAP not configured — add an Email Account in Settings or set env vars
+2026-09-04 18:13:28,961 INFO    [uvicorn.access] 127.0.0.1:64407 - "GET /api/research/library?sort=recent&limit=20 HTTP/1.1" 200
+2026-09-04 18:13:29,179 INFO    [uvicorn.access] 127.0.0.1:51471 - "GET /api/auth/status HTTP/1.1" 200
+2026-09-04 18:13:29,185 INFO    [uvicorn.access] 127.0.0.1:54383 - "GET /api/tasks HTTP/1.1" 200
+2026-09-04 18:13:29,190 INFO    [uvicorn.access] 127.0.0.1:54917 - "GET /api/calendar/events?start=2026-09-03T23%3A00%3A00.000Z&end=2026-09-04T23%3A00%3A00.000Z HTTP/1.1" 200
+2026-09-04 18:13:29,190 INFO    [uvicorn.access] 127.0.0.1:51471 - "GET /api/research/library?sort=recent&limit=30 HTTP/1.1" 200
+2026-09-04 18:13:29,190 INFO    [uvicorn.access] 127.0.0.1:52487 - "GET /api/sessions HTTP/1.1" 200
+2026-09-04 18:13:29,195 INFO    [uvicorn.access] 127.0.0.1:54260 - "GET /api/memory HTTP/1.1" 200
+2026-09-04 18:13:29,199 INFO    [uvicorn.access] 127.0.0.1:51471 - "GET /api/presets/groups HTTP/1.1" 200
+2026-09-04 18:13:29,200 INFO    [uvicorn.access] 127.0.0.1:52487 - "GET /api/tasks/runs/recent?limit=30 HTTP/1.1" 200
+2026-09-04 18:13:29,201 INFO    [uvicorn.access] 127.0.0.1:54383 - "GET /api/models HTTP/1.1" 200
+2026-09-04 18:13:29,201 INFO    [uvicorn.access] 127.0.0.1:54917 - "GET /api/notes HTTP/1.1" 200
+2026-09-04 18:13:29,203 INFO    [uvicorn.access] 127.0.0.1:54260 - "GET /api/research/active HTTP/1.1" 200
+2026-09-04 18:13:29,909 INFO    [uvicorn.access] 127.0.0.1:51471 - "GET /api/ecosystem/status HTTP/1.1" 200
+2026-09-04 18:13:29,913 INFO    [uvicorn.access] 127.0.0.1:52487 - "GET /api/finance/snapshot HTTP/1.1" 200
+2026-09-04 18:13:29,930 INFO    [uvicorn.access] 127.0.0.1:52487 - "GET /api/wizengamot/runs?limit=3 HTTP/1.1" 200
+2026-09-04 18:13:29,932 INFO    [uvicorn.access] 127.0.0.1:51471 - "GET /api/growth/snapshot HTTP/1.1" 200
+2026-09-04 18:13:29,943 INFO    [uvicorn.access] 127.0.0.1:64407 - "GET /api/auth/status HTTP/1.1" 200
+2026-09-04 18:13:29,955 INFO    [uvicorn.access] 127.0.0.1:64639 - "GET /api/tasks HTTP/1.1" 200
+2026-09-04 18:13:29,955 INFO    [uvicorn.access] 127.0.0.1:49251 - "GET /api/calendar/events?start=2026-09-03T23%3A00%3A00.000Z&end=2026-09-04T23%3A00%3A00.000Z HTTP/1.1" 200
+2026-09-04 18:13:29,955 INFO    [uvicorn.access] 127.0.0.1:64407 - "GET /api/research/library?sort=recent&limit=30 HTTP/1.1" 200
+2026-09-04 18:13:29,955 INFO    [uvicorn.access] 127.0.0.1:63482 - "GET /api/sessions HTTP/1.1" 200
+2026-09-04 18:13:29,959 INFO    [uvicorn.access] 127.0.0.1:56118 - "GET /api/memory HTTP/1.1" 200
+2026-09-04 18:13:29,963 INFO    [uvicorn.access] 127.0.0.1:64407 - "GET /api/presets/groups HTTP/1.1" 200
+2026-09-04 18:13:29,963 INFO    [uvicorn.access] 127.0.0.1:63482 - "GET /api/tasks/runs/recent?limit=30 HTTP/1.1" 200
+2026-09-04 18:13:29,964 INFO    [uvicorn.access] 127.0.0.1:64639 - "GET /api/models HTTP/1.1" 200
+2026-09-04 18:13:29,964 INFO    [uvicorn.access] 127.0.0.1:49251 - "GET /api/notes HTTP/1.1" 200
+2026-09-04 18:13:30,668 INFO    [uvicorn.access] 127.0.0.1:56118 - "GET /api/research/active HTTP/1.1" 200
+2026-09-04 18:13:30,671 INFO    [uvicorn.access] 127.0.0.1:64407 - "GET /api/ecosystem/status HTTP/1.1" 200
+2026-09-04 18:13:30,675 INFO    [uvicorn.access] 127.0.0.1:63482 - "GET /api/finance/snapshot HTTP/1.1" 200
+2026-09-04 18:13:30,683 INFO    [uvicorn.access] 127.0.0.1:63482 - "GET /api/wizengamot/runs?limit=3 HTTP/1.1" 200
+2026-09-04 18:13:30,684 INFO    [uvicorn.access] 127.0.0.1:64407 - "GET /api/growth/snapshot HTTP/1.1" 200
+2026-09-04 18:13:31,418 INFO    [httpx] HTTP Request: GET http://localhost:11434/api/tags "HTTP/1.1 200 OK"
+2026-09-04 18:13:32,843 ERROR   [routes.email_routes] Failed to list emails: [WinError 10061] No connection could be made because the target machine actively refused it
+2026-09-04 18:13:32,844 INFO    [uvicorn.access] 127.0.0.1:61865 - "GET /api/email/list?folder=INBOX&limit=50&filter=unread HTTP/1.1" 200
+2026-09-04 18:13:32,964 ERROR   [routes.email_routes] Failed to list emails: [WinError 10061] No connection could be made because the target machine actively refused it
+2026-09-04 18:13:32,965 INFO    [uvicorn.access] 127.0.0.1:52270 - "GET /api/email/list?folder=INBOX&limit=50&filter=unread HTTP/1.1" 200
+2026-09-04 18:13:40,832 INFO    [uvicorn.access] 127.0.0.1:50090 - "GET /api/research/active HTTP/1.1" 200
+2026-09-04 18:13:40,835 INFO    [uvicorn.access] 127.0.0.1:50090 - "GET /api/research/library?sort=recent&limit=20 HTTP/1.1" 200
+2026-09-04 18:13:40,955 INFO    [uvicorn.access] 127.0.0.1:61742 - "GET /api/research/active HTTP/1.1" 200
+2026-09-04 18:13:40,958 INFO    [uvicorn.access] 127.0.0.1:61742 - "GET /api/research/library?sort=recent&limit=20 HTTP/1.1" 200
+2026-09-04 18:13:44,442 INFO    [src.model_discovery] Scanning 2 hosts for models: ['localhost', 'host.docker.internal']
+2026-09-04 18:13:48,393 INFO    [httpx] HTTP Request: GET http://localhost:11434/v1/models "HTTP/1.1 200 OK"
+2026-09-04 18:13:50,074 INFO    [httpx] HTTP Request: GET http://localhost:11434/api/v1/models "HTTP/1.1 404 Not Found"
+2026-09-04 18:13:50,418 INFO    [src.model_discovery] Discovered 1 model endpoints across 2 hosts
+2026-09-04 18:13:50,868 INFO    [httpx] HTTP Request: GET http://localhost:11434/v1/models "HTTP/1.1 200 OK"
+2026-09-04 18:13:50,870 INFO    [app] Warmup ping OK: http://localhost:11434/v1/models
+2026-09-04 18:13:52,832 INFO    [uvicorn.access] 127.0.0.1:62992 - "GET /api/research/active HTTP/1.1" 200
+2026-09-04 18:13:52,835 INFO    [uvicorn.access] 127.0.0.1:62992 - "GET /api/research/library?sort=recent&limit=20 HTTP/1.1" 200
+2026-09-04 18:13:52,955 INFO    [uvicorn.access] 127.0.0.1:52803 - "GET /api/research/active HTTP/1.1" 200
+2026-09-04 18:13:52,959 INFO    [uvicorn.access] 127.0.0.1:52803 - "GET /api/research/library?sort=recent&limit=20 HTTP/1.1" 200
+2026-09-04 18:13:58,805 INFO    [uvicorn.access] 127.0.0.1:51334 - "GET /api/tasks/notifications HTTP/1.1" 200
+2026-09-04 18:13:58,934 INFO    [uvicorn.access] 127.0.0.1:51884 - "GET /api/tasks/notifications HTTP/1.1" 200
+2026-09-04 18:14:04,832 INFO    [uvicorn.access] 127.0.0.1:49791 - "GET /api/research/active HTTP/1.1" 200
+2026-09-04 18:14:04,855 INFO    [uvicorn.access] 127.0.0.1:49791 - "GET /api/research/library?sort=recent&limit=20 HTTP/1.1" 200
+2026-09-04 18:14:04,955 INFO    [uvicorn.access] 127.0.0.1:53246 - "GET /api/research/active HTTP/1.1" 200
+2026-09-04 18:14:04,958 INFO    [uvicorn.access] 127.0.0.1:53246 - "GET /api/research/library?sort=recent&limit=20 HTTP/1.1" 200
+2026-09-04 18:14:16,832 INFO    [uvicorn.access] 127.0.0.1:64722 - "GET /api/research/active HTTP/1.1" 200
+2026-09-04 18:14:16,835 INFO    [uvicorn.access] 127.0.0.1:64722 - "GET /api/research/library?sort=recent&limit=20 HTTP/1.1" 200
+2026-09-04 18:14:16,955 INFO    [uvicorn.access] 127.0.0.1:64062 - "GET /api/research/active HTTP/1.1" 200
+2026-09-04 18:14:16,958 INFO    [uvicorn.access] 127.0.0.1:64062 - "GET /api/research/library?sort=recent&limit=20 HTTP/1.1" 200
+2026-09-04 18:14:28,805 INFO    [uvicorn.access] 127.0.0.1:51624 - "GET /api/tasks/notifications HTTP/1.1" 200
+2026-09-04 18:14:28,809 INFO    [uvicorn.access] 127.0.0.1:51624 - "GET /api/notes HTTP/1.1" 200
+2026-09-04 18:14:28,834 INFO    [uvicorn.access] 127.0.0.1:53250 - "GET /api/research/active HTTP/1.1" 200
+2026-09-04 18:14:28,836 INFO    [uvicorn.access] 127.0.0.1:57701 - "GET /api/email/urgency-state HTTP/1.1" 200
+2026-09-04 18:14:28,837 WARNING [routes.email_helpers] SMTP not configured — add an Email Account in Settings or set env vars
+2026-09-04 18:14:28,837 WARNING [routes.email_helpers] IMAP not configured — add an Email Account in Settings or set env vars
+2026-09-04 18:14:28,839 INFO    [uvicorn.access] 127.0.0.1:57701 - "GET /api/research/library?sort=recent&limit=20 HTTP/1.1" 200
+2026-09-04 18:14:28,935 INFO    [uvicorn.access] 127.0.0.1:63455 - "GET /api/tasks/notifications HTTP/1.1" 200
+2026-09-04 18:14:28,958 INFO    [uvicorn.access] 127.0.0.1:49249 - "GET /api/research/active HTTP/1.1" 200
+2026-09-04 18:14:28,959 INFO    [uvicorn.access] 127.0.0.1:64676 - "GET /api/email/urgency-state HTTP/1.1" 200
+2026-09-04 18:14:28,960 WARNING [routes.email_helpers] SMTP not configured — add an Email Account in Settings or set env vars
+2026-09-04 18:14:28,960 WARNING [routes.email_helpers] IMAP not configured — add an Email Account in Settings or set env vars
+2026-09-04 18:14:28,962 INFO    [uvicorn.access] 127.0.0.1:64676 - "GET /api/research/library?sort=recent&limit=20 HTTP/1.1" 200
+2026-09-04 18:14:29,179 INFO    [uvicorn.access] 127.0.0.1:57701 - "GET /api/auth/status HTTP/1.1" 200
+2026-09-04 18:14:29,187 INFO    [uvicorn.access] 127.0.0.1:65192 - "GET /api/tasks HTTP/1.1" 200
+2026-09-04 18:14:29,189 INFO    [uvicorn.access] 127.0.0.1:65488 - "GET /api/calendar/events?start=2026-09-03T23%3A00%3A00.000Z&end=2026-09-04T23%3A00%3A00.000Z HTTP/1.1" 200
+2026-09-04 18:14:29,189 INFO    [uvicorn.access] 127.0.0.1:53250 - "GET /api/sessions HTTP/1.1" 200
+2026-09-04 18:14:29,190 INFO    [uvicorn.access] 127.0.0.1:57701 - "GET /api/research/library?sort=recent&limit=30 HTTP/1.1" 200
+2026-09-04 18:14:29,194 INFO    [uvicorn.access] 127.0.0.1:64491 - "GET /api/memory HTTP/1.1" 200
+2026-09-04 18:14:29,198 INFO    [uvicorn.access] 127.0.0.1:53250 - "GET /api/presets/groups HTTP/1.1" 200
+2026-09-04 18:14:29,198 INFO    [uvicorn.access] 127.0.0.1:57701 - "GET /api/tasks/runs/recent?limit=30 HTTP/1.1" 200
+2026-09-04 18:14:29,200 INFO    [uvicorn.access] 127.0.0.1:65488 - "GET /api/notes HTTP/1.1" 200
+2026-09-04 18:14:29,200 INFO    [uvicorn.access] 127.0.0.1:65192 - "GET /api/models HTTP/1.1" 200
+2026-09-04 18:14:29,201 INFO    [uvicorn.access] 127.0.0.1:64491 - "GET /api/research/active HTTP/1.1" 200
+2026-09-04 18:14:29,906 INFO    [uvicorn.access] 127.0.0.1:53250 - "GET /api/ecosystem/status HTTP/1.1" 200
+2026-09-04 18:14:29,911 INFO    [uvicorn.access] 127.0.0.1:57701 - "GET /api/finance/snapshot HTTP/1.1" 200
+2026-09-04 18:14:29,919 INFO    [uvicorn.access] 127.0.0.1:57701 - "GET /api/wizengamot/runs?limit=3 HTTP/1.1" 200
+2026-09-04 18:14:29,920 INFO    [uvicorn.access] 127.0.0.1:53250 - "GET /api/growth/snapshot HTTP/1.1" 200
+2026-09-04 18:14:29,941 INFO    [uvicorn.access] 127.0.0.1:64676 - "GET /api/auth/status HTTP/1.1" 200
+2026-09-04 18:14:29,951 INFO    [uvicorn.access] 127.0.0.1:58224 - "GET /api/tasks HTTP/1.1" 200
+2026-09-04 18:14:29,952 INFO    [uvicorn.access] 127.0.0.1:64676 - "GET /api/research/library?sort=recent&limit=30 HTTP/1.1" 200
+2026-09-04 18:14:29,953 INFO    [uvicorn.access] 127.0.0.1:49249 - "GET /api/sessions HTTP/1.1" 200
+2026-09-04 18:14:29,953 INFO    [uvicorn.access] 127.0.0.1:58094 - "GET /api/calendar/events?start=2026-09-03T23%3A00%3A00.000Z&end=2026-09-04T23%3A00%3A00.000Z HTTP/1.1" 200
+2026-09-04 18:14:29,959 INFO    [uvicorn.access] 127.0.0.1:57629 - "GET /api/memory HTTP/1.1" 200
+2026-09-04 18:14:29,960 INFO    [uvicorn.access] 127.0.0.1:49249 - "GET /api/presets/groups HTTP/1.1" 200
+2026-09-04 18:14:29,961 INFO    [uvicorn.access] 127.0.0.1:58094 - "GET /api/tasks/runs/recent?limit=30 HTTP/1.1" 200
+2026-09-04 18:14:29,961 INFO    [uvicorn.access] 127.0.0.1:58224 - "GET /api/models HTTP/1.1" 200
+2026-09-04 18:14:29,963 INFO    [uvicorn.access] 127.0.0.1:64676 - "GET /api/notes HTTP/1.1" 200
+2026-09-04 18:14:30,665 INFO    [uvicorn.access] 127.0.0.1:57629 - "GET /api/research/active HTTP/1.1" 200
+2026-09-04 18:14:30,668 INFO    [uvicorn.access] 127.0.0.1:49249 - "GET /api/ecosystem/status HTTP/1.1" 200
+2026-09-04 18:14:30,672 INFO    [uvicorn.access] 127.0.0.1:58094 - "GET /api/finance/snapshot HTTP/1.1" 200
+2026-09-04 18:14:30,683 INFO    [uvicorn.access] 127.0.0.1:58094 - "GET /api/wizengamot/runs?limit=3 HTTP/1.1" 200
+2026-09-04 18:14:30,684 INFO    [uvicorn.access] 127.0.0.1:49249 - "GET /api/growth/snapshot HTTP/1.1" 200
+2026-09-04 18:14:32,840 ERROR   [routes.email_routes] Failed to list emails: [WinError 10061] No connection could be made because the target machine actively refused it
+2026-09-04 18:14:32,841 INFO    [uvicorn.access] 127.0.0.1:51624 - "GET /api/email/list?folder=INBOX&limit=50&filter=unread HTTP/1.1" 200
+2026-09-04 18:14:32,965 ERROR   [routes.email_routes] Failed to list emails: [WinError 10061] No connection could be made because the target machine actively refused it
+2026-09-04 18:14:32,965 INFO    [uvicorn.access] 127.0.0.1:63455 - "GET /api/email/list?folder=INBOX&limit=50&filter=unread HTTP/1.1" 200
+2026-09-04 18:14:40,834 INFO    [uvicorn.access] 127.0.0.1:49466 - "GET /api/research/active HTTP/1.1" 200
+2026-09-04 18:14:40,838 INFO    [uvicorn.access] 127.0.0.1:49466 - "GET /api/research/library?sort=recent&limit=20 HTTP/1.1" 200
+2026-09-04 18:14:40,959 INFO    [uvicorn.access] 127.0.0.1:59694 - "GET /api/research/active HTTP/1.1" 200
+2026-09-04 18:14:40,966 INFO    [uvicorn.access] 127.0.0.1:59694 - "GET /api/research/library?sort=recent&limit=20 HTTP/1.1" 200
+2026-09-04 18:14:50,884 INFO    [src.model_discovery] Scanning 2 hosts for models: ['localhost', 'host.docker.internal']
+2026-09-04 18:14:52,866 INFO    [uvicorn.access] 127.0.0.1:53099 - "GET /api/research/active HTTP/1.1" 200
+2026-09-04 18:14:52,889 INFO    [uvicorn.access] 127.0.0.1:53099 - "GET /api/research/library?sort=recent&limit=20 HTTP/1.1" 200
+2026-09-04 18:14:52,958 INFO    [uvicorn.access] 127.0.0.1:62552 - "GET /api/research/active HTTP/1.1" 200
+2026-09-04 18:14:52,965 INFO    [uvicorn.access] 127.0.0.1:62552 - "GET /api/research/library?sort=recent&limit=20 HTTP/1.1" 200
+2026-09-04 18:14:55,061 INFO    [httpx] HTTP Request: GET http://localhost:11434/v1/models "HTTP/1.1 200 OK"
+2026-09-04 18:14:56,832 INFO    [httpx] HTTP Request: GET http://localhost:11434/api/v1/models "HTTP/1.1 404 Not Found"
+2026-09-04 18:14:57,243 INFO    [src.model_discovery] Discovered 1 model endpoints across 2 hosts
+2026-09-04 18:14:57,697 INFO    [httpx] HTTP Request: GET http://localhost:11434/v1/models "HTTP/1.1 200 OK"
+2026-09-04 18:14:57,699 INFO    [app] Warmup ping OK: http://localhost:11434/v1/models
+2026-09-04 18:14:58,805 INFO    [uvicorn.access] 127.0.0.1:59274 - "GET /api/tasks/notifications HTTP/1.1" 200
+2026-09-04 18:14:58,937 INFO    [uvicorn.access] 127.0.0.1:61237 - "GET /api/tasks/notifications HTTP/1.1" 200
+2026-09-04 18:15:04,832 INFO    [uvicorn.access] 127.0.0.1:53528 - "GET /api/research/active HTTP/1.1" 200
+2026-09-04 18:15:04,836 INFO    [uvicorn.access] 127.0.0.1:53528 - "GET /api/research/library?sort=recent&limit=20 HTTP/1.1" 200
+2026-09-04 18:15:04,955 INFO    [uvicorn.access] 127.0.0.1:56362 - "GET /api/research/active HTTP/1.1" 200
+2026-09-04 18:15:04,958 INFO    [uvicorn.access] 127.0.0.1:56362 - "GET /api/research/library?sort=recent&limit=20 HTTP/1.1" 200
+2026-09-04 18:15:12,170 INFO    [uvicorn.access] 127.0.0.1:64265 - "GET /api/growth/snapshot HTTP/1.1" 200
+2026-09-04 18:15:13,319 INFO    [uvicorn.access] 127.0.0.1:62092 - "GET /api/projects/messages?limit=80 HTTP/1.1" 200
+2026-09-04 18:15:13,322 WARNING [routes.email_helpers] SMTP not configured — add an Email Account in Settings or set env vars
+2026-09-04 18:15:13,322 WARNING [routes.email_helpers] IMAP not configured — add an Email Account in Settings or set env vars
+2026-09-04 18:15:14,542 INFO    [uvicorn.access] 127.0.0.1:62092 - "GET /api/calendar/events?start=2026-09-03T23%3A00%3A00.000Z&end=2026-09-04T23%3A00%3A00.000Z HTTP/1.1" 200
+2026-09-04 18:15:14,545 INFO    [uvicorn.access] 127.0.0.1:59236 - "GET /api/tasks HTTP/1.1" 200
+2026-09-04 18:15:16,511 INFO    [uvicorn.access] 127.0.0.1:59236 - "GET /api/projects/ HTTP/1.1" 200
+2026-09-04 18:15:16,512 INFO    [uvicorn.access] 127.0.0.1:62092 - "GET /api/projects/agents HTTP/1.1" 200
+2026-09-04 18:15:16,512 INFO    [uvicorn.access] 127.0.0.1:49509 - "GET /api/projects/agents/metrics HTTP/1.1" 200
+2026-09-04 18:15:16,513 INFO    [uvicorn.access] 127.0.0.1:62077 - "GET /api/projects/messages?limit=80 HTTP/1.1" 200
+2026-09-04 18:15:16,516 INFO    [uvicorn.access] 127.0.0.1:62077 - "GET /api/agents/supervisor/kill-switch HTTP/1.1" 200
+2026-09-04 18:15:16,519 INFO    [uvicorn.access] 127.0.0.1:62077 - "GET /api/agents/supervisor/spend?period=week HTTP/1.1" 200
+2026-09-04 18:15:16,525 INFO    [uvicorn.access] 127.0.0.1:62077 - "GET /api/agents/supervisor/outputs?limit=100 HTTP/1.1" 200
+2026-09-04 18:15:16,831 INFO    [uvicorn.access] 127.0.0.1:49509 - "GET /api/research/active HTTP/1.1" 200
+2026-09-04 18:15:16,835 INFO    [uvicorn.access] 127.0.0.1:49509 - "GET /api/research/library?sort=recent&limit=20 HTTP/1.1" 200
+2026-09-04 18:15:16,956 INFO    [uvicorn.access] 127.0.0.1:55935 - "GET /api/research/active HTTP/1.1" 200
+2026-09-04 18:15:16,959 INFO    [uvicorn.access] 127.0.0.1:55935 - "GET /api/research/library?sort=recent&limit=20 HTTP/1.1" 200
+2026-09-04 18:15:17,011 INFO    [httpx] HTTP Request: GET http://localhost:11434/api/tags "HTTP/1.1 200 OK"
+2026-09-04 18:15:17,013 INFO    [uvicorn.access] 127.0.0.1:62077 - "GET /api/diagnostics/inference HTTP/1.1" 200
+2026-09-04 18:15:17,325 ERROR   [routes.email_routes] Failed to list emails: [WinError 10061] No connection could be made because the target machine actively refused it
+2026-09-04 18:15:17,326 INFO    [uvicorn.access] 127.0.0.1:64265 - "GET /api/email/list?folder=INBOX&limit=50 HTTP/1.1" 200
+2026-09-04 18:15:28,894 INFO    [uvicorn.access] 127.0.0.1:62348 - "GET /api/tasks/notifications HTTP/1.1" 200
+2026-09-04 18:15:28,896 INFO    [uvicorn.access] 127.0.0.1:50913 - "GET /api/research/active HTTP/1.1" 200
+2026-09-04 18:15:28,897 INFO    [uvicorn.access] 127.0.0.1:56215 - "GET /api/email/urgency-state HTTP/1.1" 200
+2026-09-04 18:15:28,898 WARNING [routes.email_helpers] SMTP not configured — add an Email Account in Settings or set env vars
+2026-09-04 18:15:28,898 WARNING [routes.email_helpers] IMAP not configured — add an Email Account in Settings or set env vars
+2026-09-04 18:15:28,901 INFO    [uvicorn.access] 127.0.0.1:56215 - "GET /api/research/library?sort=recent&limit=20 HTTP/1.1" 200
+2026-09-04 18:15:28,934 INFO    [uvicorn.access] 127.0.0.1:60019 - "GET /api/tasks/notifications HTTP/1.1" 200
+2026-09-04 18:15:28,957 INFO    [uvicorn.access] 127.0.0.1:53283 - "GET /api/research/active HTTP/1.1" 200
+2026-09-04 18:15:28,958 INFO    [uvicorn.access] 127.0.0.1:59691 - "GET /api/email/urgency-state HTTP/1.1" 200
+2026-09-04 18:15:28,959 WARNING [routes.email_helpers] SMTP not configured — add an Email Account in Settings or set env vars
+2026-09-04 18:15:28,959 WARNING [routes.email_helpers] IMAP not configured — add an Email Account in Settings or set env vars
+2026-09-04 18:15:28,961 INFO    [uvicorn.access] 127.0.0.1:59691 - "GET /api/research/library?sort=recent&limit=20 HTTP/1.1" 200
+2026-09-04 18:15:29,891 INFO    [uvicorn.access] 127.0.0.1:56215 - "GET /api/auth/status HTTP/1.1" 200
+2026-09-04 18:15:29,894 INFO    [uvicorn.access] 127.0.0.1:62348 - "GET /api/tasks HTTP/1.1" 200
+2026-09-04 18:15:29,900 INFO    [uvicorn.access] 127.0.0.1:55859 - "GET /api/calendar/events?start=2026-09-03T23%3A00%3A00.000Z&end=2026-09-04T23%3A00%3A00.000Z HTTP/1.1" 200
+2026-09-04 18:15:29,900 INFO    [uvicorn.access] 127.0.0.1:50913 - "GET /api/sessions HTTP/1.1" 200
+2026-09-04 18:15:29,901 INFO    [uvicorn.access] 127.0.0.1:56215 - "GET /api/research/library?sort=recent&limit=30 HTTP/1.1" 200
+2026-09-04 18:15:29,907 INFO    [uvicorn.access] 127.0.0.1:60120 - "GET /api/memory HTTP/1.1" 200
+2026-09-04 18:15:29,908 INFO    [uvicorn.access] 127.0.0.1:50913 - "GET /api/presets/groups HTTP/1.1" 200
+2026-09-04 18:15:29,909 INFO    [uvicorn.access] 127.0.0.1:56215 - "GET /api/tasks/runs/recent?limit=30 HTTP/1.1" 200
+2026-09-04 18:15:29,910 INFO    [uvicorn.access] 127.0.0.1:62348 - "GET /api/models HTTP/1.1" 200
+2026-09-04 18:15:29,912 INFO    [uvicorn.access] 127.0.0.1:55859 - "GET /api/notes HTTP/1.1" 200
+2026-09-04 18:15:30,616 INFO    [uvicorn.access] 127.0.0.1:60120 - "GET /api/research/active HTTP/1.1" 200
+2026-09-04 18:15:30,621 INFO    [uvicorn.access] 127.0.0.1:50913 - "GET /api/ecosystem/status HTTP/1.1" 200
+2026-09-04 18:15:30,629 INFO    [uvicorn.access] 127.0.0.1:59691 - "GET /api/auth/status HTTP/1.1" 200
+2026-09-04 18:15:30,630 INFO    [uvicorn.access] 127.0.0.1:64175 - "GET /api/tasks HTTP/1.1" 200
+2026-09-04 18:15:30,632 INFO    [uvicorn.access] 127.0.0.1:51585 - "GET /api/calendar/events?start=2026-09-03T23%3A00%3A00.000Z&end=2026-09-04T23%3A00%3A00.000Z HTTP/1.1" 200
+2026-09-04 18:15:30,635 INFO    [uvicorn.access] 127.0.0.1:56215 - "GET /api/finance/snapshot HTTP/1.1" 200
+2026-09-04 18:15:30,636 INFO    [uvicorn.access] 127.0.0.1:53283 - "GET /api/sessions HTTP/1.1" 200
+2026-09-04 18:15:30,637 INFO    [uvicorn.access] 127.0.0.1:59691 - "GET /api/research/library?sort=recent&limit=30 HTTP/1.1" 200
+2026-09-04 18:15:30,637 INFO    [uvicorn.access] 127.0.0.1:57156 - "GET /api/memory HTTP/1.1" 200
+2026-09-04 18:15:30,643 INFO    [uvicorn.access] 127.0.0.1:64175 - "GET /api/models HTTP/1.1" 200
+2026-09-04 18:15:30,646 INFO    [uvicorn.access] 127.0.0.1:53283 - "GET /api/presets/groups HTTP/1.1" 200
+2026-09-04 18:15:30,646 INFO    [uvicorn.access] 127.0.0.1:51585 - "GET /api/notes HTTP/1.1" 200
+2026-09-04 18:15:30,648 INFO    [uvicorn.access] 127.0.0.1:59691 - "GET /api/tasks/runs/recent?limit=30 HTTP/1.1" 200
+2026-09-04 18:15:30,649 INFO    [uvicorn.access] 127.0.0.1:57156 - "GET /api/research/active HTTP/1.1" 200
+2026-09-04 18:15:31,357 INFO    [uvicorn.access] 127.0.0.1:56215 - "GET /api/wizengamot/runs?limit=3 HTTP/1.1" 200
+2026-09-04 18:15:31,357 INFO    [uvicorn.access] 127.0.0.1:64175 - "GET /api/ecosystem/status HTTP/1.1" 200
+2026-09-04 18:15:31,358 INFO    [uvicorn.access] 127.0.0.1:50913 - "GET /api/growth/snapshot HTTP/1.1" 200
+2026-09-04 18:15:31,362 INFO    [uvicorn.access] 127.0.0.1:53283 - "GET /api/finance/snapshot HTTP/1.1" 200
+2026-09-04 18:15:31,370 INFO    [uvicorn.access] 127.0.0.1:53283 - "GET /api/wizengamot/runs?limit=3 HTTP/1.1" 200
+2026-09-04 18:15:31,372 INFO    [uvicorn.access] 127.0.0.1:64175 - "GET /api/growth/snapshot HTTP/1.1" 200
+2026-09-04 18:15:32,102 INFO    [httpx] HTTP Request: GET http://localhost:11434/api/tags "HTTP/1.1 200 OK"
+2026-09-04 18:15:32,901 ERROR   [routes.email_routes] Failed to list emails: [WinError 10061] No connection could be made because the target machine actively refused it
+2026-09-04 18:15:32,903 INFO    [uvicorn.access] 127.0.0.1:51529 - "GET /api/email/list?folder=INBOX&limit=50&filter=unread HTTP/1.1" 200
+2026-09-04 18:15:32,962 ERROR   [routes.email_routes] Failed to list emails: [WinError 10061] No connection could be made because the target machine actively refused it
+2026-09-04 18:15:32,962 INFO    [uvicorn.access] 127.0.0.1:60019 - "GET /api/email/list?folder=INBOX&limit=50&filter=unread HTTP/1.1" 200
+2026-09-04 18:15:40,887 INFO    [uvicorn.access] 127.0.0.1:64989 - "GET /api/research/active HTTP/1.1" 200
+2026-09-04 18:15:40,892 INFO    [uvicorn.access] 127.0.0.1:64989 - "GET /api/research/library?sort=recent&limit=20 HTTP/1.1" 200
+2026-09-04 18:15:40,955 INFO    [uvicorn.access] 127.0.0.1:50987 - "GET /api/research/active HTTP/1.1" 200
+2026-09-04 18:15:40,959 INFO    [uvicorn.access] 127.0.0.1:50987 - "GET /api/research/library?sort=recent&limit=20 HTTP/1.1" 200
+2026-09-04 18:15:52,887 INFO    [uvicorn.access] 127.0.0.1:62422 - "GET /api/research/active HTTP/1.1" 200
+2026-09-04 18:15:52,891 INFO    [uvicorn.access] 127.0.0.1:62422 - "GET /api/research/library?sort=recent&limit=20 HTTP/1.1" 200
+2026-09-04 18:15:52,955 INFO    [uvicorn.access] 127.0.0.1:63651 - "GET /api/research/active HTTP/1.1" 200
+2026-09-04 18:15:52,958 INFO    [uvicorn.access] 127.0.0.1:63651 - "GET /api/research/library?sort=recent&limit=20 HTTP/1.1" 200
+2026-09-04 18:15:57,706 INFO    [src.model_discovery] Scanning 2 hosts for models: ['localhost', 'host.docker.internal']
+2026-09-04 18:15:58,936 INFO    [uvicorn.access] 127.0.0.1:54994 - "GET /api/tasks/notifications HTTP/1.1" 200
+2026-09-04 18:15:59,572 INFO    [uvicorn.access] 127.0.0.1:51043 - "GET /api/tasks/notifications HTTP/1.1" 200
+2026-09-04 18:16:01,879 INFO    [httpx] HTTP Request: GET http://localhost:11434/v1/models "HTTP/1.1 200 OK"
+2026-09-04 18:16:03,608 INFO    [httpx] HTTP Request: GET http://localhost:11434/api/v1/models "HTTP/1.1 404 Not Found"
+2026-09-04 18:16:03,885 INFO    [src.model_discovery] Discovered 1 model endpoints across 2 hosts
+2026-09-04 18:16:04,351 INFO    [httpx] HTTP Request: GET http://localhost:11434/v1/models "HTTP/1.1 200 OK"
+2026-09-04 18:16:04,353 INFO    [app] Warmup ping OK: http://localhost:11434/v1/models
+2026-09-04 18:16:04,887 INFO    [uvicorn.access] 127.0.0.1:65450 - "GET /api/research/active HTTP/1.1" 200
+2026-09-04 18:16:04,891 INFO    [uvicorn.access] 127.0.0.1:65450 - "GET /api/research/library?sort=recent&limit=20 HTTP/1.1" 200
+2026-09-04 18:16:04,955 INFO    [uvicorn.access] 127.0.0.1:57556 - "GET /api/research/active HTTP/1.1" 200
+2026-09-04 18:16:04,958 INFO    [uvicorn.access] 127.0.0.1:57556 - "GET /api/research/library?sort=recent&limit=20 HTTP/1.1" 200
+2026-09-04 18:16:16,886 INFO    [uvicorn.access] 127.0.0.1:60383 - "GET /api/research/active HTTP/1.1" 200
+2026-09-04 18:16:16,890 INFO    [uvicorn.access] 127.0.0.1:60383 - "GET /api/research/library?sort=recent&limit=20 HTTP/1.1" 200
+2026-09-04 18:16:16,955 INFO    [uvicorn.access] 127.0.0.1:57268 - "GET /api/research/active HTTP/1.1" 200
+2026-09-04 18:16:16,958 INFO    [uvicorn.access] 127.0.0.1:57268 - "GET /api/research/library?sort=recent&limit=20 HTTP/1.1" 200
