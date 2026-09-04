@@ -575,3 +575,303 @@ OPEN ITEMS:
 
 ### Orchestrator note — Gate 2 acceptance (2026-09-04)
 The Auditor's single MINOR defect (--smoke-restart flag) is ACCEPTED at the gate: additive, test-only, and it is what made the restart requirement machine-verifiable. Auditor open item 1 (.gitignore `.claude-flow/`) is assigned to Phase 3; open items 2 and 4 are binding inputs to the Phase 3/4 briefs.
+
+## Phase 3 — agent reports
+
+### AGENT REPORT — Packager
+
+AGENT: Packager
+TASK: Phase 3 — PyInstaller spec + build script + caveats
+STATUS: complete
+
+EVIDENCE:
+
+Probe-landing analysis (launcher/paths.py:65-77, read before authoring):
+frozen candidates are (1) exe_dir/dobby, (2) exe_dir/vendor/dobby,
+(3) _MEIPASS/dobby, (4) _MEIPASS/vendor/dobby; valid only with app.py AND
+static/ present (paths.py:76). PyInstaller 6.x onedir places all datas/Trees
+under <exe dir>/_internal = sys._MEIPASS, so every tuple uses dest prefix
+'dobby/...' and CANDIDATE 3 (_MEIPASS/dobby) is the one that hits —
+candidates 1-2 structurally cannot under 6.x defaults. app.py + static/ both
+ship under that prefix, so the validity check passes. Matches the runtime
+contract in launcher/server.py:155-185 (chdir + sys.path insert + import app).
+
+Datas tuple table (15 entries = 9 contract-mapped + 6 delta):
+| # | tuple (src → dest)                                        | contract | justification |
+| 1 | static/ → dobby/static (Tree, 254 files)                  | item 1   | app.py:415 CWD-relative mount; paths.py:76 probe requirement |
+| 2 | mcp_servers/image_gen_server.py → dobby/mcp_servers       | item 2   | src/builtin_mcp.py:71 CWD-relative script path |
+| 3 | mcp_servers/memory_server.py → dobby/mcp_servers          | item 3   | src/builtin_mcp.py:72 |
+| 4 | mcp_servers/rag_server.py → dobby/mcp_servers             | item 4   | src/builtin_mcp.py:73 |
+| 5 | mcp_servers/email_server.py → dobby/mcp_servers           | item 5   | src/builtin_mcp.py:74 |
+| 6 | services/hwfit/data/hf_models.json → dobby/services/hwfit/data | item 6 | services/hwfit/models.py:258,268 (__file__-relative; also subsumed by #13, kept explicit for traceability, dedupes) |
+| 7 | .env.example → dobby                                      | item 7   | gate-approved conditional; zero runtime refs (grep) |
+| 8 | integrations/codex/ → dobby/integrations/codex (Tree)     | item 8a  | routes/codex_routes.py:160 zips this dir for /api/codex/plugin.zip |
+| 9 | integrations/claude/skills/ → dobby/integrations/claude/skills (Tree) | item 8b | routes/codex_routes.py:778 |
+EXTRAS (architecture delta — on-disk source tree):
+|10 | app.py → dobby                    | probe validity (paths.py:76) + server.py:182 `import app` |
+|11 | src/ → dobby/src (Tree, 114 py)   | 775+9+3 `from/import src` sites in runtime tree |
+|12 | routes/ → dobby/routes (62 py)    | 131+3 import sites; app.py:165-793 |
+|13 | services/ → dobby/services (39 py)| 47 import sites; carries hwfit data |
+|14 | core/ → dobby/core (10 py)        | 304 import sites; app.py:53-64 |
+|15 | companion/ → dobby/companion (3 py)| app.py:796 `from companion import setup_companion_routes` |
+Count reconciliation: contract 8 items → 9 entries (item 8 spans two paths);
+delta 6 entries, each justified above; total 15. Excluded from the tree
+(grep-verified zero runtime imports/path refs): tests, docs/, tools/,
+scripts/, .sweep/, ds-reauthor/, assets/, config/, skills/ (runtime skills in
+DATA_DIR — services/memory/skills.py:66-67), migrations/ + alembic.ini +
+setup.py (schema via Base.metadata.create_all, core/database.py:2494/3032),
+node_modules, .git. mcp_servers/__init__.py not shipped (scripts launched by
+path, never imported). Trees exclude __pycache__/*.pyc.
+
+Dependency decision table (33 requirement specs + 4 launcher):
+- collect_submodules (12): uvicorn (string-loaded loops/protocols/lifespan via
+  uvicorn.config import_from_string; plain uvicorn install — probe shows
+  httptools/websockets/wsproto/uvloop/watchfiles ABSENT, h11 present →
+  h11 hiddenimport), fastapi + starlette (dobby imports submodules invisible
+  to analysis, app.py:45-50,69), sqlalchemy (invisible orm/engine/types
+  imports + sqlite dialect from URL string — standard hook covers dialects,
+  collect is its deterministic superset, stated in-spec), markdown
+  (extensions BY NAME at src/visual_report.py:80), pygments (dynamic lexer
+  resolution; codehilite dep, present in venv), qrcode (dynamic image
+  factories), dateutil (dateutil.rrule at calendar routes), PIL (13 invisible
+  `from PIL` sites in dobby), mcp (lazy per-transport imports,
+  src/mcp_manager.py:182-327, src/mcp_oauth.py:121-147 — no deps added
+  beyond requirements.txt:58), email + urllib (stdlib; email.mime.* at
+  routes/email_helpers.py:25-26).
+- collect_all (9): webview (15 non-py files: js/ + lib/ WebView2 DLLs,
+  dynamic GUI backend), pythonnet (97 DLLs), clr_loader (2 DLLs) — pywebview
+  Windows backend stack, clr probe-verified; chromadb (chromadb-client 1.5.9
+  provides import name `chromadb`, 25 non-py files incl. log_config.yml +
+  migrations/*.sql); fastembed 0.8.0; onnxruntime (2 .dll + 1 .pyd in capi —
+  deterministic regardless of hooks-contrib version); pptx (9 template data
+  files), docx (24 template files); tzdata (600 zone files — ZoneInfo probe
+  passes only via tzdata on Windows; dobby imports zoneinfo).
+- plain hiddenimports (29 third-party): dotenv, bs4, pypdf, pyotp, croniter,
+  icalendar, caldav, nh3, bcrypt, charset_normalizer, youtube_transcript_api,
+  defusedxml (transitive via youtube-transcript-api per pip show Required-by;
+  lazy at routes/contacts_routes.py:271), httpx, pydantic, pydantic_core,
+  pydantic_settings, multipart + python_multipart (0.0.32 exposes both;
+  starlette 1.6.0 lazy form parsing), matplotlib + matplotlib.pyplot +
+  matplotlib.backends.backend_agg (Agg forced by dobby itself at
+  src/project_export.py:210 — the runtime consideration, noted in-spec;
+  standard hook collects mpl-data), numpy, cryptography +
+  cryptography.fernet (native wheels via standard/contrib hooks — stated),
+  h11, clr, pystray._win32 (platform-gated function-level import,
+  pystray/__init__.py:34,48), tokenizers, onnxruntime.
+- stdlib hiddenimports (59): full sweep of dobby runtime tree against
+  sys.stdlib_module_names (64 hits) minus __future__ (compile-time),
+  fcntl/pty (Unix-only, guarded at routes/shell_routes.py:24-25), email/
+  urllib (moved to collect_submodules); notable: sqlite3, imaplib, smtplib,
+  csv, wave, zoneinfo, ctypes.
+- launcher deps: pywebview/pystray/Pillow/requests visible to static analysis
+  (window.py:14, tray.py:15-16, server.py:24, ollama_check.py:22) +
+  reinforcements above.
+- EXCLUDED (11 packages, justified in-spec): pytest, pytest-asyncio, httpx2
+  (test-only per requirements.txt:62-67), alembic (zero runtime imports —
+  grep; CLI-only), and all 7 requirements-optional.txt entries
+  (faster-whisper, ddgs, PyMuPDF, rembg, realesrgan [commented out upstream],
+  playwright, markitdown) — each lazy/guarded in dobby (e.g. tts_service.py:243,
+  content.py:108 try/except, gallery_routes.py:1633, upload_handler.py:110);
+  noted in README caveats. Analysis excludes=['tkinter'].
+
+Import-name probes (.venv, Python 3.12.10): 41/41 passed — dotenv, bs4, pptx,
+docx, pypdf, qrcode, dateutil, youtube_transcript_api, icalendar, caldav,
+croniter, pyotp, markdown, charset_normalizer, multipart, pydantic_settings,
+mcp, chromadb, fastembed, nh3, bcrypt, cryptography, uvicorn, fastapi,
+sqlalchemy, numpy, matplotlib, httpx, pydantic, webview, pystray, PIL,
+requests, alembic, defusedxml, onnxruntime, tokenizers, pydantic_core,
+starlette, anyio, httpx2. Secondary probes: h11/lxml/python_multipart/
+sse_starlette/recurring_ical_events/pygments/pythonnet/clr_loader/clr/tzdata
+present; httptools/websockets/wsproto/uvloop/watchfiles/vobject/httpx_sse/
+typer/rich absent (dev-parity preserved by not forcing them).
+
+Validation: spec AST-parses clean (python ast.parse); build-windows.ps1
+parses with 0 errors under the PS 5.1 language parser. Build script: 7
+numbered-banner steps per mission spec, $ErrorActionPreference=Stop plus
+explicit $LASTEXITCODE checks after every native call (PS 5.1 does not throw
+on native failure), gitlink verification aborts on mismatch, pip freeze →
+build/pip-freeze.txt, frontend step echoes the no-build fact, zip via
+Compress-Archive of the whole folder.
+
+FILES WRITTEN:
+- C:\Users\Admin\Documents\dobby-desktop\dobby-desktop.spec (new)
+- C:\Users\Admin\Documents\dobby-desktop\build-windows.ps1 (new)
+- C:\Users\Admin\Documents\dobby-desktop\README.md (one appended section,
+  "## Packaging caveats"; +10 lines, rest untouched)
+
+COUNTS: datas tuples: 15 (contract 8 items→9 entries + delta 6);
+hiddenimports (explicit): 88 (59 stdlib + 29 third-party);
+collect_all: 9; collect_submodules: 12; excluded packages: 11 (+tkinter
+module exclude); import probes passed 41/41 (core) + 19 secondary;
+spec lines: 344; script lines: 117; README lines added: 10.
+
+OPEN ITEMS:
+1. paths.py's docstring calls exe_dir/dobby the "preferred layout for
+   Phase 4", but PyInstaller 6.x cannot place datas there — the bundle
+   resolves via probe candidate 3 (_MEIPASS/dobby). If the Orchestrator wants
+   the exe_dir/dobby layout literally, Phase 4 would need a post-build move
+   step; functionally unnecessary, the probe already covers it.
+2. mcp.cli submodules reference typer/rich (absent) and mcp.client.sse
+   references httpx_sse (absent) — PyInstaller will emit missing-module
+   WARNINGS during the Phase 4 build; harmless (same modules fail identically
+   in the dev venv) and expected — Phase 4 should not treat them as defects.
+3. pip freeze lands in build/pip-freeze.txt only when Phase 4 runs the
+   script; nothing recorded yet by design (no build run in Phase 3).
+
+### AUDIT NOTE — Auditor (Phase 3)
+
+AGENT: Auditor
+TASK: Phase 3 audit of Packager output
+STATUS: complete
+
+EVIDENCE:
+
+S1 — Parse both: PASS.
+  - Spec: `.venv python 3.12.10 -c "ast.parse(...)"` → "SPEC AST PARSE OK".
+  - Script: PSParser.Tokenize → 452 tokens, 0 parse errors; Language.Parser.ParseFile → 0 AST errors.
+    File is 117 physical lines (101 non-blank) — matches the "117 lines" claim.
+
+S2 — Spec flags: PASS.
+  - onedir confirmed: EXE(exclude_binaries=True) at dobby-desktop.spec:315, COLLECT present at :333-344.
+  - name='DobbyOS' (:316 and :343), console=False (:321), upx=False in both EXE (:320) and COLLECT (:342),
+    strip=False, entry = launcher/__main__.py (:296, file exists), excludes=['tkinter'] (:304).
+  - icon omission NOTE present twice (:34-36 and :329-330), citing missing assets/dobby.ico + runtime Pillow tray glyph.
+
+S3 — Datas contract: PASS.
+  - Programmatic AST count: datas list = 7 tuples, Tree() calls = 8 → 15 total. 9 contract-mapped
+    (static Tree, 4 mcp_servers scripts, hf_models.json, .env.example, integrations/codex + integrations/claude/skills)
+    + 6 delta (app.py, src, routes, core, services, companion). All 15 src paths verified EXISTS on disk under vendor/dobby.
+  - All dests prefixed 'dobby/...'. All 8 Trees use excludes=_TREE_EXCLUDES = ['__pycache__','*.pyc','*.pyo'] (:73).
+  - Delta justifications verified in dobby code: companion import at app.py:796 (`from companion import setup_companion_routes`);
+    hwfit __file__-relative JSON read at services/hwfit/models.py:258 (+ model_catalog_path :268);
+    codex_routes.py:160 zips <base>/integrations/codex, :778 zips <base>/integrations/claude/skills (both Path(__file__)-relative).
+
+S4 — Landing analysis: PASS.
+  - launcher/paths.py:65-71: frozen candidates in order = exe/dobby, exe/vendor/dobby, _MEIPASS/dobby (candidate 3), _MEIPASS/vendor/dobby.
+  - Validity condition at paths.py:76: `(cand / "app.py").is_file() and (cand / "static").is_dir()`.
+  - Spec ships app.py → dest 'dobby' (:46) and static → 'dobby/static' Tree (:79); both land under _internal (= _MEIPASS in
+    PyInstaller 6.x onedir) → candidate 3 validates. Candidates 1-2 correctly miss (nothing lands at exe-dir top level in 6.x).
+  - launcher/server.py:155-185 confirms the consumption path: dobby_base_dir() → os.chdir → sys.path.insert → `import app as dobby_app` → uvicorn.run.
+
+S5 — Dependency sample audit (10/10 verified):
+  1. uvicorn 0.52.4: collect_submodules ✓; probe: h11 PRESENT; httptools/websockets/wsproto/uvloop/watchfiles all ABSENT (ModuleNotFoundError) — h11 hiddenimport justified, plain uvicorn confirmed.
+  2. python-multipart: probe — both `multipart` and `python_multipart` import OK in .venv; both hiddenimports present (:167-168).
+  3. tzdata collect_all: probe `zoneinfo.ZoneInfo("Europe/Lisbon")` → resolves ("Europe/Lisbon").
+  4. matplotlib Agg: src/project_export.py:209-210 — `import matplotlib; matplotlib.use("Agg")` inside render_chart_png; backend_agg hiddenimport (:176).
+  5. markdown by-name extensions: src/visual_report.py:78-80 — extensions=["extra","codehilite","toc","tables","sane_lists"]; collect_submodules('markdown') + ('pygments') cover.
+  6. pystray._win32: .venv pystray/__init__.py — `def win32(): from . import _win32` + `elif sys.platform == 'win32': candidates = [win32]` (function-level relative import, gate confirmed).
+  7. defusedxml: lazy import at routes/contacts_routes.py:271 (`from defusedxml import ElementTree as ET` inside _fetch_via_report); pip show → Required-by: youtube-transcript-api. Transitive + invisible, hiddenimport justified.
+  8. chromadb: `import chromadb` OK, version 1.5.9, 25 non-py files in package — matches spec claim (:253-256) exactly.
+  9. webview/pythonnet/clr_loader: `import clr` OK in .venv; pywebview 6.2.1 confirmed via metadata.
+  10. email/urllib collect_submodules: routes/email_helpers.py:25-27 — `from email.mime.multipart import MIMEMultipart`, `from email.mime.base import MIMEBase`, `from email import encoders`.
+
+S6 — Exclusions: PASS.
+  - requirements.txt = exactly 33 specs (counted); all 33 mapped to a spec mechanism or justified exclusion.
+  - httpx2 marked test-client-only by comment (requirements.txt:64-66); pytest/pytest-asyncio (:62-63) are uncommented but test-only on their face. httpx2 2.12.0 IS installed in .venv (step-3 pip install will succeed).
+  - alembic: grep over app.py/src/routes/core/services/companion/mcp_servers → zero runtime imports; only hits are migrations/env.py + migrations/versions/0002_control_plane.py. Schema via create_all claim consistent.
+  - Optional-dep guards verified: services/search/content.py:107-110 pdfminer in try/except ImportError → None; faster-whisper lazily imported in try/except at services/stt/stt_service.py:61-63. (Claim's citation "tts_service.py:243" is imprecise — that location is the kokoro/torch guard, also lazy+guarded; the faster-whisper guard lives in stt_service.py. Pattern confirmed either way.)
+  - requirements-optional.txt confirms the 7 entries incl. realesrgan commented out upstream.
+
+S7 — Build script walkthrough: PASS with 1 MINOR finding.
+  - PS 5.1 safety: grep for && / || → only line 2 (a comment); no ternary; $ErrorActionPreference=Stop (:6); Assert-Native ($LASTEXITCODE check) after all 8 native calls (venv create, python --version, submodule update, rev-parse, ls-tree, pip install, pip freeze, pyinstaller).
+  - Gitlink parse: `($lsTree -split "\s+")[2]` correctly extracts the sha from "160000 commit <sha>\tvendor/dobby" (tab matches \s+). Wrong-commit scenarios: `git submodule update --init --checkout` forces HEAD to the INDEX gitlink; a staged-but-uncommitted gitlink change → actual != HEAD gitlink → abort (safe direction). Cannot pass at a wrong HEAD.
+  - MINOR DEFECT: the gate verifies the submodule HEAD only, not working-tree cleanliness. `--checkout` does not revert modified files when HEAD already matches, so a dirty vendor/dobby (edited sources at the right commit) passes step 2 and gets bundled — the "pinned source" guarantee is not fully enforced. Fix: add an empty-`git -C vendor/dobby status --porcelain` check.
+  - Zip: $dist = dist\DobbyOS; `Compress-Archive -Path $dist` includes the whole folder as zip root ✓. Note: PS 5.1 Compress-Archive has a ~4GB/ZIP64 limitation — watch at Phase 4 if the onedir bundle balloons.
+
+S8 — README diff discipline: PASS.
+  - `git diff README.md`: 1 file changed, 10 insertions(+), exactly one hunk, appended at EOF; "## Packaging caveats" appears exactly once; all prior sections untouched.
+  - Coverage confirmed: SmartScreen/AV + mitigations (onedir, AV exclusion, signing planned), firewall prompt (127.0.0.1:7001 loopback-only), onedir folder-integrity, v1 degraded list (MCP disabled, no runtime pip, 7 optional extras named).
+
+S9 — Repo hygiene: PASS.
+  - `git status --porcelain`: ` M README.md`, `?? .claude-flow/` (pre-existing), `?? build-windows.ps1`, `?? dobby-desktop.spec` — nothing else; launcher/ untouched.
+  - vendor/dobby porcelain: empty. `git -C vendor/dobby rev-parse HEAD` = 3268d170848ae730e89523ae80c3c31b16ec2e35 = ls-tree gitlink. Exact match to mission pin.
+
+S10 — Missed-dependency hunt: PASS — no REAL gap found.
+  - anyio (the serious candidate): anyio 4.15.0 present; starlette 1.6.0 sync routes/middleware reach anyio.get_async_backend → `import_module("anyio._backends._" + name)` (anyio/_core/_eventloop.py:9 + backend loader); ZERO static imports of _backends anywhere in the package (grep). Nothing in the spec collects anyio. RESOLUTION: pyinstaller-hooks-contrib ships hook-anyio.py (verified upstream: `collect_submodules('anyio._backends')`, present since the AnyIO 1.4 era), and hooks-contrib installs automatically as a pyinstaller dependency in step 3 — covered by the hook mechanism the spec already relies on for matplotlib/sqlalchemy/pydantic. Not a defect per the gap criterion, but see OPEN ITEMS: the spec pins h11/pydantic_core explicitly "for determinism" yet is silent on the single most boot-critical dynamic import in the stack.
+  - sniffio: ABSENT from .venv and no longer required (anyio 4.15 requires only idna + typing_extensions; typing_extensions 4.16.0 present). Not needed.
+  - websockets: routes/control_routes.py:10-11 documents "17 SSE producers and ZERO WebSocket endpoints". h11-only uvicorn is correct; dev parity holds.
+  - jinja2: ABSENT from venv; only dobby references are a comment + a generated external runner-script string (routes/cookbook_routes.py:1377,1388). Not imported by the frozen app.
+  - greenlet: present; reached statically via collect_submodules('sqlalchemy') (util.concurrency); no create_async_engine/ext.asyncio anywhere in dobby → sync engine only. Covered.
+  - h2: ABSENT; httpx 0.28.1 http2 is opt-in; dev parity holds. aiofiles/passlib/psutil/aiohttp: ABSENT from venv AND zero imports in the dobby runtime tree. yaml/requests/lxml/certifi/idna/httpcore/huggingface_hub: present and statically reachable from already-collected packages (chromadb/caldav/launcher/httpx/fastembed).
+
+CLAIM-COUNT VERIFICATION (programmatic, AST): datas 7 + Trees 8 = 15 ✓ (9 contract + 6 delta ✓); hidden_stdlib 59 + hidden_thirdparty 29 = 88 explicit ✓; collect_submodules loop = 12 entries ✓; collect_all loop = 9 entries ✓; script 117 lines ✓; README +10 lines, one section ✓.
+
+FILES WRITTEN: none (read-only agent)
+
+COUNTS: spot-checks passed 10/10, defects found 1 (0 CRITICAL / 0 MAJOR / 1 MINOR)
+
+VERDICT: COUNTERSIGNED WITH DEFECTS
+  - MINOR (build-windows.ps1:41-58): submodule gate verifies HEAD commit only; dirty working-tree files in
+    vendor/dobby survive `submodule update --checkout` and would be bundled while the gate reports
+    "submodule OK: at the pinned commit". Add an empty-porcelain check. Does not block Gate 3 —
+    today's tree is clean (S9) — but should land before the Phase 4 build runs.
+
+OPEN ITEMS:
+  1. (recommended one-liner) Add `'anyio._backends._asyncio'` to hiddenimports, or a spec comment citing
+     hooks-contrib hook-anyio — coverage currently rests entirely on an unpinned transitive hook package,
+     contradicting the spec's own "explicit for determinism" doctrine, and a first-request crash is the
+     failure mode if it ever drops.
+  2. Step 3 installs unpinned `pyinstaller`; the spec's landing analysis assumes the 6.x `_internal` layout.
+     pip-freeze records the version, but a `pyinstaller>=6,<7` floor/ceiling would make the assumption enforced.
+  3. PS 5.1 Compress-Archive ~4GB ZIP64 limitation — verify zip integrity at Phase 4 if the onedir bundle is large.
+  4. Claim nits (no action needed): the faster-whisper guard is at services/stt/stt_service.py:61-63, not
+     tts_service.py:243 (that's the kokoro/torch guard); only httpx2 carries a test-only comment in
+     requirements.txt — pytest/pytest-asyncio (lines 62-63) are uncommented.
+
+### AGENT REPORT — Packager (fix run, pre-gate)
+
+AGENT: Packager (fix run)
+TASK: Phase 3 — apply 1 defect fix + 2 hardening items + gitignore line
+STATUS: complete
+EVIDENCE:
+--- git diff (.gitignore, only tracked file changed) ---
+diff --git a/.gitignore b/.gitignore
+@@ -4,3 +4,4 @@ __pycache__/
+ *.log
+ .venv/
+ node_modules/
++.claude-flow/
+
+--- build-windows.ps1 hunk 1 (step 2, MINOR defect fix — untracked file, hunk as applied) ---
+ Write-Host "submodule OK: vendor/dobby is at the pinned commit"
++
++# Working-tree cleanliness gate: a matching HEAD is not enough — local edits
++# in vendor/dobby would ship unpinned source into the bundle.
++$porcelain = git -C vendor/dobby status --porcelain
++Assert-Native "git status --porcelain in vendor/dobby"
++if ($porcelain) {
++    Write-Host "vendor/dobby working tree status (porcelain):"
++    $porcelain | ForEach-Object { Write-Host "  $_" }
++    Write-Host "FATAL: vendor/dobby working tree is dirty - the pinned-source guarantee would be violated."
++    exit 1
++}
++Write-Host "submodule OK: vendor/dobby working tree is clean"
+
+--- build-windows.ps1 hunk 2 (step 3, pyinstaller pin) ---
+-& $Py -m pip install -r vendor/dobby/requirements.txt -r requirements-launcher.txt pyinstaller
++# pyinstaller pinned to 6.x: the spec's datas-landing analysis assumes the 6.x _internal/_MEIPASS onedir layout.
++& $Py -m pip install -r vendor/dobby/requirements.txt -r requirements-launcher.txt "pyinstaller>=6,<7"
+ Assert-Native "pip install"
+
+--- dobby-desktop.spec hunk (end of hidden_thirdparty list, 29→30 entries) ---
+     'onnxruntime',              # fastembed dep — also collect_all'd below for
+                                 #   its capi DLLs; hiddenimport keeps the
+                                 #   module graph explicit
++    'anyio._backends._asyncio', # anyio's backend loads via
++                                #   import_module("anyio._backends._" + name)
++                                #   (anyio/_core/_eventloop.py) — invisible to
++                                #   static analysis; hooks-contrib's hook-anyio
++                                #   also covers it, but this makes boot-critical
++                                #   coverage explicit rather than resting on an
++                                #   unpinned transitive hook package
+ ]
+
+--- parse results ---
+python -c "import ast; ast.parse(...)" on dobby-desktop.spec (project .venv python): SPEC AST PARSE OK
+[System.Management.Automation.Language.Parser]::ParseFile on build-windows.ps1 (PS 5.1.26100.2161): PS parse errors: 0
+FILES WRITTEN: C:\Users\Admin\Documents\dobby-desktop\build-windows.ps1, C:\Users\Admin\Documents\dobby-desktop\dobby-desktop.spec, C:\Users\Admin\Documents\dobby-desktop\.gitignore
+COUNTS: changes applied: 4/4, spec lines: 351, script lines: 130, parse errors: 0/0
+OPEN ITEMS: none — notes: (1) no in-spec third-party count comment existed, so the 29→30 instruction required no comment edit (list verified at 29 entries before, 30 after); (2) build-windows.ps1 and dobby-desktop.spec are untracked in git, so their evidence is the applied hunks above rather than git diff output; (3) pre-existing `M README.md` in git status was NOT touched by this run (off-limits); nothing committed.
+
+### Orchestrator note — Gate 3 handling (2026-09-04)
+The Auditor's MINOR defect (dirty-tree gap in the submodule gate) and its open items 1–2 (explicit anyio backend hiddenimport; pyinstaller>=6,<7 pin) were fixed by the owning agent (Packager fix run) BEFORE the gate, per the gate rule; the Orchestrator verified all four changes mechanically (grep + line counts: spec 351, script 130, .gitignore 7). The .gitignore `.claude-flow/` line (Phase-2 Auditor recommendation) was applied in the same fix run under an explicit Orchestrator ownership grant. Auditor open item 3 (Compress-Archive ~4GB ZIP64 limit) is carried into the Phase 4 brief as a zip-integrity check. Final hiddenimports count: 89 explicit (59 stdlib + 30 third-party).
