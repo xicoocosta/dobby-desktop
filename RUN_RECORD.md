@@ -1063,3 +1063,64 @@ OPEN ITEMS:
 
 ### Orchestrator note — Phase 4 commit mechanics (2026-09-04)
 The two spec changes were committed as two one-concern commits by snapshotting the final spec, reverting the entry hunk for the first commit (1522979 "phase4: fix mcp.cli collection in spec" — exactly the state that build runs 2/3 compiled successfully), then restoring the snapshot byte-identically (cmp verified, "SPEC-RESTORED-IDENTICAL") for the second (3db920b "phase4: frozen entry wrapper", with dobby_desktop_entry.py). Verification evidence committed as d9618e1 "phase4: verification evidence V1-V9" (10 files, 1,813 lines). The Gate-3 pre-registration of "mcp.cli typer/rich missing-module warnings = harmless" was WRONG for family 1 (it was fatal at build time) — corrected in the record per the Packager's open item; family 2 (httpx_sse) never materialized because collection imports package __init__ chains, not leaf modules.
+
+## Close-out (Phase 5)
+
+### Gate log completion
+
+Gate 0 is recorded in the Gate log at the head of this file; Gates 1–4 are recorded here to close the log:
+
+- **Gate 1 — APPROVED 2026-09-04.** Decision: the dobby-repo-is-private question (Phase 1 Auditor open item — the public repo's submodule URL is uncloneable for anonymous users, so the AGPL corresponding-source claim is not publicly satisfiable) was deferred to Gate 4.
+- **Gate 2 — APPROVED 2026-09-04.** Accepted: the `--smoke` / `--smoke-restart` test flags (the Auditor's single MINOR defect; additive, test-only, and what made the restart requirement machine-verifiable).
+- **Gate 3 — APPROVED 2026-09-04.** Pre-gate fixes applied by the owning agent and verified before approval: dirty-tree gate in build-windows.ps1, explicit anyio backend hiddenimport, `pyinstaller>=6,<7` pin, `.claude-flow/` line in .gitignore.
+- **Gate 4 — APPROVED 2026-09-04.** Accepted: the AUTH_ENABLED=false verification deviation for V3/V4 (shipped default untouched; agents are not permitted to create accounts); corrected the Gate-3 pre-registration that had mispredicted the mcp-warning family as harmless (mcp.cli's missing typer was fatal at build time, not a warning); dobby-private resolution = README worded for personal use until dobby is made public.
+
+### Final verification table
+
+| Check | Verdict | Evidence | Key metric (verbatim from Phase 4) |
+|---|---|---|---|
+| V1 | PASS | docs/verification/V1.txt | DobbyOS.exe 30,837,186 bytes + _internal\, 2,723 files / 233.6 MB, dist\DobbyOS-win64.zip 111,809,523 bytes |
+| V2 | PASS | docs/verification/V2.txt | /api/health -> exact 200 (first at t+12s, re-confirmed standalone); exit code 0, no kill fallback |
+| V3 | PASS | docs/verification/V3.txt | 3 switches observed (theme + world re-skin); 560 static asset requests, 88 css, zero 404 |
+| V4 | PASS | docs/verification/V4.txt | POST /api/chat "Reply with the word pong" -> {"response":"Pong"} (HTTP 200, 20s wall / 8.94s LLM) |
+| V5 | PASS | docs/verification/V5.txt | "NOT_INSTALLED" + dialog "Ollama not found" logged, health still 200, clean exit 0, 0 orphans |
+| V6 | PASS | docs/verification/V6.txt | 0 DobbyOS before, exactly 2 during (launcher+server, pids match launcher.log), 0 after self-exit |
+| V7 | PASS | docs/verification/V7.txt | identical SHA256 over 2,723 lines before/after run, Compare-Object diff = 0 |
+| V8 | PASS | docs/verification/V8.txt | old pid 15504 -> terminate -> new pid 3596 -> health 200 -> "restart result ... healthy=True" |
+| V9 | PASS | docs/verification/V9.txt (+ V9-serverlog-runC-slice.txt) | 1,245 inbound requests (819x200, 417x304, 9x404), /static 404 count = 0 |
+
+### Commit reconciliation
+
+`git log --oneline` at close-out — 20 commits pre-Phase-5, grouped by phase (newest first within each group):
+
+- **Bootstrap (1, not mission-enumerated):** `c2b0c80` Initial commit — created by GitHub at `gh repo create --license agpl-3.0` (LICENSE only).
+- **Phase 1 (3 enumerated + 1 extra):** `f866e6a` phase1: initialize run record; `53e9e93` phase1: add dobby submodule pinned to 3268d17; `e239165` phase1: scaffold repo. EXTRA: `a1d1e0f` phase1: append phase 1 agent reports to run record.
+- **Phase 2 (5 enumerated + 1 extra):** `4a7c44f` phase2: launcher logging; `8b5bb78` phase2: window and tray; `52d713c` phase2: ollama detection ladder; `52ae2e7` phase2: server process management; `140bd06` phase2: launcher package skeleton. EXTRA: `a375ee6` phase2: append phase 2 agent reports to run record.
+- **Phase 3 (3 enumerated + 2 extras):** `275f8ab` phase3: packaging caveats doc; `2bc2c8d` phase3: windows build script; `57fe0a7` phase3: pyinstaller spec. EXTRAS: `858046b` phase3: ignore plugin hook artifacts; `bc3fb7a` phase3: append phase 3 agent reports to run record.
+- **Phase 4 (1 enumerated + 3 extras):** `d9618e1` phase4: verification evidence V1-V9. EXTRAS: `1522979` phase4: fix mcp.cli collection in spec; `3db920b` phase4: frozen entry wrapper; `075c393` phase4: append phase 4 agent reports to run record.
+
+Reconciliation: mission-enumerated 3+5+3+1 = 12, plus the GitHub-bootstrap initial commit = 13; actual = 20. The 7 extras, each justified:
+
+| Extra commit | Justification |
+|---|---|
+| a1d1e0f, a375ee6, bc3fb7a, 075c393 | 4x per-phase report-append commits — the mission's mandated verbatim-report rule (agent reports pasted into RUN_RECORD.md at each gate) |
+| 858046b | Phase 3 gitignore hygiene — `.claude-flow/` plugin-hook artifacts excluded, per the Phase-2 Auditor recommendation under an explicit Orchestrator ownership grant |
+| 1522979 | Phase 4 defect-driven build fix — mcp.cli filter (mcp 2.1.1's cli module converts missing typer into sys.exit(1) inside collect_submodules' isolated worker, killing the build) |
+| 3db920b | Phase 4 defect-driven build fix — frozen entry wrapper (PyInstaller runs the entry script as top-level `__main__` with no package context, breaking launcher's relative imports) |
+
+Expected final total after Phase 5's commits (README pass + close-out + phase-5 report append): **23**.
+
+### Open items at mission end
+
+- (a) dobby repo is private → the AGPL corresponding-source obligation is pending a user decision: before any distribution of DobbyOS-win64.zip (or any binary), dobby must be made public or its source otherwise provided. README states this under "Source availability (AGPL)".
+- (b) Built-in MCP subsystem = a separate dobby-side mission: the 4 servers spawned via sys.executable are frozen-exe-incompatible as-is; the ODYSSEUS_DISABLE_MCP=1 off-switch is active in v1.
+- (c) Code signing not done — the SmartScreen "unrecognized app" caveat stands (documented in README Packaging caveats).
+- (d) Runtime pip installs and the agent Python tool degrade in the frozen exe (no pip inside the bundle) — an upstream/frozen-exe limitation, documented as a v1 cut.
+- (e) V3 UI screenshots live in the verifier session transcript only, not on disk (stated in V3.txt; not independently re-checkable by a later auditor).
+
+### Artifact summary
+
+- Repo: https://github.com/xicoocosta/dobby-desktop (public, AGPL-3.0-or-later)
+- Artifact: dist\DobbyOS-win64.zip — 106.6 MB (111,809,523 bytes); onedir folder dist\DobbyOS 2,723 files / 233.6 MB
+- V-score: 9/9 (evidence: docs/verification/V1–V9)
+- RUN_RECORD.md final line count after this close-out: 1,126 lines
