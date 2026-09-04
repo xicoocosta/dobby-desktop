@@ -1,24 +1,75 @@
 # Dobby Desktop
 
-## What this is
+Windows desktop packaging for Dobby OS — a PyInstaller onedir exe (`DobbyOS.exe`) that starts the Dobby OS server on `127.0.0.1:7001` and opens it in a native pywebview window with a pystray tray icon. Dobby OS lives at [github.com/xicoocosta/dobby](https://github.com/xicoocosta/dobby) (itself a fork of upstream Odysseus) and is consumed here as a git submodule pinned at `vendor/dobby`. Ollama is the runtime model backend — an external prerequisite, never bundled.
 
-Windows desktop packaging for Dobby OS — a PyInstaller onedir exe that launches the Dobby OS server on 127.0.0.1:7001 and opens it in a native pywebview window with a pystray tray icon. Ollama is an external prerequisite, never bundled.
+## Prerequisites
 
-## Relationship
+- Windows 10/11
+- Python 3.12
+- git
+- ~2 GB free disk space for the build
+- [Ollama](https://ollama.com) as the runtime model backend — installed separately, never bundled (see Ollama below)
 
-Dobby OS lives at [github.com/xicoocosta/dobby](https://github.com/xicoocosta/dobby), consumed here as a pinned git submodule at `vendor/dobby`. Dobby is itself a fork of upstream Odysseus.
+## Build
 
-## License
+```powershell
+git clone --recurse-submodules https://github.com/xicoocosta/dobby-desktop
+cd dobby-desktop
+powershell -NoProfile -ExecutionPolicy Bypass -File build-windows.ps1
+```
 
-AGPL-3.0-or-later, as a derivative of AGPL Odysseus/Dobby. The complete corresponding source is this repository plus the pinned submodule commit.
+If you cloned without `--recurse-submodules`, run `git submodule update --init` first. `vendor/dobby` is pinned to commit `3268d170848ae730e89523ae80c3c31b16ec2e35` (branch `redesign/baseline`); the build script verifies the pin and aborts if the submodule is at the wrong commit or has a dirty working tree.
 
-## Build instructions
+The script creates `.venv` if missing (Python 3.12), installs dobby's requirements plus the launcher requirements and `pyinstaller>=6,<7`, runs a PyInstaller onedir build, and zips the result:
 
-_[completed in Phase 5]_
+- `dist\DobbyOS\` — 2,723 files, 233.6 MB (`DobbyOS.exe` ~29.4 MB)
+- `dist\DobbyOS-win64.zip` — 106.6 MB
+
+## Run
+
+Launch `dist\DobbyOS\DobbyOS.exe` (keep the whole `DobbyOS\` folder together — see Packaging caveats). On first launch:
+
+1. SmartScreen shows an "unrecognized app" warning (the exe is unsigned) — click **More info → Run anyway**.
+2. Windows Firewall may prompt about the server. It binds `127.0.0.1:7001` (loopback only); allowing it exposes nothing to the network or the internet.
+3. The server takes ~13 s to come up healthy, then a native "Dobby OS" window (1440x900) opens.
+4. Authentication is on by default: the window shows dobby's own first-run account setup / login, where you create your account.
+
+Closing the window hides it — the app keeps running in the tray. The tray menu offers **Open**, **Restart server**, and **Quit**. All data and logs live under `%LOCALAPPDATA%\Dobby` (see Data directory).
+
+## Ollama
+
+At startup the launcher probes for Ollama and takes the first branch that applies (branches 1 and 3 verified on the built exe; branch 2 in dev mode):
+
+1. Daemon already running → used as-is.
+2. Installed but not running → auto-started as a detached process.
+3. Not installed → a non-blocking dialog points at [https://ollama.com](https://ollama.com), and the UI still opens.
 
 ## Data directory
 
-All runtime data lives under `%LOCALAPPDATA%\Dobby`; the install folder stays clean.
+Everything the app persists lives under `%LOCALAPPDATA%\Dobby`:
+
+- `data\` — database, sessions, memory, documents, caches
+- `logs\launcher.log` and `logs\server.log`
+
+The install folder stays clean — verified byte-identical across runs (V7).
+
+## Development
+
+Run from source (repo root):
+
+```powershell
+python -m venv .venv
+.venv\Scripts\pip install -r vendor\dobby\requirements.txt -r requirements-launcher.txt
+.venv\Scripts\python -m launcher --console
+```
+
+## Verification
+
+V-score 9/9 — all nine verification checks (V1–V9) passed against the built artifact; raw evidence in `docs/verification/`.
+
+## Source availability (AGPL)
+
+This repository is AGPL-3.0-or-later. The complete corresponding source is this repository plus the pinned `vendor/dobby` submodule commit. The submodule repository (github.com/xicoocosta/dobby) is currently **private**, so the built zip is for personal use only — before distributing `DobbyOS-win64.zip` (or any binary built from this repo) to others, the dobby repository must be made public (or its source otherwise provided) to satisfy the AGPL §13 / corresponding-source obligations.
 
 ## Packaging caveats
 
