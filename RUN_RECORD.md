@@ -1124,3 +1124,42 @@ Expected final total after Phase 5's commits (README pass + close-out + phase-5 
 - Artifact: dist\DobbyOS-win64.zip — 106.6 MB (111,809,523 bytes); onedir folder dist\DobbyOS 2,723 files / 233.6 MB
 - V-score: 9/9 (evidence: docs/verification/V1–V9)
 - RUN_RECORD.md final line count after this close-out: 1,126 lines
+
+## Phase 5 — agent reports
+
+### AGENT REPORT — Scribe
+
+AGENT: Scribe
+TASK: Phase 5 — README final pass + RUN_RECORD close-out
+STATUS: complete
+EVIDENCE:
+README.md (82 lines, target ≤120 met) — sections: title + what-this-is para (incl. dobby fork relationship + submodule); Prerequisites (Win 10/11, Python 3.12, git, ~2 GB, Ollama external); Build (clone --recurse-submodules, build-windows.ps1, pin 3268d17 @ redesign/baseline + dirty-tree abort, artifact 2,723 files / 233.6 MB / exe / zip 106.6 MB); Run (SmartScreen More info→Run anyway, loopback-only firewall note, ~13 s to healthy, "Dobby OS" 1440x900 window, auth-on first-run setup, hide-to-tray, tray Open/Restart server/Quit); Ollama (3-branch ladder); Data directory (%LOCALAPPDATA%\Dobby: data\ + logs\, V7 byte-identical install folder); Development (venv + pip -r vendor\dobby\requirements.txt -r requirements-launcher.txt + python -m launcher --console); Verification (one line, 9/9, docs/verification/); Source availability (AGPL) worded exactly as mandated (private submodule → personal use only until dobby is public, AGPL §13); Packaging caveats kept with facts unchanged. The _[completed in Phase 5]_ stub is gone.
+RUN_RECORD.md close-out sections: Gate log completion (Gates 1–4, all APPROVED 2026-09-04 with the specified decisions); Final verification table (V1–V9, PASS × 9, evidence paths, key metrics verbatim from the Phase 4 Verifier report); Commit reconciliation (all 20 hashes grouped by phase, 12 enumerated + 1 GitHub-bootstrap initial + 7 justified extras = 20; expected 23 after Phase 5); Open items (a)–(e); Artifact summary (repo URL, zip 106.6 MB / 111,809,523 bytes, V-score 9/9, 1,126 final lines).
+Fact mismatches: none material. Two dual-figure notes, resolved to the final values: (1) exe size appears as 30,816,602 B (pre-entry-fix build) and 30,837,186 B (final V1) — on-disk exe today is 30,837,186 B, matching V1; (2) zip appears as 111,789,580 B then 111,809,523 B (final V1) — on-disk zip is 111,809,523 B, both round to 106.6 MB. First-health timing: V2 records t+12s, entry-fix run 13 s — README says ~13 s, V-table keeps V2's t+12s verbatim.
+FILES WRITTEN: README.md, RUN_RECORD.md
+COUNTS: README lines: 82; RUN_RECORD lines: 1,126; gates logged: 4; V rows: 9; commits reconciled: 20 + 3 expected = 23
+OPEN ITEMS: none for Scribe. Carried mission open items recorded in the close-out.
+
+### AUDIT NOTE — Auditor (Phase 5, final)
+
+AGENT: Auditor
+TASK: Phase 5 final audit (README + RUN_RECORD close-out)
+STATUS: complete
+
+EVIDENCE:
+[1] README truthfulness — PASS (2 MINOR observations, nothing aspirational). Build command README:18 = RUN_RECORD.md:889 verbatim; clone --recurse-submodules + submodule-init fallback present; script description traces to build-windows.ps1 (:30-33, :54-69, :76, :96, :123); artifact numbers match docs/verification/V1.txt (exe: V1 says "30837186 bytes (29.4 MB)" — README's "~30.8 MB" was the same byte count in decimal MB → MINOR-1); ~13 s healthy traceable (V2 t+12s, entry-fix 13s); window/tray/hide-on-close match V5 log + launcher/window.py:43-52; data/logs paths match V7; dev-mode pip line character-identical to the Phase 2 protocol (RUN_RECORD:459); auth-ON confirmed (vendor/dobby/app.py:169) and NO instruction to disable auth; Ollama ladder branch 1 = V2, branch 3 = V5; branch 2 verified only in dev mode (RUN_RECORD:487, :553) → unqualified "(all three verified)" = MINOR-2.
+[2] AGPL section — PASS, quoted in full: "This repository is AGPL-3.0-or-later. The complete corresponding source is this repository plus the pinned `vendor/dobby` submodule commit. The submodule repository (github.com/xicoocosta/dobby) is currently **private**, so the built zip is for personal use only — before distributing `DobbyOS-win64.zip` (or any binary built from this repo) to others, the dobby repository must be made public (or its source otherwise provided) to satisfy the AGPL §13 / corresponding-source obligations." All four required elements present.
+[3] Packaging caveats — PASS: extracted section diffed against `git show 275f8ab:README.md` → CAVEATS-IDENTICAL.
+[4] RUN_RECORD close-out — PASS on all six sub-checks: pure EOF append (61 insertions, 0 deletions, single hunk @@ -1063,3 +1063,64 @@); gate log Gates 1-4 with decisions; V-table 9 rows verified verbatim against every V*.txt (all metrics re-listed and matched); commit reconciliation's 20 hashes match git log one-to-one, math 12+1+7=20; open items (a)-(e) present; wc -l = 1,126 = claim.
+[5] Repo description — PASS, no edit needed: GitHub API "description": "Windows desktop packaging for Dobby OS" (exact target string), public, AGPL-3.0. `gh repo edit` unnecessary.
+[6] Hygiene — PASS: porcelain = exactly M README.md + M RUN_RECORD.md; vendor/dobby clean at 3268d170848ae730e89523ae80c3c31b16ec2e35.
+
+FILES WRITTEN: none (read-only agent)
+COUNTS: spot-checks passed 6/6, defects found 2 (0 CRITICAL / 0 MAJOR / 2 MINOR)
+VERDICT: COUNTERSIGNED WITH DEFECTS (both MINOR, both single-phrase README edits):
+- MINOR-1 (README.md:25): "~30.8 MB" decimal-MB vs MiB-based sibling numbers; fix to "~29.4 MB" or bytes.
+- MINOR-2 (README.md:41): "(all three verified)" — qualify: branches 1 and 3 verified on the built exe; branch 2 in dev mode.
+OPEN ITEMS: close-out items (a)-(e) re-confirmed; predicted final total 23 commits consistent with current state.
+
+### Orchestrator note — Phase 5 gate handling (2026-09-04)
+Both MINOR defects were fixed before the final commit by the Orchestrator applying the Auditor's verbatim-prescribed single-phrase edits (README:25 "~30.8 MB"→"~29.4 MB"; README:41 "(all three verified)"→"(branches 1 and 3 verified on the built exe; branch 2 in dev mode)") — pen-work on prescribed text, not authorship; disclosed here per the honesty rule. `gh repo edit` was skipped: the Auditor verified the live description already equals the Phase-5 target string exactly. Dobby-private resolution at Gate 4/5: README worded for personal use until the dobby repository is made public; the make-public decision remains with the repository owner and is open item (a).
