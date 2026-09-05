@@ -18,7 +18,7 @@ cd dobby-desktop
 powershell -NoProfile -ExecutionPolicy Bypass -File build-windows.ps1
 ```
 
-If you cloned without `--recurse-submodules`, run `git submodule update --init` first. `vendor/dobby` is pinned to commit `3268d170848ae730e89523ae80c3c31b16ec2e35` (branch `redesign/baseline`); the build script verifies the pin and aborts if the submodule is at the wrong commit or has a dirty working tree.
+If you cloned without `--recurse-submodules`, run `git submodule update --init` first. `vendor/dobby` is pinned to commit `534c31f866b3813c1923d29561121fc2016c990e` (branch `redesign/baseline`); the build script verifies the pin and aborts if the submodule is at the wrong commit or has a dirty working tree.
 
 The script creates `.venv` if missing (Python 3.12), installs dobby's requirements plus the launcher requirements and `pyinstaller>=6,<7`, runs a PyInstaller onedir build, and zips the result:
 
@@ -29,7 +29,7 @@ The script creates `.venv` if missing (Python 3.12), installs dobby's requiremen
 
 Launch `dist\DobbyOS\DobbyOS.exe` (keep the whole `DobbyOS\` folder together — see Packaging caveats). On first launch:
 
-1. SmartScreen shows an "unrecognized app" warning (the exe is unsigned) — click **More info → Run anyway**.
+1. SmartScreen shows an "unrecognized app" warning (the exe carries only a self-signed signature — see Packaging caveats) — click **More info → Run anyway**.
 2. Windows Firewall may prompt about the server. It binds `127.0.0.1:7001` (loopback only); allowing it exposes nothing to the network or the internet.
 3. The server takes ~13 s to come up healthy, then a native "Dobby OS" window (1440x900) opens.
 4. Authentication is on by default: the window shows dobby's own first-run account setup / login, where you create your account.
@@ -51,7 +51,7 @@ Everything the app persists lives under `%LOCALAPPDATA%\Dobby`:
 - `data\` — database, sessions, memory, documents, caches
 - `logs\launcher.log` and `logs\server.log`
 
-The install folder stays clean — verified byte-identical across runs (V7).
+The install folder stays clean — verified byte-identical across runs (V7; re-verified for the Mission 2 build in M2-W5).
 
 ## Development
 
@@ -65,7 +65,7 @@ python -m venv .venv
 
 ## Verification
 
-V-score 9/9 — all nine verification checks (V1–V9) passed against the built artifact; raw evidence in `docs/verification/`.
+V-score 9/9 — all nine verification checks (V1–V9) passed against the built artifact; raw evidence in `docs/verification/`. Mission 2: W-score 5/5 — all five Mission 2 checks (M2-W1–M2-W5) passed against the rebuilt artifact; raw evidence in `docs/verification/M2-W*.txt`.
 
 ## Source availability (AGPL)
 
