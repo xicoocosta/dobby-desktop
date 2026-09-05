@@ -31,7 +31,7 @@ Launch `dist\DobbyOS\DobbyOS.exe` (keep the whole `DobbyOS\` folder together —
 
 1. SmartScreen shows an "unrecognized app" warning (the exe carries only a self-signed signature — see Packaging caveats) — click **More info → Run anyway**.
 2. Windows Firewall may prompt about the server. It binds `127.0.0.1:7001` (loopback only); allowing it exposes nothing to the network or the internet.
-3. The server takes ~13 s to come up healthy, then a native "Dobby OS" window (1440x900) opens.
+3. The server takes ~13 s to come up healthy (a first launch can take longer while antivirus scans the freshly installed files — the launcher waits up to 120 s), then a native "Dobby OS" window (1440x900) opens.
 4. Authentication is on by default: the window shows dobby's own first-run account setup / login, where you create your account.
 
 Closing the window hides it — the app keeps running in the tray. The tray menu offers **Open**, **Restart server**, and **Quit**. All data and logs live under `%LOCALAPPDATA%\Dobby` (see Data directory).
@@ -65,11 +65,26 @@ python -m venv .venv
 
 ## Verification
 
-V-score 9/9 — all nine verification checks (V1–V9) passed against the built artifact; raw evidence in `docs/verification/`. Mission 2: W-score 5/5 — all five Mission 2 checks (M2-W1–M2-W5) passed against the rebuilt artifact; raw evidence in `docs/verification/M2-W*.txt`. Mission 3: W-score 1/1 — the Mission 3 check (M3-W6: frozen MCP schemas 47/47 non-empty + regression trio) passed against the rebuilt artifact at pin `01ce7cd`; raw evidence in `docs/verification/M3-W6.txt`.
+V-score 9/9 — all nine verification checks (V1–V9) passed against the built artifact; raw evidence in `docs/verification/`. Mission 2: W-score 5/5 — all five Mission 2 checks (M2-W1–M2-W5) passed against the rebuilt artifact; raw evidence in `docs/verification/M2-W*.txt`. Mission 3: W-score 1/1 — the Mission 3 check (M3-W6: frozen MCP schemas 47/47 non-empty + regression trio) passed against the rebuilt artifact at pin `01ce7cd`; raw evidence in `docs/verification/M3-W6.txt`. Mission 4: R-score 6/6 — all six release checks (M4-R1–M4-R6: release inventory + checksums, corresponding-source completeness, silent install, installed-app smoke, silent uninstall + data preservation, and an end-to-end re-run against the final artifacts) passed; raw evidence in `docs/verification/M4-R1.txt`–`M4-R6.txt`.
 
 ## Source availability (AGPL)
 
-This repository is AGPL-3.0-or-later. The complete corresponding source is this repository plus the pinned `vendor/dobby` submodule commit. The submodule repository (github.com/xicoocosta/dobby) is currently **private**, so the built zip is for personal use only — before distributing `DobbyOS-win64.zip` (or any binary built from this repo) to others, the dobby repository must be made public (or its source otherwise provided) to satisfy the AGPL §13 / corresponding-source obligations.
+This repository is AGPL-3.0-or-later. The complete corresponding source is this repository plus the pinned `vendor/dobby` submodule commit. The submodule repository (github.com/xicoocosta/dobby) remains **private**, so the release bundle carries its own source channel: `build-release.ps1` exports both repositories at their exact release commits into `SOURCE-DobbyOS-1.1.0.zip`, which ships alongside the installer (AGPL §6(a) — corresponding source accompanies the distribution). Distributing the release bundle is therefore permitted, provided the installer and the source zip stay together — anyone re-sharing the app must pass both on. Do not distribute `DobbyOS-win64.zip` or any other binary on its own without the corresponding source.
+
+## Distribution
+
+To build the shareable release bundle, run `build-windows.ps1` first (it produces the verified onedir and `dist\SHA256SUMS.txt`), then:
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File build-release.ps1
+```
+
+The script verifies `dist\DobbyOS` against its build-time checksums (it never rebuilds), exports the AGPL corresponding-source zip from the committed HEAD plus the pinned submodule, compiles and self-signs the Inno Setup per-user installer (`installer/dobby-desktop.iss`), and assembles:
+
+- `dist\release\` — `DobbyOS-Setup-1.1.0.exe`, `SOURCE-DobbyOS-1.1.0.zip`, `INSTALL.txt`, `SHA256SUMS.txt`
+- `dist\DobbyOS-1.1.0-share.zip` — those four files in one zip; **this is what you send to friends**
+
+Recipients should read `INSTALL.txt` first: the installer is self-signed, so SmartScreen shows "unrecognized app" (More info → Run anyway) and the `SHA256SUMS.txt` hashes are the integrity check. The install is per-user (no admin), Ollama is a separate prerequisite, and uninstalling keeps user data.
 
 ## Packaging caveats
 
