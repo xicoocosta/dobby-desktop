@@ -18,7 +18,7 @@ cd dobby-desktop
 powershell -NoProfile -ExecutionPolicy Bypass -File build-windows.ps1
 ```
 
-If you cloned without `--recurse-submodules`, run `git submodule update --init` first. `vendor/dobby` is pinned to commit `534c31f866b3813c1923d29561121fc2016c990e` (branch `redesign/baseline`); the build script verifies the pin and aborts if the submodule is at the wrong commit or has a dirty working tree.
+If you cloned without `--recurse-submodules`, run `git submodule update --init` first. `vendor/dobby` is pinned to commit `01ce7cda371e9ff3d447d2e646d7fe9bf0a5cfbf` (branch `redesign/baseline`); the build script verifies the pin and aborts if the submodule is at the wrong commit or has a dirty working tree.
 
 The script creates `.venv` if missing (Python 3.12), installs dobby's requirements plus the launcher requirements and `pyinstaller>=6,<7`, runs a PyInstaller onedir build, and zips the result:
 
@@ -65,7 +65,7 @@ python -m venv .venv
 
 ## Verification
 
-V-score 9/9 — all nine verification checks (V1–V9) passed against the built artifact; raw evidence in `docs/verification/`. Mission 2: W-score 5/5 — all five Mission 2 checks (M2-W1–M2-W5) passed against the rebuilt artifact; raw evidence in `docs/verification/M2-W*.txt`.
+V-score 9/9 — all nine verification checks (V1–V9) passed against the built artifact; raw evidence in `docs/verification/`. Mission 2: W-score 5/5 — all five Mission 2 checks (M2-W1–M2-W5) passed against the rebuilt artifact; raw evidence in `docs/verification/M2-W*.txt`. Mission 3: W-score 1/1 — the Mission 3 check (M3-W6: frozen MCP schemas 47/47 non-empty + regression trio) passed against the rebuilt artifact at pin `01ce7cd`; raw evidence in `docs/verification/M3-W6.txt`.
 
 ## Source availability (AGPL)
 
