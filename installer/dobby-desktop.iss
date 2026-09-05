@@ -18,6 +18,12 @@
 ;     SOURCE-DobbyOS-1.1.0.zip (AGPL section 6(a) — source accompanies the
 ;     distribution); SOURCE-NOTICE.txt lands in {app} to say exactly that.
 ;   * lzma2 compression (solid): best ratio for a 233 MB Python onedir tree.
+;   * WebView2 (Mission 4b): the app window is pywebview on Microsoft's
+;     WebView2 Evergreen runtime — present on Win11 and updated Win10, absent
+;     on stale Win10. The [Code] section below detects it and, ONLY when
+;     missing, downloads the official ~2 MB bootstrapper from Microsoft on
+;     the RECIPIENT's machine at install time (nothing is bundled). Any
+;     failure is NON-FATAL: the install always continues.
 
 #define MyAppName "Dobby OS Desktop"
 #define MyAppVersion "1.1.0"
@@ -81,3 +87,195 @@ Filename: "{app}\{#MyAppExeName}"; Description: "Launch Dobby OS"; Flags: nowait
 ; %LOCALAPPDATA%\Dobby (accounts, chats, settings, signing keys) and is NEVER
 ; touched by uninstall — stated in INSTALL.txt too. If a user truly wants a
 ; scorched-earth removal they delete %LOCALAPPDATA%\Dobby by hand.
+
+[Code]
+// ===========================================================================
+// WebView2 Evergreen runtime handling (Mission 4b).
+//
+// WHY: the app window is a pywebview window backed by Microsoft's WebView2
+// Evergreen runtime. Windows 11 ships it; Windows 10 machines that receive
+// updates have it too; a stale, update-starved Windows 10 machine may NOT —
+// and there the Dobby server would start but no window would ever appear.
+//
+// DETECTION — per Microsoft's documentation ("Distribute your app and the
+// WebView2 Runtime", learn.microsoft.com/en-us/microsoft-edge/webview2/
+// concepts/distribution, re-verified against the live page 2026-09-05):
+// the Evergreen runtime registers a `pv` (REG_SZ) version value under the
+// Evergreen client GUID F3017226-FE2A-4295-8BDF-00C3A9A7E4C5 at:
+//   * per-machine, 64-bit Windows: HKLM\SOFTWARE\WOW6432Node\Microsoft\
+//     EdgeUpdate\Clients\<GUID>   (the normal hit on x64 machines)
+//   * per-machine, 32-bit Windows: HKLM\SOFTWARE\Microsoft\EdgeUpdate\
+//     Clients\<GUID>              (harmless extra probe on x64)
+//   * per-user, any arch:          HKCU\Software\Microsoft\EdgeUpdate\
+//     Clients\<GUID>              (what a non-elevated bootstrapper creates)
+// Installed = pv exists AND is non-empty AND <> '0.0.0.0' — the docs state a
+// null/empty/0.0.0.0 pv means the runtime is NOT actually installed.
+// Positive path verified live on the build machine 2026-09-05: the
+// WOW6432Node key hit with pv=152.0.4191.62.
+//
+// Note on registry views: ArchitecturesInstallIn64BitMode=x64compatible means
+// HKLM in [Code] reads the 64-bit view, so the WOW6432Node path above is
+// exactly the key Microsoft documents for 64-bit Windows.
+// ===========================================================================
+
+const
+  // Evergreen client GUID — a Microsoft-fixed identity, same on every machine.
+  // In [Code] strings braces are literal (no Inno-constant expansion here).
+  WV2KeyMachine64 = 'SOFTWARE\WOW6432Node\Microsoft\EdgeUpdate\Clients\{F3017226-FE2A-4295-8BDF-00C3A9A7E4C5}';
+  WV2KeyMachine32 = 'SOFTWARE\Microsoft\EdgeUpdate\Clients\{F3017226-FE2A-4295-8BDF-00C3A9A7E4C5}';
+  WV2KeyUser      = 'Software\Microsoft\EdgeUpdate\Clients\{F3017226-FE2A-4295-8BDF-00C3A9A7E4C5}';
+  // Microsoft's official permalink for the tiny (~2 MB) Evergreen
+  // BOOTSTRAPPER (it detects the device architecture itself). Fetched on the
+  // RECIPIENT's machine at install time, only when WebView2 is missing —
+  // nothing is bundled into this installer, keeping it lean and letting
+  // machines that already have the runtime (the vast majority) skip it all.
+  WV2BootstrapperUrl = 'https://go.microsoft.com/fwlink/p/?LinkId=2124703';
+  WV2BootstrapperExe = 'MicrosoftEdgeWebView2Setup.exe';
+  // Human-friendly fallback page for manual installation.
+  WV2FallbackUrl = 'https://developer.microsoft.com/microsoft-edge/webview2/';
+
+var
+  // Download-progress wizard page; created once in InitializeWizard (the
+  // standard Inno 6 pattern), shown only if a download actually happens.
+  WV2DownloadPage: TDownloadWizardPage;
+
+// True when a usable WebView2 Evergreen runtime is registered in ANY of the
+// three documented locations. Also used AFTER the bootstrap attempt, because
+// re-probing the registry beats trusting an installer exit code.
+function IsWebView2Installed: Boolean;
+var
+  PV: String;
+begin
+  Result := True;
+  if RegQueryStringValue(HKLM, WV2KeyMachine64, 'pv', PV)
+    and (PV <> '') and (PV <> '0.0.0.0') then
+  begin
+    Log('WebView2: per-machine (WOW6432Node) hit, pv=' + PV);
+    exit;
+  end;
+  if RegQueryStringValue(HKLM, WV2KeyMachine32, 'pv', PV)
+    and (PV <> '') and (PV <> '0.0.0.0') then
+  begin
+    Log('WebView2: per-machine hit, pv=' + PV);
+    exit;
+  end;
+  if RegQueryStringValue(HKCU, WV2KeyUser, 'pv', PV)
+    and (PV <> '') and (PV <> '0.0.0.0') then
+  begin
+    Log('WebView2: per-user hit, pv=' + PV);
+    exit;
+  end;
+  Log('WebView2: no usable pv value in any of the three documented keys.');
+  Result := False;
+end;
+
+procedure InitializeWizard;
+begin
+  // Created unconditionally (cheap, invisible until Show); only ever shown
+  // when WebView2 is missing AND the install is interactive.
+  WV2DownloadPage := CreateDownloadPage(SetupMessage(msgWizardPreparing),
+    SetupMessage(msgPreparingDesc), nil);
+end;
+
+// Download + run the Evergreen bootstrapper. NON-FATAL BY DESIGN: every
+// failure mode (offline, proxy/firewall block, user cancel, bootstrapper
+// error) is logged and the Dobby OS install CONTINUES — the app itself is
+// complete without WebView2; only the window needs it, and the runtime can
+// be added at any later time without reinstalling Dobby OS.
+procedure TryInstallWebView2;
+var
+  Downloaded: Boolean;
+  ResultCode: Integer;
+begin
+  Downloaded := False;
+
+  // Fetch to {tmp} on the recipient's machine. Two paths:
+  //   * interactive: TDownloadWizardPage — visible progress + a real Cancel;
+  //   * silent (/SILENT, /VERYSILENT): plain DownloadTemporaryFile — zero UI,
+  //     exceptions swallowed, everything recorded via Log() so /LOG files
+  //     still tell the whole story. This is what keeps /VERYSILENT safe.
+  if WizardSilent then
+  begin
+    try
+      DownloadTemporaryFile(WV2BootstrapperUrl, WV2BootstrapperExe, '', nil);
+      Downloaded := True;
+    except
+      Log('WebView2: silent download failed: ' + GetExceptionMessage);
+    end;
+  end
+  else
+  begin
+    WV2DownloadPage.Clear;
+    // Third argument '' = no SHA-256 pin, deliberately: Microsoft re-signs
+    // and re-releases the bootstrapper on their own cadence, so a pinned
+    // hash would rot and start failing installs. Authenticity rests on
+    // HTTPS to go.microsoft.com (Microsoft's own permalink).
+    WV2DownloadPage.Add(WV2BootstrapperUrl, WV2BootstrapperExe, '');
+    WV2DownloadPage.Show;
+    try
+      try
+        WV2DownloadPage.Download;
+        Downloaded := True;
+      except
+        if WV2DownloadPage.AbortedByUser then
+          Log('WebView2: download canceled by the user.')
+        else
+          Log('WebView2: download failed: ' + GetExceptionMessage);
+      end;
+    finally
+      WV2DownloadPage.Hide;
+    end;
+  end;
+
+  if Downloaded then
+  begin
+    // '/silent /install' is Microsoft's documented unattended invocation.
+    // This installer runs non-elevated (PrivilegesRequired=lowest), and the
+    // documented behavior for a non-elevated bootstrapper run is a PER-USER
+    // runtime install: no UAC prompt appears, and it registers under the
+    // HKCU key probed above — a perfect match for this per-user installer.
+    // ewWaitUntilTerminated because the re-probe below must see the result.
+    if Exec(ExpandConstant('{tmp}\') + WV2BootstrapperExe, '/silent /install',
+      '', SW_HIDE, ewWaitUntilTerminated, ResultCode) then
+      Log(Format('WebView2: bootstrapper finished with exit code %d.', [ResultCode]))
+    else
+      // NB: kept on one line — a wrapped line starting with '[' would be
+      // parsed by Inno's section splitter as a section tag, even in [Code].
+      Log(Format('WebView2: bootstrapper could not be started (%s).', [SysErrorMessage(ResultCode)]));
+  end;
+
+  // Final verdict by re-probing the registry, not by trusting exit codes.
+  if IsWebView2Installed then
+    Log('WebView2: runtime present after bootstrap step.')
+  else
+  begin
+    Log('WebView2: STILL MISSING after bootstrap attempt. Manual install: '
+      + WV2FallbackUrl);
+    // Tell a human only when there is one: in /VERYSILENT there is no UI at
+    // all, and a MsgBox in /SILENT would stall unattended installs — the
+    // Log() line above is the whole story there.
+    if not WizardSilent then
+      MsgBox('The Microsoft WebView2 runtime could not be installed'
+        + ' (download failed or was canceled).' + #13#10#13#10
+        + 'Dobby OS will still install, but its window will not open until'
+        + ' WebView2 is present. Get it free from:' + #13#10
+        + WV2FallbackUrl + #13#10#13#10
+        + 'Setup will now continue.', mbInformation, MB_OK);
+  end;
+end;
+
+// PrepareToInstall runs after the wizard pages, right before file copy — the
+// standard Inno 6 hook for prerequisites. Result is ALWAYS '' here: returning
+// a non-empty string would abort Setup, and a missing WebView2 must never
+// cost the user their Dobby OS install.
+function PrepareToInstall(var NeedsRestart: Boolean): String;
+begin
+  Result := '';
+  if IsWebView2Installed then
+    Log('WebView2: already installed — skipping bootstrap.')
+  else
+  begin
+    Log('WebView2: not detected — attempting Evergreen bootstrapper.');
+    TryInstallWebView2;
+  end;
+end;
