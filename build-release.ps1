@@ -1,9 +1,15 @@
 # build-release.ps1 — Mission 4 release driver: Inno Setup per-user installer
 # + AGPL corresponding-source zip + shareable bundle.
 #
-# INPUT, not build: dist\DobbyOS is the Missions-1-3 verified onedir and is
-# treated as a frozen release input — this script NEVER rebuilds it, and gate
-# [1/7] verifies DobbyOS.exe still hashes to the recorded value.
+# INPUT, not build: dist\DobbyOS is the build-windows.ps1 verified onedir and
+# is treated as a frozen release input — this script NEVER rebuilds it. Gate
+# [1/7] enforces the INVARIANT that the release packages exactly what
+# build-windows.ps1 produced and checksummed: it recomputes DobbyOS.exe's
+# SHA256 and requires it to match the hash build-windows.ps1 recorded in
+# dist\SHA256SUMS.txt at build time (step [9/9]). Any hand-edit to dist after
+# the build breaks that match and the release refuses to package it; a
+# legitimate rebuild refreshes both the exe and the checksum file together,
+# so rebuilds pass without touching this script.
 #
 # AGPL strategy (FIXED): the dobby repo is private, so recipients get the
 # complete corresponding source IN the distribution (AGPL section 6(a)) as
@@ -19,12 +25,12 @@ $ErrorActionPreference = "Stop"
 Set-Location $PSScriptRoot
 
 $Version        = "1.1.0"
-# Frozen inputs, recorded at the end of Mission 3:
+# Frozen input pin, recorded at the end of Mission 3:
 $PinnedDobby    = "01ce7cda371e9ff3d447d2e646d7fe9bf0a5cfbf"
-$RecordedExeSha = "fc6ae9bc0205178dc743d05f8b8f99d29dc091262bf4dbd4db8c7176710f2eb6"
 
 $DistDir     = Join-Path $PSScriptRoot "dist\DobbyOS"
 $ExePath     = Join-Path $DistDir "DobbyOS.exe"
+$DistSums    = Join-Path $PSScriptRoot "dist\SHA256SUMS.txt"
 $BuildDir    = Join-Path $PSScriptRoot "build"
 $ReleaseDir  = Join-Path $PSScriptRoot "dist\release"
 $SourceZip   = Join-Path $ReleaseDir "SOURCE-DobbyOS-$Version.zip"
@@ -86,15 +92,33 @@ if (-not (Test-Path $ExePath)) {
     Write-Host "       (Run build-windows.ps1 first - this script never rebuilds.)"
     exit 1
 }
-$exeSha = (Get-FileHash -Algorithm SHA256 -Path $ExePath).Hash.ToLower()
-Write-Host "DobbyOS.exe sha256: $exeSha"
-if ($exeSha -ne $RecordedExeSha) {
-    Write-Host "FATAL: DobbyOS.exe hash does not match the recorded Mission-3 value"
-    Write-Host "       expected $RecordedExeSha"
-    Write-Host "       - dist was modified since verification; refusing to package it."
+# Internal-consistency gate: the release packages exactly what
+# build-windows.ps1 produced AND checksummed. build-windows.ps1 step [9/9]
+# writes dist\SHA256SUMS.txt as the last act of a successful build, so the
+# recorded exe hash and the exe on disk always change together; a mismatch
+# (or a missing checksum file) means dist was modified outside the build and
+# must not be packaged.
+if (-not (Test-Path $DistSums)) {
+    Write-Host "FATAL: $DistSums is missing - dist has no build-time checksums."
+    Write-Host "       (Rebuild with build-windows.ps1; its step [9/9] writes them.)"
     exit 1
 }
-Write-Host "dist OK: exe matches the recorded release-input hash"
+$recordedLine = Get-Content $DistSums | Where-Object { $_ -match '^([0-9a-fA-F]{64})\s+\*?DobbyOS\.exe\s*$' } | Select-Object -First 1
+if ($null -eq $recordedLine) {
+    Write-Host "FATAL: no DobbyOS.exe entry found in $DistSums - cannot verify dist."
+    Write-Host "       (Rebuild with build-windows.ps1; its step [9/9] writes them.)"
+    exit 1
+}
+$recordedSha = ($recordedLine -split "\s+")[0].ToLower()
+$exeSha = (Get-FileHash -Algorithm SHA256 -Path $ExePath).Hash.ToLower()
+Write-Host "recorded sha256 (dist\SHA256SUMS.txt): $recordedSha"
+Write-Host "actual   sha256 (DobbyOS.exe)        : $exeSha"
+if ($exeSha -ne $recordedSha) {
+    Write-Host "FATAL: dist does not match its own build-time checksums - rebuild with build-windows.ps1"
+    Write-Host "       (dist was modified after the build; refusing to package it.)"
+    exit 1
+}
+Write-Host "dist OK: exe matches the hash build-windows.ps1 recorded at build time"
 
 # Same strictness as build-windows.ps1 step 2, WITHOUT the -AllowAheadSubmodule
 # escape hatch: a release is only ever cut from the committed pin.
