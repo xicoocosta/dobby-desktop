@@ -65,7 +65,7 @@ python -m venv .venv
 
 ## Verification
 
-V-score 9/9 — all nine verification checks (V1–V9) passed against the built artifact; raw evidence in `docs/verification/`. Mission 2: W-score 5/5 — all five Mission 2 checks (M2-W1–M2-W5) passed against the rebuilt artifact; raw evidence in `docs/verification/M2-W*.txt`. Mission 3: W-score 1/1 — the Mission 3 check (M3-W6: frozen MCP schemas 47/47 non-empty + regression trio) passed against the rebuilt artifact at pin `01ce7cd`; raw evidence in `docs/verification/M3-W6.txt`. Mission 4: R-score 6/6 — all six release checks (M4-R1–M4-R6: release inventory + checksums, corresponding-source completeness, silent install, installed-app smoke, silent uninstall + data preservation, and an end-to-end re-run against the final artifacts) passed; raw evidence in `docs/verification/M4-R1.txt`–`M4-R6.txt`.
+V-score 9/9 — all nine verification checks (V1–V9) passed against the built artifact; raw evidence in `docs/verification/`. Mission 2: W-score 5/5 — all five Mission 2 checks (M2-W1–M2-W5) passed against the rebuilt artifact; raw evidence in `docs/verification/M2-W*.txt`. Mission 3: W-score 1/1 — the Mission 3 check (M3-W6: frozen MCP schemas 47/47 non-empty + regression trio) passed against the rebuilt artifact at pin `01ce7cd`; raw evidence in `docs/verification/M3-W6.txt`. Mission 4: R-score 6/6 — all six release checks (M4-R1–M4-R6: release inventory + checksums, corresponding-source completeness, silent install, installed-app smoke, silent uninstall + data preservation, and an end-to-end re-run against the final artifacts) passed, plus M4-R7 for the WebView2-aware installer (detection verified live in a silent install); raw evidence in `docs/verification/M4-R1.txt`–`M4-R7.txt`.
 
 ## Source availability (AGPL)
 
@@ -84,7 +84,7 @@ The script verifies `dist\DobbyOS` against its build-time checksums (it never re
 - `dist\release\` — `DobbyOS-Setup-1.1.0.exe`, `SOURCE-DobbyOS-1.1.0.zip`, `INSTALL.txt`, `SHA256SUMS.txt`
 - `dist\DobbyOS-1.1.0-share.zip` — those four files in one zip; **this is what you send to friends**
 
-Recipients should read `INSTALL.txt` first: the installer is self-signed, so SmartScreen shows "unrecognized app" (More info → Run anyway) and the `SHA256SUMS.txt` hashes are the integrity check. The install is per-user (no admin), Ollama is a separate prerequisite, and uninstalling keeps user data.
+Recipients should read `INSTALL.txt` first: the installer is self-signed, so SmartScreen shows "unrecognized app" (More info → Run anyway) and the `SHA256SUMS.txt` hashes are the integrity check. The install is per-user (no admin), Ollama is a separate prerequisite, the installer offers to fetch Microsoft's WebView2 runtime during setup when it's missing (the app window needs it), and uninstalling keeps user data.
 
 ## Packaging caveats
 
