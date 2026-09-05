@@ -1,0 +1,47 @@
+M4-R5 — Silent uninstall + data preservation
+Verifier run: 2026-09-05
+
+=== 1. Pre-uninstall snapshot (14:04:31) ===
+%LOCALAPPDATA%\Dobby top level:
+  AppWindow  2026-08-07 21:57:05.491
+  data       2026-09-05 14:02:12.958
+  logs       2026-09-04 14:27:40.244
+  signing    2026-09-04 20:25:21.454
+  webview    2026-09-04 14:28:19.391
+app.db: size 1,212,416 B, mtime 2026-09-05 14:02:12.953
+signing dir:
+  dobby-selfsigned.crt  1,545 B  2026-09-04 20:25:21.423
+  dobby-selfsigned.key  2,484 B  2026-09-04 20:25:21.409
+  dobby-selfsigned.pfx  3,277 B  2026-09-04 20:25:21.455
+Recursive: 1,261 files, 201,514,385 bytes
+No DobbyOS processes running. Data dir exists with data — precondition met.
+
+=== 2. Silent uninstall run ===
+Command: %LOCALAPPDATA%\Programs\DobbyOS\unins000.exe /VERYSILENT /SUPPRESSMSGBOXES /NORESTART
+Guard: Start-Process -PassThru + WaitForExit(300000), kill on timeout (not needed)
+Result: Uninstaller exited. ExitCode: 0. PASS
+
+=== 3. Post-uninstall verification (14:04:58) ===
+Install dir %LOCALAPPDATA%\Programs\DobbyOS: REMOVED — directory gone entirely,
+  zero remnants (nothing left to list). PASS
+Start Menu shortcut 'Dobby OS.lnk': GONE; no *Dobby* shortcuts anywhere under the
+  user Start Menu tree. PASS
+HKCU uninstall registry: no Dobby keys remain under
+  HKCU\Software\Microsoft\Windows\CurrentVersion\Uninstall. (bonus check) PASS
+
+=== 4. Data preservation: %LOCALAPPDATA%\Dobby UNTOUCHED ===
+Top level after uninstall — IDENTICAL names and mtimes to pre-snapshot:
+  AppWindow  2026-08-07 21:57:05.491
+  data       2026-09-05 14:02:12.958
+  logs       2026-09-04 14:27:40.244
+  signing    2026-09-04 20:25:21.454
+  webview    2026-09-04 14:28:19.391
+app.db: size 1,212,416 B, mtime 2026-09-05 14:02:12.953 — UNCHANGED. PASS
+signing dir — IDENTICAL listing (crt/key/pfx, same sizes, same mtimes). PASS
+Recursive: 1,261 files, 201,514,385 bytes — IDENTICAL to pre-uninstall. PASS
+
+=== VERDICT: R5 PASS ===
+Silent uninstall exits 0, removes the app cleanly (dir, shortcut, registry) and
+leaves user data byte-count-identical and mtime-identical, signing material
+included. Machine restored to pre-R3 state except that user data now reflects the
+R4 smoke run (expected).

@@ -1,0 +1,59 @@
+M4-R4 — Installed app runs (smoke)
+Verifier run: 2026-09-05
+Command under test: "%LOCALAPPDATA%\Programs\DobbyOS\DobbyOS.exe" --smoke 45
+Guards: Start-Process -PassThru; external health poll; WaitForExit with kill fallback;
+port 7001 confirmed FREE before each launch.
+
+=== ATTEMPT 1 (FAILED — first-ever launch of the installed copy) ===
+Launched PID 16188 at 13:59:38. Port 7001 free at launch.
+launcher.log evidence:
+  13:59:49 launcher starting: python=3.12.10 frozen=True home=C:\Users\Admin\AppData\Local\Dobby pid=16188
+  13:59:50 server spawn: ['...\Programs\DobbyOS\DobbyOS.exe','--serve'] pid=7016
+  13:59:50 health poll: GET http://127.0.0.1:7001/api/health every 0.5s, timeout 30s
+  14:00:22 ERROR health poll timed out after 30s
+  14:00:22 server stop: terminate() pid=7016 -> server exit exitcode=1 (killed by launcher)
+  14:00:22 dialog: 'The Dobby server failed to start.' (non-blocking)
+Launcher process exit code: 1. External poll: no HTTP response.
+server.log gained only the '[launcher --serve] base=...\Programs\DobbyOS\_internal\dobby
+data=...\Dobby\data port=7001 python=3.12.10' banner (printed ~9s after spawn); the
+server process never finished startup within the 30s health gate.
+Cleanup after failure was CORRECT: zero orphan processes, port 7001 free.
+Diagnosis: first-run cold start of a freshly installed 2,723-file PyInstaller tree
+(Defender real-time scan) exceeded the launcher's fixed 30s health timeout. Not a
+broken payload — see attempt 2, same binary, no changes made between attempts.
+
+=== ATTEMPT 2 (PASS — same exe, warm file cache) ===
+Launched PID 12320 at 14:01:38. Port 7001 free at launch.
+External health poll: HTTP 200 at +25.7s
+  body: {"status":"healthy","timestamp":"2026-09-05T13:02:04.417801"}
+launcher.log evidence (full lifecycle):
+  14:01:39 launcher starting pid=12320
+  14:01:39 server spawn pid=17588; health poll GET /api/health timeout 30s
+  14:02:04 health OK: GET http://127.0.0.1:7001/api/health -> 200
+  14:02:06 ollama status: RUNNING; window created url=http://127.0.0.1:7001 1440x900
+  14:02:06 smoke mode: auto-quit in 45s
+  14:02:51 smoke: 45s elapsed -> tray-Quit code path; window destroyed
+  14:02:51 server stop: terminate() pid=17588 -> server exit exitcode=1 (terminate() semantics)
+  14:02:51 shutdown complete: exiting 0
+Launcher self-exit code: 0 (total elapsed 76.3s). PASS
+Orphans after exit: ZERO (Get-Process DobbyOS* -> none). PASS
+Port 7001 after exit: no LISTENER; only 3 TIME_WAIT sockets (OwningProcess 0,
+kernel-held closing remnants of the health/UI polls; auto-expire). PASS
+
+=== Data lands in the SAME %LOCALAPPDATA%\Dobby as before install ===
+server.log (C:\Users\Admin\AppData\Local\Dobby\logs\server.log) shows the run:
+  grew 563,415 B (mtime 13:45:29 pre-run) -> 597,500 B (mtime 14:02:48), tail full of
+  this run's uvicorn access lines (14:02:xx GET /api/research/active 200 etc.)
+app.db (C:\Users\Admin\AppData\Local\Dobby\data\app.db):
+  mtime 2026-09-05 13:38:53 (pre-install, dist-build era) -> 14:02:12 during this run.
+Server banner confirms wiring: base=...\Programs\DobbyOS\_internal\dobby
+  data=C:\Users\Admin\AppData\Local\Dobby\data port=7001.
+Same data dir as the pre-install app. PASS
+
+=== VERDICT: R4 PASS (on attempt 2; attempt 1 cold-start flake flagged) ===
+Installed app reaches health 200, self-exits 0 after the 45s smoke window, leaves
+zero orphans and no listener, and reads/writes the pre-existing %LOCALAPPDATA%\Dobby
+data dir. OPEN ITEM: the launcher's fixed 30s health timeout is too tight for a
+first launch on a cold/AV-scanned machine — a friend's very first double-click can
+show 'The Dobby server failed to start' and succeed on the second try. Verifier
+fixed nothing; flagged for the builder.

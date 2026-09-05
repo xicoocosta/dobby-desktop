@@ -1,0 +1,59 @@
+M4-R3 — Silent install
+Verifier run: 2026-09-05
+
+=== 1. Baseline snapshot (pre-install) ===
+%LOCALAPPDATA%\Programs\DobbyOS exists: False  (as required)
+Port 7001: FREE (no listeners/connections)
+Start Menu *Dobby* shortcuts: none
+Desktop *DobbyOS* shortcuts: none
+dist\DobbyOS\DobbyOS.exe SHA256 (reference for installed-copy comparison):
+  FC6AE9BC0205178DC743D05F8B8F99D29DC091262BF4DBD4DB8C7176710F2EB6
+
+BASELINE DEVIATION FOUND + REMEDIATED: 6 stale DobbyOS.exe processes were running
+from C:\Users\Admin\Documents\dobby-desktop\dist\DobbyOS\DobbyOS.exe (PIDs 10044,
+12556, 15396, 17116, 17512, 18828; all started 13:38, i.e. leftovers of the M4
+builder's earlier smoke run of the dist build — NOT from the installer under test).
+Port 7001 was already free, so they were idle orphans. Recorded (Id/StartTime/CPU/WS)
+and stopped with Stop-Process to establish the clean baseline required by the matrix.
+After stop: zero DobbyOS processes. Flagged as an open item (builder smoke run left
+orphans behind).
+
+=== 2. Silent install run ===
+Command: dist\release\DobbyOS-Setup-1.1.0.exe /VERYSILENT /SUPPRESSMSGBOXES /NORESTART
+Guard: Start-Process -PassThru + WaitForExit(300000), kill on timeout (not needed)
+Result: Installer exited. ExitCode: 0. PASS
+
+=== 3. Install dir: %LOCALAPPDATA%\Programs\DobbyOS ===
+_internal            (dir)
+DobbyOS.exe          30,845,984 B
+INSTALL.txt          2,305 B
+SOURCE-NOTICE.txt    366 B
+unins000.dat         677,147 B
+unins000.exe         4,452,610 B
+
+_internal file count (recursive): 2,722
+Payload count (_internal + DobbyOS.exe): 2,723  — matches expected ≈2,723
+Total files under install dir: 2,727 (payload + INSTALL.txt + SOURCE-NOTICE.txt + unins000.dat + unins000.exe)
+INSTALL.txt present, SOURCE-NOTICE.txt present, unins000.dat + unins000.exe present. PASS
+
+=== 4. Installed exe hash vs build ===
+Installed %LOCALAPPDATA%\Programs\DobbyOS\DobbyOS.exe SHA256:
+  FC6AE9BC0205178DC743D05F8B8F99D29DC091262BF4DBD4DB8C7176710F2EB6
+dist\DobbyOS\DobbyOS.exe SHA256:
+  FC6AE9BC0205178DC743D05F8B8F99D29DC091262BF4DBD4DB8C7176710F2EB6
+IDENTICAL. Matches expected fc6ae9bc... PASS
+
+=== 5. Shortcuts ===
+Start Menu ({userprograms}):
+  C:\Users\Admin\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Dobby OS.lnk
+  TargetPath: C:\Users\Admin\AppData\Local\Programs\DobbyOS\DobbyOS.exe
+  Arguments:  (none)
+  WorkingDir: C:\Users\Admin\AppData\Local\Programs\DobbyOS
+  PRESENT + correct target. PASS
+Desktop shortcut: NONE (unchecked task default honored under /VERYSILENT). PASS
+
+=== VERDICT: R3 PASS ===
+Silent install exit 0; per-user dir laid down with exact payload (2,723 files,
+exe hash identical to build), docs + uninstaller present; Start Menu shortcut
+created; Desktop shortcut correctly absent. One baseline remediation noted above
+(pre-existing orphan processes from the builder's smoke run, killed before install).

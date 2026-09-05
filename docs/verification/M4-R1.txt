@@ -1,0 +1,57 @@
+M4-R1 — Release inventory + checksums
+Verifier run: 2026-09-05
+Machine: Windows 11 Pro 10.0.26100, user Admin
+
+=== 1. dist\release inventory (expect 4 files) ===
+Name                       Length     LastWriteTime
+DobbyOS-Setup-1.1.0.exe    83312576   9/5/2026 1:54:17 PM
+INSTALL.txt                2305       9/5/2026 1:45:33 PM
+SHA256SUMS.txt             183        9/5/2026 1:54:18 PM
+SOURCE-DobbyOS-1.1.0.zip   33807540   9/5/2026 1:53:39 PM
+
+Count: 4 files. Sizes match mission brief (setup 83,312,576 B; source 33,807,540 B). PASS
+
+=== 2. SHA256SUMS.txt contents ===
+cb01b93a686deede0d09f85f038a38f0a5c71aa7ee225b3f7973e081a97d45fc *DobbyOS-Setup-1.1.0.exe
+dcbdd37ba258e324d7134029806bab2a1ccf3b3cfa53fb168c44f5d878f6b563 *SOURCE-DobbyOS-1.1.0.zip
+
+=== 3. Recomputed SHA256 (Get-FileHash) ===
+DobbyOS-Setup-1.1.0.exe  : CB01B93A686DEEDE0D09F85F038A38F0A5C71AA7EE225B3F7973E081A97D45FC
+SOURCE-DobbyOS-1.1.0.zip : DCBDD37BA258E324D7134029806BAB2A1CCF3B3CFA53FB168C44F5D878F6B563
+
+Both recomputed hashes match SHA256SUMS.txt (case-insensitive). PASS
+
+=== 4. Share wrapper zip: dist\DobbyOS-1.1.0-share.zip (116,345,680 B) ===
+Entry list ([System.IO.Compression.ZipFile]::OpenRead):
+DobbyOS-1.1.0/DobbyOS-Setup-1.1.0.exe   83312576 B
+DobbyOS-1.1.0/INSTALL.txt               2305 B
+DobbyOS-1.1.0/SHA256SUMS.txt            183 B
+DobbyOS-1.1.0/SOURCE-DobbyOS-1.1.0.zip  33807540 B
+TOTAL ENTRIES: 4
+
+4 entries, all forward-slash names, sizes identical to dist\release copies. PASS
+
+=== 5. Authenticode signature of setup exe ===
+Status:            UnknownError
+StatusMessage:     A certificate chain processed, but terminated in a root certificate which is not trusted by the trust provider
+Signer Subject:    CN=Dobby OS Desktop (self-signed)
+Signer Thumbprint: 3E3E222F56BC396EA2499C23A70AA9845043A837
+Signer Validity:   09/04/2026 20:25:21 - 09/03/2029 20:25:21
+Timestamper:       CN=DigiCert SHA256 RSA4096 Timestamp Responder 2026 1, O="DigiCert, Inc.", C=US
+
+Matches expectation: self-signed CN=Dobby OS Desktop (self-signed), timestamped
+(DigiCert responder), Status UnknownError (untrusted self-signed root — expected). PASS
+
+=== 6. VersionInfo of setup exe ===
+ProductName     : Dobby OS Desktop
+ProductVersion  : 1.1.0
+FileVersion     : 1.1.0.0
+FileDescription : Dobby OS Desktop Setup
+CompanyName     : xicoocosta
+LegalCopyright  : (empty)
+
+VersionInfo present and consistent with release 1.1.0. PASS
+
+=== VERDICT: R1 PASS ===
+Inventory (4/4 files, sizes exact), both checksums match, share zip 4 forward-slash
+entries, signature and version info as specified.

@@ -1,0 +1,69 @@
+M4-R2 — Corresponding-source completeness (SOURCE-DobbyOS-1.1.0.zip)
+Verifier run: 2026-09-05
+
+=== 1. Entry stats ===
+TOTAL ENTRIES: 1840
+BACKSLASH ENTRY NAMES: 0 (all forward-slash). PASS
+
+=== 2. Required files check (entry name -> present?) ===
+PRESENT : SOURCE-MANIFEST.txt
+PRESENT : dobby-desktop/installer/dobby-desktop.iss
+PRESENT : dobby-desktop/installer/INSTALL.txt
+PRESENT : dobby-desktop/build-release.ps1
+PRESENT : dobby-desktop/build-windows.ps1
+PRESENT : dobby-desktop/dobby-desktop.spec
+PRESENT : dobby-desktop/LICENSE
+PRESENT : dobby-desktop/vendor/dobby/app.py
+PRESENT : dobby-desktop/vendor/dobby/src/mcp_manager.py
+PRESENT : dobby-desktop/vendor/dobby/LICENSE
+PRESENT : dobby-desktop/vendor/dobby/requirements.txt
+
+launcher/*.py files found (expect 9):
+dobby-desktop/launcher/__init__.py
+dobby-desktop/launcher/__main__.py
+dobby-desktop/launcher/app.py
+dobby-desktop/launcher/logging_setup.py
+dobby-desktop/launcher/ollama_check.py
+dobby-desktop/launcher/paths.py
+dobby-desktop/launcher/server.py
+dobby-desktop/launcher/tray.py
+dobby-desktop/launcher/window.py
+Count: 9/9. PASS — all 11 named required files + 9 launcher modules present.
+
+=== 3. SOURCE-MANIFEST.txt (full text, read from inside the zip) ===
+SOURCE MANIFEST - Dobby OS Desktop 1.1.0
+Generated: 2026-09-05 by build-release.ps1
+
+This archive IS the complete corresponding source of Dobby OS Desktop
+1.1.0 under AGPL-3.0 section 6(a): the source accompanies the binary
+distribution (the installer it was shipped next to).
+
+Contents (exact commits, exported with git archive):
+  dobby-desktop/               packaging repo, commit 69d24536aa247b737cb8cc9cefaae19f566dbe1e
+                               (repo URL omitted - distributed by its author)
+  dobby-desktop/vendor/dobby/  Dobby application, commit 01ce7cda371e9ff3d447d2e646d7fe9bf0a5cfbf
+                               (repo URL omitted - private repository; this
+                               archive, not the repo, is the source channel)
+
+License: GNU AGPL-3.0 - see dobby-desktop/LICENSE.
+Keep this zip together with the installer when re-sharing the app.
+
+=== 4. Manifest hashes vs actual repo state ===
+Manifest desktop commit : 69d24536aa247b737cb8cc9cefaae19f566dbe1e
+Actual HEAD (git rev-parse HEAD at verify time):
+                          69d24536aa247b737cb8cc9cefaae19f566dbe1e  MATCH
+HEAD commit: 69d2453... 2026-09-05 13:53:09 +0100 "m4: release assembly script"
+Setup exe built 13:54:17 (after that commit) -> the manifest's recorded desktop
+HEAD equals the HEAD at release build time. No drift flag needed.
+git status --porcelain at verify time: clean (no tracked modifications listed).
+
+Manifest vendor commit  : 01ce7cda371e9ff3d447d2e646d7fe9bf0a5cfbf
+Actual vendor/dobby HEAD: 01ce7cda371e9ff3d447d2e646d7fe9bf0a5cfbf  MATCH
+
+Both required commit ids satisfied: desktop 69d2453... ("or later" not needed —
+exact), dobby 01ce7cda... exact. PASS
+
+=== VERDICT: R2 PASS ===
+1840 entries, zero backslash names, all required source files present (incl. 9
+launcher modules), manifest quotes both commits, both match actual HEADs, no
+manifest-vs-build-time drift.

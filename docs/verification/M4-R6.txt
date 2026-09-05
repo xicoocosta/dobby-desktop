@@ -1,0 +1,104 @@
+M4-R6 — Final-release install cycle (post-fix artifacts)
+Verifier run: 2026-09-05
+Release under test: dist\release\ regenerated 2026-09-05 14:14-14:15 after two fixes
+(launcher HEALTH_TIMEOUT_S 30->120 inside rebuilt exe; release-gate consistency fix).
+Port 7001 confirmed FREE before any step.
+
+=== (a) Checksums + signature ===
+SHA256SUMS.txt (verbatim):
+  7ba03a6e50823218202453525f0c3e020b357117dbfe8b58f55f390d3e802c7d *DobbyOS-Setup-1.1.0.exe
+  953760982c3fe2f430f2be67b2537ee2da43cf07869004b7c819c0e3b98d1a31 *SOURCE-DobbyOS-1.1.0.zip
+Recomputed (Get-FileHash SHA256):
+  DobbyOS-Setup-1.1.0.exe  (83,303,296 B):
+    7BA03A6E50823218202453525F0C3E020B357117DBFE8B58F55F390D3E802C7D  MATCH
+  SOURCE-DobbyOS-1.1.0.zip (33,807,796 B):
+    953760982C3FE2F430F2BE67B2537EE2DA43CF07869004B7C819C0E3B98D1A31  MATCH
+Setup exe Authenticode (verbatim):
+  Status: UnknownError
+  StatusMessage: A certificate chain processed, but terminated in a root certificate
+    which is not trusted by the trust provider   (expected for self-signed)
+  Signer Subject: CN=Dobby OS Desktop (self-signed)
+  Signer Issuer:  CN=Dobby OS Desktop (self-signed)
+  Signer Thumbprint: 3E3E222F56BC396EA2499C23A70AA9845043A837
+  Signer validity: 09/04/2026 20:25:21 -> 09/03/2029 20:25:21
+  Timestamper Subject: CN=DigiCert SHA256 RSA4096 Timestamp Responder 2026 1,
+    O="DigiCert, Inc.", C=US
+  Timestamper Issuer: CN=DigiCert Trusted G4 TimeStamping RSA4096 SHA256 2025 CA1,
+    O="DigiCert, Inc.", C=US
+PASS (both hashes match; self-signed CN + DigiCert timestamp present).
+
+=== (b) Source zip spot check ===
+Zip entries: 1,840 (matches expected 1,840).
+SOURCE-MANIFEST.txt (verbatim commit lines):
+  Contents (exact commits, exported with git archive):
+    dobby-desktop/               packaging repo, commit 99342fcc6c397a03339806bac9fe5b59320cb4d5
+    dobby-desktop/vendor/dobby/  Dobby application, commit 01ce7cda371e9ff3d447d2e646d7fe9bf0a5cfbf
+Extracted ONLY entry dobby-desktop/launcher/server.py (8,033 B) to scratchpad temp:
+  line 37: HEALTH_TIMEOUT_S = 120.0
+The 30->120 fix IS in the shipped source. PASS.
+
+=== (c) Silent install ===
+Baseline: zero DobbyOS processes; %LOCALAPPDATA%\Programs\DobbyOS absent; port 7001
+FREE; no Dobby Start Menu shortcuts. Clean (no remediation needed this time).
+Command: dist\release\DobbyOS-Setup-1.1.0.exe /VERYSILENT /SUPPRESSMSGBOXES /NORESTART
+Guard: Start-Process -PassThru + WaitForExit(300000), kill on timeout (not needed)
+Result: ExitCode 0, elapsed 10s. PASS
+Install dir %LOCALAPPDATA%\Programs\DobbyOS:
+  _internal (2,722 files) + DobbyOS.exe 30,845,984 B + INSTALL.txt 2,305 B
+  + SOURCE-NOTICE.txt 366 B + unins000.dat 677,147 B + unins000.exe 4,452,610 B
+Installed DobbyOS.exe SHA256:
+  F2EB60E7087E914AAEBC1EA50223BAE313C367B153135A1991A59CD4B6D624B4
+  == expected f2eb60e7... (the REBUILT exe with the 120s fix; note this differs from
+  R3's fc6ae9bc..., which was the pre-fix build — regeneration confirmed). PASS
+Start Menu shortcut: C:\Users\Admin\AppData\Roaming\Microsoft\Windows\Start Menu\
+  Programs\Dobby OS.lnk -> C:\Users\Admin\AppData\Local\Programs\DobbyOS\DobbyOS.exe
+  (no args, correct WorkDir). PASS
+
+=== (d) Installed app runs (--smoke 45) — FIRST-EVER launch of this fresh install ===
+Launched PID 21228 at 14:18:54.033; port 7001 free at launch.
+External health poll: HTTP 200 at +17.9s
+  body: {"status":"healthy","timestamp":"2026-09-05T13:19:11.923392"}
+launcher.log (slice appended this run; pre-run size 61,571 B):
+  14:18:55 launcher starting: python=3.12.10 frozen=True home=...\Local\Dobby pid=21228
+  14:18:55 server spawn: ['...\Programs\DobbyOS\DobbyOS.exe','--serve'] pid=11864
+  14:18:55 health poll: GET http://127.0.0.1:7001/api/health every 0.5s, timeout 120s
+           ^^^ PROOF: the frozen launcher carries the 120s fix (R4's exe said 30s)
+  14:19:11 health OK: GET http://127.0.0.1:7001/api/health -> 200   (+16.1s from spawn)
+  14:19:13 ollama status: RUNNING; window created url=http://127.0.0.1:7001 1440x900
+  14:19:13 smoke mode: auto-quit in 45s
+  14:19:58 smoke: 45s elapsed -> tray-Quit code path; window destroyed
+  14:19:58 server stop: terminate() pid=11864 -> server exit exitcode=1 (terminate() semantics)
+  14:19:58 shutdown complete: exiting 0
+Launcher self-exit code: 0 (total elapsed 65.2s). PASS
+Orphans after exit: ZERO (Get-Process DobbyOS* -> none). PASS
+Port 7001 after exit: no LISTENER; only kernel TIME_WAIT remnants (OwningProcess 0,
+auto-expire; same accepted state as R4). PASS
+Note: R4's attempt-1 cold-start failure (30s gate) did NOT recur — first launch of the
+freshly installed tree succeeded well inside the new 120s window.
+
+=== (e) Silent uninstall + data preservation ===
+Pre-uninstall snapshot (14:20:23), %LOCALAPPDATA%\Dobby top level:
+  AppWindow  2026-08-07 21:57:05.491
+  data       2026-09-05 14:19:16.581
+  logs       2026-09-04 14:27:40.244
+  signing    2026-09-04 20:25:21.454
+  webview    2026-09-04 14:28:19.391
+  app.db: 1,212,416 B, mtime 2026-09-05 14:19:16.577
+  Recursive: 1,261 files, 201,588,405 bytes
+Command: %LOCALAPPDATA%\Programs\DobbyOS\unins000.exe /VERYSILENT /SUPPRESSMSGBOXES /NORESTART
+Guard: WaitForExit(300000) with kill fallback (not needed)
+Result: ExitCode 0, elapsed 1.7s. PASS
+Post-uninstall (14:20:48):
+  Install dir: GONE entirely. PASS
+  Start Menu: no *Dobby* shortcuts anywhere in user tree. PASS
+  HKCU uninstall registry: no Dobby keys (bonus check). PASS
+  %LOCALAPPDATA%\Dobby: top-level names+mtimes IDENTICAL to pre-snapshot; app.db same
+  size+mtime; recursive 1,261 files / 201,588,405 bytes IDENTICAL. UNTOUCHED. PASS
+
+=== VERDICT: R6 PASS — final artifacts verified end to end ===
+Checksums match SHA256SUMS.txt; self-signed signature + DigiCert timestamp intact;
+shipped source carries HEALTH_TIMEOUT_S = 120.0 at the manifest-quoted commit;
+silent install lays down the rebuilt exe (f2eb60e7...) with correct shortcut;
+first-ever launch of the fresh install reaches health in 17.9s, logs "timeout 120s",
+self-exits 0 with zero orphans; silent uninstall removes everything and leaves
+user data byte- and mtime-identical.
