@@ -1163,3 +1163,143 @@ OPEN ITEMS: close-out items (a)-(e) re-confirmed; predicted final total 23 commi
 
 ### Orchestrator note — Phase 5 gate handling (2026-09-04)
 Both MINOR defects were fixed before the final commit by the Orchestrator applying the Auditor's verbatim-prescribed single-phrase edits (README:25 "~30.8 MB"→"~29.4 MB"; README:41 "(all three verified)"→"(branches 1 and 3 verified on the built exe; branch 2 in dev mode)") — pen-work on prescribed text, not authorship; disclosed here per the honesty rule. `gh repo edit` was skipped: the Auditor verified the live description already equals the Phase-5 target string exactly. Dobby-private resolution at Gate 4/5: README worded for personal use until the dobby repository is made public; the make-public decision remains with the repository owner and is open item (a).
+
+# MISSION 2 — MCP re-enable + hardening (authorized 2026-09-04, completed 2026-09-05)
+
+User decisions opening this mission (verbatim intent): (a) dobby repo stays PRIVATE — the zip remains personal-use only (README already worded accordingly); (b) RE-ENABLE the built-in MCP subsystem — explicit authorization for the dobby-side changes reserved under Mission 1's Blocker policy; (c) code signing "do the best" — best achievable without a paid CA cert: VERSIONINFO resource, best-effort self-signed Authenticode, SHA256 checksums; (d) first launch "do it" — the Orchestrator launches the app at the end, but account creation/password entry is performed by the USER (hard rule: agents never create accounts or enter passwords, even when asked).
+
+## Mission 2 — agent reports
+
+### AGENT REPORT — DobbyEngineer (run 1: interpreter override)
+
+AGENT: DobbyEngineer
+TASK: Mission 2 — ODYSSEUS_MCP_PYTHON override in dobby
+STATUS: complete
+
+EVIDENCE:
+Re-verified facts (all line numbers confirmed against HEAD 3268d17 before editing):
+- src/builtin_mcp.py:70-75 _BUILTIN_SERVERS maps the 4 servers (image_gen, memory, rag, email); :87 ODYSSEUS_DISABLE_MCP; :97 `python = sys.executable`; :105 command=python; :107 env={"PYTHONPATH": base_dir}; :119-124 spawn loop.
+- src/mcp_manager.py:502-531 _reconnect_builtin RE-DERIVES the command: line 522 passed `command=sys.executable` directly, so the override was applied there too.
+- Repo-wide sys.executable sweep: only those 2 sites spawn mcp_servers scripts. All others unrelated (pip installs, agent python tool, cookbook tooling scan, tests) — left untouched.
+- Docs: README.md env table at lines 424-447 — one row added in the same format.
+The commit (git show --stat 71a1c6a): README.md +1, src/builtin_mcp.py +3/-1, src/mcp_manager.py +3/-1 = 3 files, 7 insertions(+), 2 deletions(-).
+Diff: `python = os.environ.get("ODYSSEUS_MCP_PYTHON") or sys.executable` + comments ("Frozen hosts (e.g. a PyInstaller exe) can't use sys.executable — it is the exe itself, not a Python — so ODYSSEUS_MCP_PYTHON names one instead."); mcp_manager command=sys.executable → command=python; README row.
+Dev tests (dobby-desktop venv python, APP_PORT/port 7031, throwaway ODYSSEUS_DATA_DIR, AUTH_ENABLED=false, MCP not disabled; spawn commands captured by a 50ms Win32_Process poller):
+(a) Baseline (var unset): /api/health 200. All 4 spawned as `...\.venv\Scripts\python.exe ...mcp_servers/<x>_server.py` = sys.executable.
+(b) Override (ODYSSEUS_MCP_PYTHON=...Scripts\PYTHON.EXE — same file, distinguishable uppercase spelling): health 200. All 4 spawned with the override string VERBATIM.
+(c) Negative (var unset again): identical to (a). Cleanup verified; throwaway data dir deleted.
+Push: `3268d17..71a1c6a redesign/baseline -> redesign/baseline`; porcelain empty after.
+
+FILES WRITTEN: dobby src/builtin_mcp.py, src/mcp_manager.py, README.md
+COUNTS: lines changed: 9 (≤15 target) | dev checks passed 3/3 | new HEAD: 71a1c6a4ae87bed739fd42a7bb091bb27bc354bf | servers connected: Python builtins 0/4 + browser 1/1 (30 tools) in EVERY run — identical across a/b/c
+OPEN ITEMS:
+- PRE-EXISTING, NOT caused by this change: all 4 builtin Python MCP servers crash at import — `AttributeError: 'Server' object has no attribute 'list_tools'` (mcp_servers/*.py use the mcp 1.x low-level decorator API; both venvs have mcp 2.1.1). Verified identical under the user's own dobby venv by direct spawn, and identical in runs a/b/c. The interpreter-override contract itself is fully proven by the verbatim spawn-command evidence. Porting the 4 scripts (or pinning mcp<2) is a separate fix needing its own authorization.
+
+### Orchestrator note — scope ruling (2026-09-04)
+The pre-existing mcp 1.x/2.x breakage is squarely inside the user's "re-enable MCP" authorization — the stated goal is working builtin MCP in the exe. Pinning mcp<2 was REJECTED (dobby's own client side runs and works against 2.1.1); porting the 4 scripts to the 2.x API was authorized as DobbyEngineer run 2.
+
+### AGENT REPORT — DobbyEngineer (run 2: mcp 2.x port)
+
+AGENT: DobbyEngineer (run 2)
+TASK: Mission 2 — port 4 builtin MCP servers to mcp 2.x
+STATUS: complete
+
+EVIDENCE:
+API chosen: the mcp 2.x low-level API — `mcp.server.Server` still exists in 2.1.1 (as `mcp.server.lowlevel.server.Server`) but replaced the 1.x decorators with constructor-registered `(ctx, params)` callbacks returning typed results (`on_list_tools -> ListToolsResult`, `on_call_tool -> CallToolResult`). Chosen over FastMCP because it lets every tool function, name, description, and hand-written inputSchema stay byte-identical; only the registration plumbing changed. Each script got two ~6-line adapters wrapping the unchanged 1.x-shaped `list_tools()`/`call_tool(name, arguments)`, exceptions mapped to `is_error=True` text results exactly as before. stdio_server, server.run(...), sys.path bootstrap, `from src...` imports, `__main__` entries all unchanged.
+Diff stat (534c31f): 19 insertions / 4 deletions in each of the 4 files (76+/16- total).
+Dev test: (a) direct spawn — all 4 idle cleanly on stdio, stderr 0 bytes; ClientSession handshake per script: image_gen CONNECTED 1 tool, memory 1, rag 1, email 14 — 4/4. (b) Full app run: /api/health 200; app log "MCP server connected" for all 4 + Built-in: Browser (30 tools); /api/mcp/tools = 47 tools across 5 servers. (c) Round-trip: `manage_memory` add → "Memory added: [fact] mcp2 port round-trip marker 7031 (id: 2328c748)", list → entry found. (d) Cleanup clean.
+Commit/push: 534c31f "fix(mcp): port builtin servers to the mcp 2.x server API"; pushed `71a1c6a..534c31f`; porcelain clean.
+
+FILES WRITTEN: dobby mcp_servers/{image_gen,memory,rag,email}_server.py
+COUNTS: servers ported 4/4; connected 4/4 (+browser =5); tools: 1/1/1/14 (+30) = 47; +19/-4 per file; new HEAD 534c31f866b3813c1923d29561121fc2016c990e; round-trip manage_memory id 2328c748
+OPEN ITEMS:
+1. Pre-existing client-side quirk (out-of-scope file, NOT changed): src/mcp_manager.py reads camelCase `tool.inputSchema` / `result.isError` — absent on mcp 2.x models (snake_case), so registered input_schema degrades to {} for ALL MCP servers (confirmed live incl. the npx browser server — predates and is independent of this port) and error results return exit_code 0. Follow-up fix candidate in mcp_manager.py.
+2. Four playwright node.exe processes pre-dating this run left untouched (not mine).
+
+### AGENT REPORT — LauncherEngineer (M2)
+
+AGENT: LauncherEngineer (M2)
+TASK: Mission 2 — script role + MCP env wiring + dev verification
+STATUS: complete
+
+EVIDENCE:
+Diff summary (2 files, +38/-4; vendor/dobby untouched at 534c31f):
+1. launcher/__main__.py (+28): docstring roles table gains "<script.py> ..." SCRIPT role; stdlib imports os + runpy; main() lines 29-50: SCRIPT role decided BEFORE argparse — first CLI arg ends ".py" + isfile → sys.argv=[script]+rest, PYTHONPATH env entries prepended to sys.path (frozen exes ignore the env var), runpy.run_path(run_name="__main__"), return 0; exceptions propagate nonzero. GUI imports remain lazy (.app at :71); --serve imports only .server — no webview/pystray on script or serve paths (app.py:20-21 is the only GUI import site, unreachable from both).
+2. launcher/server.py (+10/-4): build_server_env — ODYSSEUS_DISABLE_MCP removed; frozen-gated `env["ODYSSEUS_MCP_PYTHON"] = sys.executable` (lines 43-49). serve() — removed the setdefault that would have re-disabled MCP in the child (was :165).
+Test a (script role via dobby_desktop_entry.py): PROBE_MARKER_OK; argv correct; webview/pystray NOT in sys.modules; PYTHONPATH entries at sys.path head; EXIT 0; failing probe → traceback + EXIT 1.
+Test b (full-stack, AUTH_ENABLED=false deviation, `python -m launcher --smoke 60 --console`): HEALTH 200 t+15.4s; /api/mcp/tools: 4 servers, 17 tools at capture (email 14, image_gen 1, memory 1, rag 1); server.log: 5 "MCP server connected" lines (browser +30 connected after capture → server-side 5/47); clean quit rc=0; python + node orphan delta 0 — all MCP children gone after quit.
+Test c: env harness — dev: DISABLE absent + MCP_PYTHON absent; frozen-sim: MCP_PYTHON == sys.executable; grep launcher/: zero ODYSSEUS_DISABLE_MCP; py_compile OK.
+
+FILES WRITTEN: launcher/__main__.py, launcher/server.py
+COUNTS: files 2; +38/-4; MCP servers 5 (4 builtins + browser); tools 47; orphan delta 0; health 200; script-role exit 0/1 as designed
+OPEN ITEMS: AUTH_ENABLED=false was verification-only; frozen verification belongs to build/verify owners; server child exit 1 on terminate() pre-existing.
+
+### AGENT REPORT — Packager (M2)
+
+AGENT: Packager (M2)
+TASK: Mission 2 — version resource, best-effort signing, checksums, rebuild
+STATUS: complete
+
+EVIDENCE (abridged only in formatting; all numbers verbatim):
+T1 version_info.txt (VSVersionInfo 1.1.0.0, ProductName/FileDescription "Dobby OS Desktop", CompanyName xicoocosta, LegalCopyright AGPL-3.0-or-later, OriginalFilename DobbyOS.exe); PyInstaller loader parse OK; wired EXE(version=...). Built exe VersionInfo verified verbatim (ProductName=Dobby OS Desktop, FileVersion=1.1.0.0, ...).
+T2 spec comments refreshed: mcp_servers datas block now states MCP ENABLED since Mission 2, spawn contract `<ODYSSEUS_MCP_PYTHON> <script>` (builtin_mcp.py:99), frozen host = the exe via script role. No other stale MCP comments; no functional spec change beyond version=.
+T3 build script → 9 banners: new [6/9] best-effort signing (one-time openssl cert gen rsa:3072/sha256/1095d, CN=Dobby OS Desktop (self-signed), extendedKeyUsage=codeSigning, passwordless PFX with CryptoAPI-compatible PBE, into %LOCALAPPDATA%\Dobby\signing\; fallbacks store-cert → New-SelfSignedCertificate → WARN+unsigned; Set-AuthenticodeSignature SHA256 + DigiCert timestamp, retry-without tolerated; never fatal). New [9/9] SHA256SUMS.txt (sha256sum format, BOM-free). New -AllowAheadSubmodule switch: required because the M2 gitlink update was uncommitted at build time; default path unchanged and strict; switch path demands clean tree + descendant-of-pin, loudly WARNed.
+T4 README caveats only: "Self-signed executable (at best)" bullet + MCP bullet flipped to ENABLED.
+T5 REBUILD: run 1 failed — MY wrapper's fault (PS-level *> redirection turns PyInstaller stderr into ErrorRecords under EAP=Stop; PS 5.1 trap), logged honestly; run 2 with cmd-level redirection: "BUILD OK" exit 0. Pin gate verbatim: pinned 3268d17..., checked out 534c31f... (descendant, clean tree, WARNed). 3 pre-existing benign warnings only. Signing: cert generated once; "signature applied: Status=UnknownError ... root certificate which is not trusted" — expected self-signed; DigiCert timestamp SUCCEEDED (TimeStamperCertificate CN=DigiCert SHA256 RSA4096 Timestamp Responder 2026 1; signer thumbprint 3E3E222F56BC396EA2499C23A70AA9845043A837, NotAfter 2029-09-03).
+Deltas vs Mission 1: files 2,723 → 2,723 (0); dist 233.6 MB → 233.6 MB; zip 111,809,523 → 111,818,413 B (+0.008%); exe 30,845,984 B (~29.4 MB; growth = version resource + signature). SHA256SUMS.txt verbatim:
+  d8a197828deb997b190ac9b835642b4a8b23395eb092e6e77aac7ada1a93e795 *DobbyOS.exe
+  9f7058a789df24cf8d63c9693fb8259f3d7500a0fb324bf697f25e1cde387bc5 *DobbyOS-win64.zip
+T6 LAUNCH SANITY (--smoke 45): health 200 t+16s; self-exit 0 t+64s; orphan delta 0; fresh server.log slice: 5 "MCP server connected" lines (4 builtins + Browser 30 via npx, reachable from the frozen env); only environmental errors (ChromaDB sidecar absent → documented degraded mode; python-magic optional; one Ollama endpoint 404).
+
+FILES WRITTEN: version_info.txt, dobby-desktop.spec, build-windows.ps1, README.md (caveats only), build/, dist/, %LOCALAPPDATA%\Dobby\signing\dobby-selfsigned.{key,crt,pfx} (key material OUTSIDE repo, never committed)
+COUNTS: build exit 0; dist 2,723 files / 233.6 MB; zip 111,818,413 B; exe 30,845,984 B; versioninfo Dobby OS Desktop / 1.1.0.0; signature Status=UnknownError (expected, timestamped); sha256 2/2; health 200; MCP lines 5; orphan delta 0
+OPEN ITEMS: 1. Build used -AllowAheadSubmodule (gitlink uncommitted at the time — commit lands at close-out; switch unnecessary thereafter). 2. README Run section "unsigned" line outside my owned section (prescribed at audit). 3. Self-signed by design; SmartScreen still warns; Status=UnknownError is the correct expected state.
+
+### AGENT REPORT — Verifier (M2)
+(Note: the first Verifier instance was terminated by an API session limit on 2026-09-04 evening after orientation only — no checks run, nothing written; the matrix executed in a fresh instance on 2026-09-05.)
+
+AGENT: Verifier (M2)
+TASK: Mission 2 — W1-W5 matrix against rebuilt dist\DobbyOS
+STATUS: complete
+EVIDENCE:
+W1 PASS — --smoke 120 (AUTH_ENABLED=false, deviation stated prominently): server.log slice shows all 4 python builtins connected (Memory 1, Image Generation 1, RAG 1, Email 14) + Built-in: Browser 30 via npx; /api/mcp/tools → 200, 5 servers / 47 tools; live Win32_Process capture: 4 MCP children each spawned as `DobbyOS.exe ...\_internal\dobby\mcp_servers\<x>_server.py` — the ODYSSEUS_MCP_PYTHON contract observed on the real frozen exe.
+W2 PASS — VersionInfo ProductName "Dobby OS Desktop", FileVersion 1.1.0.0; signature Status UnknownError, SignerCertificate CN=Dobby OS Desktop (self-signed), DigiCert timestamper; both recomputed SHA256 hashes match dist\SHA256SUMS.txt exactly.
+W3 PASS — fresh --smoke 45 under shipped defaults (AUTH_ENABLED verified empty): health exact 200; / → 302 Location: /login (+ /api/mcp/tools → 401 proving auth on); launcher exit 0 (captured via Start-Process/WaitForExit — GUI-subsystem exe).
+W4 PASS — during W1: exactly 6 DobbyOS.exe (launcher 19188 + server 6412 + 4 MCP children) + browser-MCP node chain as server descendants. After self-exit: DobbyOS delta 0, node PID set exactly equals the pre-launch baseline (excluded by PID, not name), port 7001 free. Kill guard never tripped.
+W5 PASS — structural snapshot (2,723 files, path|size|mtime): identical listing hash before/after covering BOTH runs; exe re-hash still d8a19782...; fresh writes confined to %LOCALAPPDATA%\Dobby.
+FILES WRITTEN: docs/verification/M2-W1.txt ... M2-W5.txt
+COUNTS: passed 5/5. MCP 4/4 builtins + browser, 5 servers / 47 tools, 4 spawn-command children; W2 1.1.0.0 + 2/2 checksums; W3 200/302/exit 0; W4 6→0; W5 2,723 files bit-stable across 2 runs.
+OPEN ITEMS: none blocking. (1) Quit intentionally does not stop the detached Ollama daemon (launcher design; noted in M2-W4.txt). (2) Server child exitcode=1 after terminate() — normal TerminateProcess semantics, launcher exits 0.
+
+### AUDIT NOTE — Auditor (Mission 2 countersign)
+
+AGENT: Auditor
+TASK: Mission 2 countersign (dobby commits + launcher + packaging + W1-W5)
+STATUS: complete
+EVIDENCE (summary of 6/6 PASS; full raw in the session record):
+[1] Dobby commits verified: both pushed on origin/redesign/baseline; 71a1c6a = 9 lines across 3 files; 534c31f = exactly the 4 mcp_servers files (+19/-4 each); override lines quoted at HEAD (builtin_mcp.py:99, mcp_manager.py:514); default path unchanged when env unset/empty.
+[2] Launcher diff exactly as described; script role BEFORE argparse (:31-45 vs :47); import graph independently walked — no GUI modules reachable from script or --serve paths; zero ODYSSEUS_DISABLE_MCP occurrences.
+[3] version_info.txt parses via PyInstaller's own classes; spec diff = version= + comment refresh only; build script signing never fatal, -AllowAheadSubmodule still demands descendant + clean tree, porcelain gate unconditional; PS 5.1 parse 0 errors; NO key material in repo (ls-files + status greps empty); %LOCALAPPDATA%\Dobby\signing\ exists outside.
+[4] All 5 M2-W files raw + verdicts; W1 deviation banner at top; W3 shipped-defaults proven (AUTH_ENABLED='' + 401 + 302); independent recount: both SHA256 match, signature Status/CN/timestamper match, FileVersion 1.1.0.0; W4 process math evidenced raw with cross-consistent PIDs.
+[5] Porcelain = exactly the expected 6 modified + 6 untracked M2 files; vendor/dobby clean at 534c31f.
+[6] Stale-doc sweep → 4 README prescriptions (P1 pin hash, P2 self-signed wording, P3 M2 W-score line, P4 M2-W5 citation); no other stale text; artifact numbers already correct.
+COUNTS: spot-checks passed 6/6, defects found 0, README prescriptions: 4
+VERDICT: COUNTERSIGNED (0 defects)
+OPEN ITEMS: apply P1-P4 + commit the set; dobby commits live on redesign/baseline (note for any future release-from-main); Quit leaves the detached Ollama daemon running (design, documented); -AllowAheadSubmodule not README-documented (optional; release builds must not use it).
+
+## Mission 2 — close-out (Orchestrator, 2026-09-05)
+
+Gate log: Mission 2 ran under the user's four-decision authorization (a-d above) with a single close-out gate; the Auditor countersigned 6/6 with 0 defects; README prescriptions P1-P4 were applied by the Orchestrator as verbatim pen-work before the final commits (disclosed per the honesty rule).
+
+W-matrix: W1-W5 = 5/5 PASS (evidence docs/verification/M2-W1..W5.txt). Combined verification across missions: V 9/9 + W 5/5.
+
+Commit reconciliation (Mission 2): dobby repo +2 (71a1c6a, 534c31f — pushed to redesign/baseline); dobby-desktop +8 (bbf174d repin, ff00cac launcher, 7fb80ae spec+version, a6291f2 build script, e406218 caveats, + readme close-out fixes, + verification evidence W1-W5, + this run-record append) → dobby-desktop total 31.
+
+Decisions recorded: (a) dobby remains PRIVATE by user choice — DobbyOS-win64.zip stays personal-use only (README Source availability section governs); (c) signing best-effort delivered: VERSIONINFO 1.1.0.0 + self-signed timestamped Authenticode (Status=UnknownError is the expected state; SmartScreen still warns — paid CA cert remains the real fix) + SHA256SUMS.txt; (d) the Orchestrator launches the app after final push; the USER completes dobby's first-run account setup personally (agents may not create accounts or enter passwords — rule stated to the user).
+
+Open items at Mission 2 end:
+1. src/mcp_manager.py camelCase attribute reads → input_schema degrades to {} for ALL MCP servers (pre-existing, affects tool-arg quality in the agent loop) — follow-up dobby-side fix candidate.
+2. Quit does not stop the detached Ollama daemon (launcher design; consistent with "external dependency, never bundled").
+3. Code signing with a CA-issued cert — future work if distribution ever goes public (which also requires resolving open item 4).
+4. dobby private (user decision) — AGPL corresponding-source gate stands before any distribution of binaries.
+5. Runtime pip installs / agent python tool remain degraded in the frozen exe (upstream limitation, unchanged).
