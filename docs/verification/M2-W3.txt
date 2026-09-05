@@ -1,0 +1,76 @@
+M2-W3 — Launch/health regression under SHIPPED DEFAULTS (no env deviation)
+Verifier (M2), executed 2026-09-05
+Target: C:\Users\Admin\Documents\dobby-desktop\dist\DobbyOS\DobbyOS.exe --smoke 45
+
+NO DEVIATION: launched from a fresh shell; AUTH_ENABLED verified EMPTY in the
+launching environment before start ("env check in fresh shell: AUTH_ENABLED=''").
+This row exercises the shipped auth-on defaults.
+
+VERDICT: PASS  (health exact 200; / -> 302 to /login; clean self-exit code 0)
+
+RUN LABEL: M2-W3 run — launcher pid 22272, launched 12:24:37, server pid 3116,
+health OK 12:24:50, smoke auto-quit 12:25:37, launcher exited 12:25:38.
+Pre-launch state confirmed: 0 DobbyOS.exe processes, no listener on port 7001.
+Timeout+kill guard: WaitForExit(300000) wrapper armed; NOT tripped (self-exit).
+
+===========================================================================
+(1) HEALTH — exact 200
+===========================================================================
+Raw:
+  W3 HEALTH_STATUS=200 at 2026-09-05T12:24:50.9951285+01:00
+  BODY: {"status":"healthy","timestamp":"2026-09-05T11:24:50.939404"}
+
+===========================================================================
+(2) ROOT — / must redirect 302 (auth on)
+===========================================================================
+Method: System.Net.HttpWebRequest with AllowAutoRedirect=false (PowerShell 5.1
+Invoke-WebRequest -MaximumRedirection 0 throws an unusable state exception).
+Raw:
+  ROOT_STATUS=302 Redirect
+  Location: /login
+  checked at 2026-09-05T12:25:04.9963088+01:00
+
+Corroboration that shipped defaults keep the API gated (auth truly ON):
+  GET /api/mcp/tools (no credentials) -> TOOLS_STATUS=401
+
+===========================================================================
+(3) CLEAN SELF-EXIT 0
+===========================================================================
+Launcher started via Start-Process -PassThru; exit code read from the process
+object after WaitForExit (the exe is a GUI-subsystem binary, so a plain shell
+invocation returns immediately and cannot capture the code).
+Raw (scratchpad w3-run.txt):
+  W3 LAUNCH 2026-09-05T12:24:37.2479801+01:00 shipped defaults (no env deviation) ARGS=--smoke 45
+  LAUNCHER_PID=22272
+  W3 EXIT 2026-09-05T12:25:38.6154985+01:00 HasExited=True EXITCODE=0
+Post-exit process check: DobbyOS procs now: 0 at 2026-09-05T12:25:39.75.
+
+===========================================================================
+LAUNCHER LOG SLICE (fresh content from byte offset 32565) — full run, verbatim
+===========================================================================
+2026-09-05 12:24:37,682 INFO    [launcher.app] launcher starting: python=3.12.10 frozen=True home=C:\Users\Admin\AppData\Local\Dobby pid=22272
+2026-09-05 12:24:37,688 INFO    [launcher.server] server spawn: cmd=['C:\\Users\\Admin\\Documents\\dobby-desktop\\dist\\DobbyOS\\DobbyOS.exe', '--serve'] cwd=C:\Users\Admin\Documents\dobby-desktop\dist\DobbyOS pid=3116 (stdout/stderr -> C:\Users\Admin\AppData\Local\Dobby\logs\server.log)
+2026-09-05 12:24:37,688 INFO    [launcher.server] health poll: GET http://127.0.0.1:7001/api/health every 0.5s, timeout 30s
+2026-09-05 12:24:50,946 INFO    [launcher.server] health OK: GET http://127.0.0.1:7001/api/health -> 200
+2026-09-05 12:24:52,960 INFO    [launcher.ollama] ollama ladder: GET http://localhost:11434/api/version -> 200 => RUNNING
+2026-09-05 12:24:52,960 INFO    [launcher.app] ollama status: RUNNING
+2026-09-05 12:24:52,960 INFO    [launcher.window] window created: title='Dobby OS' url=http://127.0.0.1:7001 size=1440x900 resizable=True
+2026-09-05 12:24:52,961 INFO    [launcher.tray] tray started (run_detached): menu=Open/Restart server/Quit
+2026-09-05 12:24:52,961 INFO    [launcher.app] smoke mode: auto-quit in 45s (restart check: False)
+2026-09-05 12:24:52,961 INFO    [launcher.window] webview loop starting (main thread)
+2026-09-05 12:25:37,964 INFO    [launcher.app] smoke: 45s elapsed -> triggering the tray-Quit code path
+2026-09-05 12:25:37,964 INFO    [launcher.app] quit: destroying window (shutdown continues on main thread)
+2026-09-05 12:25:37,964 INFO    [launcher.window] window destroy requested
+2026-09-05 12:25:37,966 INFO    [launcher.window] window closing (quit in progress)
+2026-09-05 12:25:37,995 INFO    [launcher.window] webview loop exited
+2026-09-05 12:25:37,995 INFO    [launcher.app] shutdown: webview loop exited; stopping server
+2026-09-05 12:25:37,995 INFO    [launcher.server] server stop: terminate() pid=3116
+2026-09-05 12:25:38,020 INFO    [launcher.server] server exit: pid=3116 exitcode=1
+2026-09-05 12:25:38,020 INFO    [launcher.tray] tray stop
+2026-09-05 12:25:38,020 INFO    [launcher.app] shutdown complete: exiting 0
+
+Note: "server exit: pid=3116 exitcode=1" is the SERVER child's code after the
+launcher's terminate() call (normal Windows TerminateProcess semantics, same as
+M1 behavior); the launcher process itself — the row's subject — exited 0.
+
+RESULT: PASS — 200 / 302-to-login / launcher exit code 0, no orphans left.

@@ -1,0 +1,77 @@
+M2-W4 — Quit orphans incl. MCP children (stricter than M1 V6)
+Verifier (M2), executed 2026-09-05
+Evidence run: the M2-W1 run (launcher pid 19188, --smoke 120, AUTH_ENABLED=false
+deviation as gate-accepted; process accounting is auth-independent).
+
+VERDICT: PASS  (all 6 DobbyOS.exe gone after self-exit; both node.exe children
+of our tree gone; pre-existing node.exe excluded by PID set, not name)
+
+===========================================================================
+BASELINE (before launch, 2026-09-05 ~12:17)
+===========================================================================
+DobbyOS.exe processes: NONE. Port 7001: no listener.
+Pre-existing node.exe PID set (recorded BEFORE launch, excluded by PID):
+  {8052, 16192, 20020, 20052, 20076, 20324, 20332}
+
+===========================================================================
+DURING RUN (captured live ~12:20, Get-CimInstance Win32_Process)
+===========================================================================
+DobbyOS.exe count: 6 — EXACTLY as expected (launcher + server + 4 MCP children):
+  19188  launcher  "...\dist\DobbyOS\DobbyOS.exe" --smoke 120
+   6412  server    ...\DobbyOS.exe --serve           (owns 127.0.0.1:7001 LISTEN)
+   6596  MCP child ...\DobbyOS.exe ..._internal\dobby\mcp_servers/image_gen_server.py
+  18052  MCP child ...\DobbyOS.exe ..._internal\dobby\mcp_servers/memory_server.py
+  19776  MCP child ...\DobbyOS.exe ..._internal\dobby\mcp_servers/rag_server.py
+  12876  MCP child ...\DobbyOS.exe ..._internal\dobby\mcp_servers/email_server.py
+(full raw command lines in M2-W1.txt section c)
+
+node.exe spawned under our server (browser MCP), identified as DESCENDANTS of
+server pid 6412 (raw descendant walk output):
+  ProcessId ParentProcessId Name
+      6596            6412 DobbyOS.exe
+     18052            6412 DobbyOS.exe
+     19776            6412 DobbyOS.exe
+     12876            6412 DobbyOS.exe
+      8480            6412 cmd.exe      (npx.CMD -y @playwright/mcp@latest --headless --caps vision)
+     13964            8480 conhost.exe
+     20972            8480 node.exe     (npx-cli.js)
+     20288           20972 cmd.exe      (/d /s /c playwright-mcp --headless --caps vision)
+     17488           20288 node.exe     (@playwright\mcp\cli.js --headless --caps vision)
+
+New node PIDs belonging to our tree: {20972, 17488} (+ helper cmd 8480, 20288,
+conhost 13964). Pre-existing node PIDs untouched and NOT counted.
+
+===========================================================================
+AFTER SELF-EXIT (smoke auto-quit 12:22:11; checked 12:22:12 and confirmed)
+===========================================================================
+Raw check output:
+  ALL TRACKED PIDS GONE at 2026-09-05T12:22:12.5789273+01:00
+  ---DobbyOS count now---
+  0
+  ---node PIDs now---
+  8052 16192 20020 20052 20076 20324 20332
+  ---port 7001---
+  only TimeWait entries, OwningProcess 0 (kernel TCP cleanup; no listener)
+
+Tracked PID set polled: {19188, 6412, 6596, 18052, 19776, 12876, 8480, 13964,
+20972, 20288, 17488} — every one exited on its own within ~1s of the smoke
+auto-quit. Timeout+kill guard (180s) armed but NOT tripped; nothing was killed
+by the verifier.
+
+DobbyOS.exe delta: 0 (6 -> 0). Node children of our tree: gone (20972, 17488
+absent; post-run node set is EXACTLY the pre-launch baseline PID set).
+cmd.exe/conhost.exe helpers of the npx chain: gone.
+
+===========================================================================
+OBSERVATION (not an orphan per the matrix definition, recorded for honesty)
+===========================================================================
+The launcher deliberately spawns a DETACHED Ollama daemon ("ollama ladder"):
+  12:20:01 launcher.log: "ollama ladder: spawned detached:
+   cmd=['C:\Users\Admin\AppData\Local\Programs\Ollama\ollama.EXE','serve'] pid=4356"
+ollama.exe pid 4356 was still running after DobbyOS quit (checked 12:22+).
+This is documented launcher design (detached daemon, intentionally outlives
+quit), it is not a DobbyOS.exe process and not a node child of our tree, so it
+does not fail the row — but reviewers should be aware quit does NOT stop Ollama.
+
+RESULT: PASS — launcher+server+4 MCP children (6/6) and both browser-MCP node
+children all exited cleanly with the app; zero orphans by PID-set accounting.

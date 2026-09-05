@@ -1,0 +1,45 @@
+M2-W5 — Exe-dir immutability regression (dist\DobbyOS must not change at runtime)
+Verifier (M2), executed 2026-09-05
+
+VERDICT: PASS  (structural snapshot identical before/after; coverage is
+actually TWO full runs — the M2-W1 run and the M2-W3 run — stricter than the
+required one; %LOCALAPPDATA%\Dobby received all the fresh runtime writes)
+
+===========================================================================
+METHOD
+===========================================================================
+Snapshot = every file under dist\DobbyOS as "relativePath|sizeBytes|mtimeUTC"
+(LastWriteTimeUtc, ms precision), sorted; SHA256 of the resulting listing.
+PRE  snapshot taken 2026-09-05 12:18 (before any run today).
+POST snapshot taken 2026-09-05 12:26 (after BOTH the W1 --smoke 120 run with
+AUTH_ENABLED=false and the W3 --smoke 45 shipped-defaults run had fully exited).
+
+===========================================================================
+RESULTS — dist\DobbyOS
+===========================================================================
+PRE : 2723 files, listing SHA256 = C9EDE7EB0CBA89BF2D1FE8F0EBF86FB4369F54DF70E67F365A731415D388BF76
+POST: 2723 files, listing SHA256 = C9EDE7EB0CBA89BF2D1FE8F0EBF86FB4369F54DF70E67F365A731415D388BF76
+Compare-Object over the two listings: "NO DIFF — listings identical line-for-line"
+
+Signed exe byte-level confirmation (signing happened at build time; a run must
+not modify the signed exe):
+  SHA256(dist\DobbyOS\DobbyOS.exe) pre-runs : D8A197828DEB997B190AC9B835642B4A8B23395EB092E6E77AAC7ADA1A93E795 (12:18, M2-W2)
+  SHA256(dist\DobbyOS\DobbyOS.exe) post-runs: D8A197828DEB997B190AC9B835642B4A8B23395EB092E6E77AAC7ADA1A93E795 (12:27)
+  IDENTICAL — still matching dist\SHA256SUMS.txt.
+
+===========================================================================
+%LOCALAPPDATA%\Dobby — fresh writes landed where they should (raw excerpts)
+===========================================================================
+logs\launcher.log grew 30277 -> 34703 bytes (last write 2026-09-05 12:25:38)
+logs\server.log   grew 336354 -> 387622 bytes (last write 2026-09-05 12:25:05)
+data\app.db       written 2026-09-05 12:21:11 (1212416 bytes)
+webview\EBWebView\... (WebView2 profile: Preferences, History, caches, Code
+Cache, Session Storage, shader caches — 200+ files) all with 2026-09-05
+12:19-12:25 timestamps, i.e. produced by today's two runs.
+
+(The runtime home is the launcher's "home=C:\Users\Admin\AppData\Local\Dobby"
+per launcher.log — consistent with the frozen-gated env design: all mutable
+state outside the install dir.)
+
+RESULT: PASS — dist\DobbyOS is bit-stable across launch/serve/MCP/quit for two
+consecutive runs; every runtime side effect confined to %LOCALAPPDATA%\Dobby.

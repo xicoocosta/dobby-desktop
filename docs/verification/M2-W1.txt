@@ -1,0 +1,127 @@
+M2-W1 — Frozen MCP end-to-end (rebuilt dist\DobbyOS, dobby @ 534c31f port)
+Verifier (M2), executed 2026-09-05
+Target: C:\Users\Admin\Documents\dobby-desktop\dist\DobbyOS\DobbyOS.exe --smoke 120
+
+***************************************************************************
+* DEVIATION (gate-accepted precedent from M1): this run was launched with *
+* AUTH_ENABLED=false so the API could be read without creating accounts.  *
+* Shipped defaults are UNCHANGED — the deviation exists only in the       *
+* environment of this verification run. W3 runs with shipped defaults.    *
+***************************************************************************
+
+VERDICT: PASS  (4/4 python builtins connected + Browser via npx; spawn-command
+evidence for the ODYSSEUS_MCP_PYTHON contract captured live; clean self-exit)
+
+RUN LABEL: M2-W1 run — launcher pid 19188, launched 2026-09-05 12:19:39,
+health 200 at 12:19:57, smoke auto-quit 12:22:11, all processes gone by 12:22:12.
+Port 7001 confirmed free and zero DobbyOS.exe processes before launch.
+Timeout+kill guard armed (180s post-smoke); guard did NOT trip — self-exit.
+
+===========================================================================
+(a) FRESH server.log SLICE — "MCP server connected" lines
+===========================================================================
+Slice method: server.log read from byte offset 336354 (pre-run size measured
+2026-09-05 12:18:54; log last written 2026-09-04 20:28) — everything below is
+from THIS run only. Full slice saved during the run; MCP-relevant lines:
+
+2026-09-05 12:19:53,805 INFO    [app] MCP routes initialized
+2026-09-05 12:19:54,549 INFO    [src.builtin_mcp] NPX binary resolved to: C:\Program Files\nodejs\npx.CMD
+2026-09-05 12:19:58,053 INFO    [src.mcp_manager] MCP server connected: Built-in: Memory (memory) - 1 tools via stdio
+2026-09-05 12:19:58,053 INFO    [src.builtin_mcp] Built-in MCP server registered: Built-in: Memory
+2026-09-05 12:19:58,103 INFO    [src.mcp_manager] MCP server connected: Built-in: Image Generation (image_gen) - 1 tools via stdio
+2026-09-05 12:19:58,103 INFO    [src.builtin_mcp] Built-in MCP server registered: Built-in: Image Generation
+2026-09-05 12:19:58,111 INFO    [src.mcp_manager] MCP server connected: Built-in: RAG (rag) - 1 tools via stdio
+2026-09-05 12:19:58,111 INFO    [src.builtin_mcp] Built-in MCP server registered: Built-in: RAG
+2026-09-05 12:19:58,111 INFO    [src.mcp_manager] MCP server connected: Built-in: Email (email) - 14 tools via stdio
+2026-09-05 12:19:58,111 INFO    [src.builtin_mcp] Built-in MCP server registered: Built-in: Email
+2026-09-05 12:20:00,943 INFO    [src.builtin_mcp] Starting NPX server: Built-in: Browser (C:\Program Files\nodejs\npx.CMD -y @playwright/mcp@latest --headless --caps vision)
+2026-09-05 12:20:02,757 INFO    [src.mcp_manager] MCP server connected: Built-in: Browser (builtin_browser) - 30 tools via stdio
+2026-09-05 12:20:02,757 INFO    [src.builtin_mcp] Built-in NPX server registered: Built-in: Browser
+2026-09-05 12:20:40,814 INFO    [uvicorn.access] 127.0.0.1:61691 - "GET /api/mcp/tools HTTP/1.1" 200
+
+Expected 4 python builtins -> ALL FOUR CONNECTED (Memory 1, Image Generation 1,
+RAG 1, Email 14). npx reachable -> Built-in: Browser 30 tools ALSO connected.
+
+===========================================================================
+(b) /api/mcp/tools — server + tool counts
+===========================================================================
+GET http://127.0.0.1:7001/api/mcp/tools -> HTTP 200, 15018 bytes JSON
+(flat tool array; fields: name, qualified_name, description, input_schema,
+is_disabled, server_id, server_name).
+
+Counts computed from the response:
+TOTAL TOOLS: 47   DISTINCT SERVERS: 5
+Built-in: Browser          : 30 tools (server_id: builtin_browser)
+Built-in: Email            : 14 tools (server_id: email)
+Built-in: Image Generation :  1 tool  (server_id: image_gen)
+Built-in: Memory           :  1 tool  (server_id: memory)
+Built-in: RAG              :  1 tool  (server_id: rag)
+
+Matches (a) exactly: 4 builtins (1+1+1+14) + Browser 30.
+
+===========================================================================
+(c) PROCESS-LEVEL PROOF — MCP children run under the EXE interpreter
+===========================================================================
+Captured while up (Get-CimInstance Win32_Process, Name='DobbyOS.exe'),
+raw output:
+
+ProcessId       : 19188
+ParentProcessId : 8820
+CreationDate    : 9/5/2026 12:19:39 PM
+CommandLine     : "C:\Users\Admin\Documents\dobby-desktop\dist\DobbyOS\DobbyOS.exe" --smoke 120
+
+ProcessId       : 6412
+ParentProcessId : 19188
+CreationDate    : 9/5/2026 12:19:40 PM
+CommandLine     : C:\Users\Admin\Documents\dobby-desktop\dist\DobbyOS\DobbyOS.exe --serve
+
+ProcessId       : 6596
+ParentProcessId : 6412
+CreationDate    : 9/5/2026 12:19:55 PM
+CommandLine     : C:\Users\Admin\Documents\dobby-desktop\dist\DobbyOS\DobbyOS.exe C:\Users\Admin\Documents\dobby-desktop\dist\DobbyOS\_internal\dobby\mcp_servers/image_gen_server.py
+
+ProcessId       : 18052
+ParentProcessId : 6412
+CreationDate    : 9/5/2026 12:19:55 PM
+CommandLine     : C:\Users\Admin\Documents\dobby-desktop\dist\DobbyOS\DobbyOS.exe C:\Users\Admin\Documents\dobby-desktop\dist\DobbyOS\_internal\dobby\mcp_servers/memory_server.py
+
+ProcessId       : 19776
+ParentProcessId : 6412
+CreationDate    : 9/5/2026 12:19:55 PM
+CommandLine     : C:\Users\Admin\Documents\dobby-desktop\dist\DobbyOS\DobbyOS.exe C:\Users\Admin\Documents\dobby-desktop\dist\DobbyOS\_internal\dobby\mcp_servers/rag_server.py
+
+ProcessId       : 12876
+ParentProcessId : 6412
+CreationDate    : 9/5/2026 12:19:55 PM
+CommandLine     : C:\Users\Admin\Documents\dobby-desktop\dist\DobbyOS\DobbyOS.exe C:\Users\Admin\Documents\dobby-desktop\dist\DobbyOS\_internal\dobby\mcp_servers/email_server.py
+
+MCP spawn-command children counted: 4 of 4 (image_gen, memory, rag, email),
+every one of the form DobbyOS.exe <...\_internal\dobby\mcp_servers\<x>_server.py>
+— the ODYSSEUS_MCP_PYTHON override observed live: the frozen EXE itself is the
+interpreter for the builtin MCP servers. Total DobbyOS.exe processes while up: 6
+(launcher 19188 + server 6412 + 4 MCP children).
+
+Browser MCP chain (descendants of server 6412, captured live):
+cmd.exe 8480 ("npx.CMD -y @playwright/mcp@latest --headless --caps vision")
+ -> node.exe 20972 (npx-cli.js) -> cmd.exe 20288 -> node.exe 17488 (@playwright\mcp\cli.js)
+
+===========================================================================
+LAUNCHER LOG (fresh slice from byte offset 30277) — corroboration
+===========================================================================
+2026-09-05 12:19:40,173 INFO    [launcher.app] launcher starting: python=3.12.10 frozen=True home=C:\Users\Admin\AppData\Local\Dobby pid=19188
+2026-09-05 12:19:40,180 INFO    [launcher.server] server spawn: cmd=['C:\\Users\\Admin\\Documents\\dobby-desktop\\dist\\DobbyOS\\DobbyOS.exe', '--serve'] cwd=C:\Users\Admin\Documents\dobby-desktop\dist\DobbyOS pid=6412 (stdout/stderr -> C:\Users\Admin\AppData\Local\Dobby\logs\server.log)
+2026-09-05 12:19:57,253 INFO    [launcher.server] health OK: GET http://127.0.0.1:7001/api/health -> 200
+2026-09-05 12:20:11,456 INFO    [launcher.app] smoke mode: auto-quit in 120s (restart check: False)
+2026-09-05 12:22:11,461 INFO    [launcher.app] smoke: 120s elapsed -> triggering the tray-Quit code path
+2026-09-05 12:22:11,512 INFO    [launcher.server] server exit: pid=6412 exitcode=1
+2026-09-05 12:22:11,513 INFO    [launcher.app] shutdown complete: exiting 0
+
+Health endpoint (my own poll): HTTP 200 at 12:19:57,
+body {"status":"healthy","timestamp":"2026-09-05T11:19:57.245191"}.
+
+Note: launcher also spawned a detached Ollama daemon by design
+("ollama ladder", pid 4356) — documented in M2-W4.
+
+RESULT: PASS — 4/4 python builtins connected + Browser 30 via npx (5 servers,
+47 tools via API), and the spawn-command evidence proves the frozen EXE serves
+as the MCP interpreter (ODYSSEUS_MCP_PYTHON contract).

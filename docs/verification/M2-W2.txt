@@ -1,0 +1,104 @@
+M2-W2 — Version resource, Authenticode signature, checksums
+Verifier (M2), executed 2026-09-05
+Target: C:\Users\Admin\Documents\dobby-desktop\dist\DobbyOS\DobbyOS.exe (built 2026-09-04 evening)
+No env deviation applicable (static checks, exe not executed).
+
+VERDICT: PASS  (all three sub-checks pass)
+
+===========================================================================
+(1) VERSION RESOURCE — (Get-Item dist\DobbyOS\DobbyOS.exe).VersionInfo | fl *
+===========================================================================
+Expected: ProductName "Dobby OS Desktop", FileVersion 1.1.0.0 -> OBSERVED, MATCH.
+
+RAW OUTPUT:
+FileVersionRaw     : 1.1.0.0
+ProductVersionRaw  : 1.1.0.0
+Comments           :
+CompanyName        : xicoocosta
+FileBuildPart      : 0
+FileDescription    : Dobby OS Desktop
+FileMajorPart      : 1
+FileMinorPart      : 1
+FileName           : C:\Users\Admin\Documents\dobby-desktop\dist\DobbyOS\DobbyOS.exe
+FilePrivatePart    : 0
+FileVersion        : 1.1.0.0
+InternalName       : DobbyOS
+IsDebug            : False
+IsPatched          : False
+IsPrivateBuild     : False
+IsPreRelease       : False
+IsSpecialBuild     : False
+Language           : English (United States)
+LegalCopyright     : AGPL-3.0-or-later
+LegalTrademarks    :
+OriginalFilename   : DobbyOS.exe
+PrivateBuild       :
+ProductBuildPart   : 0
+ProductMajorPart   : 1
+ProductMinorPart   : 1
+ProductName        : Dobby OS Desktop
+ProductPrivatePart : 0
+ProductVersion     : 1.1.0.0
+SpecialBuild       :
+
+===========================================================================
+(2) AUTHENTICODE SIGNATURE — Get-AuthenticodeSignature | fl Status,StatusMessage,SignerCertificate,TimeStamperCertificate
+===========================================================================
+Expected: Status UnknownError (self-signed root untrusted), SignerCertificate
+CN=Dobby OS Desktop (self-signed), DigiCert timestamper -> OBSERVED, MATCH.
+
+RAW OUTPUT:
+Status                 : UnknownError
+StatusMessage          : A certificate chain processed, but terminated in a root certificate which
+                         is not trusted by the trust provider
+SignerCertificate      : [Subject]
+                           CN=Dobby OS Desktop (self-signed)
+                         [Issuer]
+                           CN=Dobby OS Desktop (self-signed)
+                         [Serial Number]
+                           1E77DF21435E989AF81EBAFDBA369BC4F1B147B4
+                         [Not Before]
+                           9/4/2026 8:25:21 PM
+                         [Not After]
+                           9/3/2029 8:25:21 PM
+                         [Thumbprint]
+                           3E3E222F56BC396EA2499C23A70AA9845043A837
+TimeStamperCertificate : [Subject]
+                           CN=DigiCert SHA256 RSA4096 Timestamp Responder 2026 1, O="DigiCert,
+                         Inc.", C=US
+                         [Issuer]
+                           CN=DigiCert Trusted G4 TimeStamping RSA4096 SHA256 2025 CA1,
+                         O="DigiCert, Inc.", C=US
+                         [Serial Number]
+                           084FDC334F7E454EDBC30F8FF9921835
+                         [Not Before]
+                           8/5/2026 1:00:00 AM
+                         [Not After]
+                           11/4/2037 11:59:59 PM
+                         [Thumbprint]
+                           51D9ABDA034973D84F4266ACA48248E6B369C439
+
+===========================================================================
+(3) CHECKSUMS — recomputed with Get-FileHash -Algorithm SHA256, compared to dist\SHA256SUMS.txt
+===========================================================================
+dist\SHA256SUMS.txt (verbatim):
+d8a197828deb997b190ac9b835642b4a8b23395eb092e6e77aac7ada1a93e795 *DobbyOS.exe
+9f7058a789df24cf8d63c9693fb8259f3d7500a0fb324bf697f25e1cde387bc5 *DobbyOS-win64.zip
+
+Recomputed (raw Get-FileHash output):
+Algorithm : SHA256
+Hash      : D8A197828DEB997B190AC9B835642B4A8B23395EB092E6E77AAC7ADA1A93E795
+Path      : C:\Users\Admin\Documents\dobby-desktop\dist\DobbyOS\DobbyOS.exe
+
+Algorithm : SHA256
+Hash      : 9F7058A789DF24CF8D63C9693FB8259F3D7500A0FB324BF697F25E1CDE387BC5
+Path      : C:\Users\Admin\Documents\dobby-desktop\dist\DobbyOS-win64.zip
+
+Comparison: both recomputed hashes match SHA256SUMS.txt exactly
+(case-insensitive hex comparison; Get-FileHash emits uppercase, sums file is
+lowercase — identical hex digits). MATCH.
+
+===========================================================================
+RESULT: PASS — version resource 1.1.0.0 / "Dobby OS Desktop" present;
+self-signature verbatim as expected (UnknownError + self-signed CN + DigiCert
+timestamp); both published checksums reproduce exactly.
