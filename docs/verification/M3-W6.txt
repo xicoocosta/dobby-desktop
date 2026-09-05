@@ -1,0 +1,143 @@
+================================================================================
+M3-W6 — Frozen MCP schemas + error propagation regression
+================================================================================
+DATE: 2026-09-05
+AGENT: Verifier (Mission 3)
+TARGET: dist\DobbyOS\DobbyOS.exe (30,845,984 bytes, built 2026-09-05 13:19:07,
+        under strict pin gate; dobby pinned to 01ce7cd — src/mcp_manager.py
+        snake_case fix)
+
+********************************************************************************
+* DEVIATION BANNER                                                             *
+* AUTH_ENABLED=false was set in the environment of the launched process so    *
+* the API reads (/api/health, /api/mcp/tools) could be made without an        *
+* account/token. This is a TEST-ENVIRONMENT deviation only; shipped defaults  *
+* are unchanged. Gate-accepted precedent from prior missions (M2 rows).       *
+********************************************************************************
+
+VERDICT: PASS
+  (a) PASS — 47 tools total, 47/47 with NON-EMPTY input_schema; per-server
+      split exactly as expected (builtin_browser 30, email 14, image_gen 1,
+      memory 1, rag 1). manage_memory schema pasted verbatim below.
+  (b) PASS — regression trio in the same run: health HTTP 200, self-exit
+      code 0, DobbyOS process delta 6 -> 0 (6 counted during the run).
+  (c) STATED LIMITATION (optional strengthener not performable from outside):
+      dobby exposes no direct HTTP tool-call endpoint, so is_error ->
+      exit_code 1 propagation cannot be exercised from outside the frozen
+      process without an account. It was proven in dev at 01ce7cd (is_error
+      results surface as exit_code 1). No frozen-mode equivalent was faked.
+
+================================================================================
+0. PRECONDITIONS (13:26, before any launch)
+================================================================================
+PORT 7001 FREE
+DobbyOS processes BEFORE: 0
+Exe: C:\Users\Admin\Documents\dobby-desktop\dist\DobbyOS\DobbyOS.exe
+     Length 30845984, LastWriteTime 9/5/2026 1:19:07 PM
+
+================================================================================
+1. RUN LOG — two launches
+================================================================================
+RUN 1 (13:26:23, launcher PID 8656): consumed discovering the health path.
+  - /health returned 404; the shipped health endpoint is /api/health.
+    First confirmed: /api/health -> HTTP 200
+    {"status":"healthy","timestamp":"2026-09-05T12:28:00.904651"}
+  - The 90 s smoke window expired before /api/mcp/tools could be fetched.
+  - Observed anyway: 6 DobbyOS processes during (8656, 14776 [port owner],
+    5260, 9756, 14968, 17212); after self-exit at 13:28:10 (elapsed 107 s)
+    process count 0 and port 7001 fully released. Exit code was lost to the
+    PowerShell 5.1 Start-Process -PassThru quirk (fixed for run 2 by touching
+    $p.Handle). Run 1 corroborates the N->0 delta and clean self-shutdown.
+
+RUN 2 (13:28:58, launcher PID 12676) — THE EVIDENCE RUN. All raw output below
+is from this single run.
+
+Launch command (via Start-Process, env AUTH_ENABLED=false inherited):
+  dist\DobbyOS\DobbyOS.exe --smoke 90
+Kill guard: WaitForExit(180000) then Kill() — guard never fired (self-exit).
+Timeline: launch 13:28:58 -> health 200 at 13:29:13 -> self-exit 13:30:45
+(elapsed 107 s = ~13 s startup + 90 s smoke + shutdown).
+
+================================================================================
+2. (a) FROZEN MCP SCHEMAS — raw output
+================================================================================
+HEALTH (gate for the reads):
+  GET http://127.0.0.1:7001/api/health
+  HEALTH: HTTP 200 after 2s : {"status":"healthy","timestamp":"2026-09-05T12:29:13.323315"}
+
+GET http://127.0.0.1:7001/api/mcp/tools
+  NOTE: for the first ~3 s after health went 200 the endpoint returned
+  HTTP 200 with an empty list "[]" (MCP servers still warming up). ~3 s
+  later the full payload arrived. Same warmup behavior exists in dev; not
+  a schema regression.
+  Final fetch: HTTP 200, 38,335 chars.
+
+COUNTS (parsed from the saved payload):
+  TOTAL TOOLS: 47
+
+  PER SERVER (total / non-empty input_schema):
+    builtin_browser: 30 tools, 30 non-empty input_schema
+    email: 14 tools, 14 non-empty input_schema
+    image_gen: 1 tools, 1 non-empty input_schema
+    memory: 1 tools, 1 non-empty input_schema
+    rag: 1 tools, 1 non-empty input_schema
+
+  TOTAL NON-EMPTY input_schema: 47 / 47
+  EMPTY-SCHEMA TOOLS: none
+
+  Expected: 47/47 across builtin_browser 30, email 14, image_gen 1,
+  memory 1, rag 1 -> MATCHES EXACTLY.
+
+  ("non-empty" = input_schema serializes to something other than "{}";
+  every one of the 47 in fact carries a properties block.)
+
+manage_memory — FULL TOOL OBJECT, VERBATIM (raw substring of the served
+JSON, not re-serialized):
+
+{"server_id":"memory","server_name":"Built-in: Memory","name":"manage_memory","qualified_name":"mcp__memory__manage_memory","description":"Manage the user's memory system: list, add, edit, delete, or search memories.","input_schema":{"properties":{"action":{"type":"string","enum":["list","add","edit","delete","search"],"description":"The action to perform"},"text":{"type":"string","description":"Memory text (add/edit) or search query (search)"},"memory_id":{"type":"string","description":"Memory ID (edit/delete)"},"category":{"type":"string","enum":["fact","event","contact","preference"],"description":"Memory category (add/list filter)"}},"required":["action"],"type":"object"},"is_disabled":false}
+
+================================================================================
+3. (b) REGRESSION TRIO — same run (run 2)
+================================================================================
+HEALTH CODE:        HTTP 200 (raw line above)
+SELF-EXIT CODE:     EXITCODE=0
+                    ENDED: 2026-09-05 13:30:45 (elapsed 107s)
+                    (kill guard did NOT fire; process exited on its own at
+                    the end of the 90 s smoke window)
+PROCESS DELTA:      BEFORE 0 -> DURING 6 -> AFTER 0
+  DURING (mid-run): DobbyOS procs DURING: 6
+                    (PIDs: 4324, 10092, 12676, 16944, 21880, 22140)
+  AFTER (post-exit): DobbyOS procs AFTER: 0
+                     port 7001: no listener
+  Expected N->0: satisfied (6->0). Run 1 independently showed 6->0 as well.
+
+stdout/stderr of the exe were empty in both runs (0 bytes; the app logs
+elsewhere) — consistent with prior missions.
+
+================================================================================
+4. (c) ERROR-PROPAGATION STRENGTHENER — honest limitation statement
+================================================================================
+Attempted cheaply from OUTSIDE the process only. The frozen build exposes no
+direct HTTP endpoint that invokes an MCP tool and returns its exit code, and
+exercising a tool through the product surface would require account creation,
+which is out of scope for this row. Therefore is_error -> exit_code 1
+propagation is NOT re-proven against the frozen exe here. It was proven in
+dev at pin 01ce7cd (the same src/mcp_manager.py snake_case fix that took
+non-empty input_schema from 0/47 to 47/47 also made is_error results surface
+as exit_code 1). No frozen-mode equivalent was fabricated. The 47/47 schema
+result above confirms the 01ce7cd code path is the one running inside the
+frozen build.
+
+================================================================================
+5. NOTES / OBSERVATIONS
+================================================================================
+- Health endpoint is /api/health; /health is 404 in the frozen build. Worth
+  knowing for future rows (run 1's window was lost to this discovery).
+- /api/mcp/tools briefly serves "[]" (HTTP 200) during MCP warmup, roughly
+  the first 3 s after health goes 200. Callers gating only on health should
+  retry an empty tools list.
+- Writes for this row: this file only. No fixes, no commits, no other
+  file touches.
+================================================================================
+END M3-W6
+================================================================================
