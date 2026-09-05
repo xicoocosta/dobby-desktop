@@ -1,0 +1,136 @@
+R7 — WebView2-aware final release (Mission 4b recheck)
+========================================================
+Date: 2026-09-05 (~14:47-14:52 local, UTC+01:00)
+Verifier: M4b verifier agent
+Machine: Windows 11 Pro 10.0.26100, WebView2 Evergreen PRESENT (pv=152.0.4191.62)
+Repo: C:\Users\Admin\Documents\dobby-desktop
+HEAD: 4898dc4a40446f642fb389a67763f43b46ddca55 (working tree clean, 0 modified)
+Guards: port 7001 verified FREE before start; no accounts created;
+        %LOCALAPPDATA%\Dobby never touched destructively (baseline mtimes below).
+
+Release under test: dist\release\
+  DobbyOS-Setup-1.1.0.exe    83,305,072 B   2026-09-05 14:46:40
+  SOURCE-DobbyOS-1.1.0.zip   33,826,255 B   2026-09-05 14:45:45
+  INSTALL.txt                     2,710 B   2026-09-05 14:41:31
+  SHA256SUMS.txt                    183 B   2026-09-05 14:46:41
+  (share zip dist\DobbyOS-1.1.0-share.zip = 116,356,676 B, present)
+
+--------------------------------------------------------
+(a) CHECKSUMS — PASS
+--------------------------------------------------------
+SHA256SUMS.txt contents:
+  c01ffbb7586a0ad7fc40e251de3cff6bef9ee5df5e6c0d0af744549a126be860 *DobbyOS-Setup-1.1.0.exe
+  19061e5d3a47b8028dfb8200c84b98c0889bfefa1048ded94d678c048f47cdaf *SOURCE-DobbyOS-1.1.0.zip
+Recomputed (Get-FileHash SHA256):
+  DobbyOS-Setup-1.1.0.exe  = C01FFBB7586A0AD7FC40E251DE3CFF6BEF9EE5DF5E6C0D0AF744549A126BE860  MATCH
+  SOURCE-DobbyOS-1.1.0.zip = 19061E5D3A47B8028DFB8200C84B98C0889BFEFA1048DED94D678C048F47CDAF  MATCH
+2/2 hashes match (case-insensitive hex).
+
+--------------------------------------------------------
+(b) SOURCE ZIP — PASS
+--------------------------------------------------------
+SOURCE-MANIFEST.txt extracted from zip root (890 B). Key lines (verbatim):
+  "Generated: 2026-09-05 by build-release.ps1"
+  "  dobby-desktop/               packaging repo, commit 4898dc4a40446f642fb389a67763f43b46ddca55"
+  "  dobby-desktop/vendor/dobby/  Dobby application, commit 01ce7cda371e9ff3d447d2e646d7fe9bf0a5cfbf"
+Desktop commit in manifest == git HEAD 4898dc4a40446f642fb389a67763f43b46ddca55. MATCH.
+
+Entry dobby-desktop/installer/dobby-desktop.iss present in zip (13,589 B),
+extracted alone and grepped:
+  IsWebView2Installed                        : 3 occurrences
+    (function declaration line 145; re-probe call line 248; PrepareToInstall
+     gate call line 274)
+  {F3017226-FE2A-4295-8BDF-00C3A9A7E4C5}     : 3 occurrences
+    (WV2KeyMachine64 = SOFTWARE\WOW6432Node\Microsoft\EdgeUpdate\Clients\{GUID},
+     WV2KeyMachine32, WV2KeyUser — the three documented registry locations)
+  [Code] section: present (opens line 91; 5 raw string hits, the rest are
+     comments referring to the section)
+The zip's .iss therefore ships WITH the WebView2 [Code] section: registry pv
+detection, Evergreen bootstrapper (go.microsoft.com/fwlink/p/?LinkId=2124703)
+fetched only when missing, never fatal (PrepareToInstall always returns ''),
+silent-safe (WizardSilent branch uses DownloadTemporaryFile, exceptions
+swallowed and logged; MsgBox only when not WizardSilent).
+
+--------------------------------------------------------
+(c) INSTALL.txt — PASS
+--------------------------------------------------------
+dist\release\INSTALL.txt (2,710 B) contains the WebView2 bullet, verbatim
+(lines 7-12):
+  "* Microsoft Edge WebView2 runtime — the app window runs on it. Windows 11
+     already includes it, and so does any Windows 10 PC that gets its updates.
+     If yours doesn't have it, the installer notices and offers to fetch it
+     from Microsoft during setup (needs internet). Offline, or declined it?
+     Get it free here and run Dobby OS afterwards:
+     https://developer.microsoft.com/microsoft-edge/webview2/"
+
+--------------------------------------------------------
+(d) SILENT INSTALL WITH LOG — PASS
+--------------------------------------------------------
+Command: DobbyOS-Setup-1.1.0.exe /VERYSILENT /SUPPRESSMSGBOXES /NORESTART
+         /LOG="<scratchpad>\r7-install.log"
+Exit code: 0
+Log header: "Setup version: Inno Setup version 6.7.3",
+            "Original Setup EXE: C:\Users\Admin\Documents\dobby-desktop\dist\release\DobbyOS-Setup-1.1.0.exe"
+WebView2 Log() lines found (verbatim, detection path — pv found, NO download
+attempted; zero "bootstrapper"/"download" action lines in the log):
+  2026-09-05 14:48:29.518   WebView2: per-machine (WOW6432Node) hit, pv=152.0.4191.62
+  2026-09-05 14:48:29.518   WebView2: already installed — skipping bootstrap.
+(The only other "WebView2" log hits are 5 "Dest filename:" file-copy lines for
+the app's own bundled pywebview DLLs — not runtime download activity.)
+Installed exe: %LOCALAPPDATA%\Programs\DobbyOS\DobbyOS.exe, 30,845,984 B,
+  SHA256 = F2EB60E7087E914AAEBC1EA50223BAE313C367B153135A1991A59CD4B6D624B4
+  — still the expected f2eb60e7... payload (identical binary to prior R-row).
+Start Menu shortcut present:
+  C:\Users\Admin\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Dobby OS.lnk
+Desktop shortcut: none (checkbox default off — correct).
+Log tail: "Need to restart Windows? No" / "Log closed." — clean finish.
+
+--------------------------------------------------------
+(e) SMOKE OF INSTALLED APP — PASS
+--------------------------------------------------------
+Command: "%LOCALAPPDATA%\Programs\DobbyOS\DobbyOS.exe" --smoke 30  (PID 23408)
+Health:  GET http://127.0.0.1:7001/api/health -> HTTP 200 after 7 s
+         body: {"status":"healthy","timestamp":"2026-09-05T13:49:30.259599"}
+Exit code: 0 (self-terminated inside the 90 s wait)
+Orphans: 0 — no process with a path under %LOCALAPPDATA%\Programs\DobbyOS
+         remained; port 7001 showed only a pid-0 TIME_WAIT socket (normal TCP
+         teardown, no owning process), which cleared on its own.
+
+--------------------------------------------------------
+(f) SILENT UNINSTALL — PASS
+--------------------------------------------------------
+Command: %LOCALAPPDATA%\Programs\DobbyOS\unins000.exe /VERYSILENT
+         /SUPPRESSMSGBOXES /NORESTART
+Exit code: 0
+Install dir %LOCALAPPDATA%\Programs\DobbyOS: GONE (within 0.5 s of exit).
+Start Menu shortcut "Dobby OS.lnk": GONE.
+%LOCALAPPDATA%\Dobby top-level mtimes, before -> after the whole
+install/smoke/uninstall cycle:
+  AppWindow  8/7/2026  9:57:05 PM  ->  8/7/2026  9:57:05 PM   unchanged
+  data       9/5/2026  2:19:16 PM  ->  9/5/2026  2:49:35 PM   changed at 14:49,
+             i.e. DURING the --smoke run in step (e) — the app writing its own
+             runtime data, timestamped ~35 min BEFORE the uninstall; NOT an
+             uninstall effect
+  logs       9/4/2026  2:27:40 PM  ->  9/4/2026  2:27:40 PM   unchanged
+  signing    9/4/2026  8:25:21 PM  ->  9/4/2026  8:25:21 PM   unchanged
+  webview    9/4/2026  2:28:19 PM  ->  9/4/2026  2:28:19 PM   unchanged
+  (dir itself: 9/4/2026 8:25:20 PM -> unchanged)
+User data survived uninstall intact. PASS.
+
+--------------------------------------------------------
+HONEST LIMITATION
+--------------------------------------------------------
+The ABSENT-WebView2 path (registry pv missing -> Evergreen bootstrapper
+download from go.microsoft.com/fwlink/p/?LinkId=2124703 -> re-probe) is
+COMPILE-VERIFIED + DOC-VERIFIED ONLY on this machine. WebView2 IS installed
+here (pv=152.0.4191.62 hit in the WOW6432Node per-machine key), so the
+detection short-circuits by design and the download/bootstrap branch never
+executes. Exercising it requires a stale, update-starved Windows 10 VM
+without the Evergreen runtime. What IS empirically proven here: the detection
+logic runs in /VERYSILENT, finds the runtime via the documented registry key,
+logs it, skips the download, and the install completes with exit 0.
+
+--------------------------------------------------------
+VERDICT: R7 PASS (6/6 sub-checks; absent-runtime branch untestable on this
+machine by design, verified at source + log level only)
+--------------------------------------------------------
