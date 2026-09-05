@@ -40,8 +40,13 @@ def build_server_env() -> dict:
     # APP_PORT is used by dobby for internal loopback self-calls; it MUST
     # match the uvicorn port (src/constants.py:103).
     env["APP_PORT"] = str(paths.SERVER_PORT)
-    # v1 cut: built-in MCP subsystem is frozen-exe-incompatible.
-    env["ODYSSEUS_DISABLE_MCP"] = "1"
+    # Built-in MCP servers are spawned by dobby as
+    # `<ODYSSEUS_MCP_PYTHON> <script_path>` (src/builtin_mcp.py). The frozen
+    # exe has python-like script semantics (SCRIPT role in __main__.py), so
+    # it can BE that interpreter. Dev mode needs no override: sys.executable
+    # is a real python there and dobby falls back to it.
+    if getattr(sys, "frozen", False):
+        env["ODYSSEUS_MCP_PYTHON"] = sys.executable
     # Line-buffer the redirected stdout/stderr so server.log fills promptly.
     env["PYTHONUNBUFFERED"] = "1"
     return env
@@ -159,10 +164,11 @@ def serve() -> None:
     os.chdir(base)
     sys.path.insert(0, str(base))
 
-    # Defaults only — the launcher parent sets these explicitly.
+    # Defaults only — the launcher parent sets these explicitly. (No MCP
+    # disable here: built-in MCP is live; the parent wires
+    # ODYSSEUS_MCP_PYTHON when frozen — see build_server_env.)
     os.environ.setdefault("ODYSSEUS_DATA_DIR", str(paths.DATA_DIR))
     os.environ.setdefault("APP_PORT", str(paths.SERVER_PORT))
-    os.environ.setdefault("ODYSSEUS_DISABLE_MCP", "1")
 
     # The data dir is NOT auto-created and core/database.py connects at
     # import time — create it before dobby's app module is imported.
