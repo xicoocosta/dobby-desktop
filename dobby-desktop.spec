@@ -45,12 +45,16 @@ datas = [
     # to exist in the base dir; launcher/server.py:182 imports it by name.
     (os.path.join(DOBBY, 'app.py'), 'dobby'),
 
-    # CONTRACT items 2-5: the 4 built-in MCP server scripts, referenced as
-    # CWD-relative script paths at src/builtin_mcp.py:71-74 (the server role
-    # chdirs to the base dir first — launcher/server.py:159). They ship as
-    # data for a future re-enable even though ODYSSEUS_DISABLE_MCP=1 in v1
-    # (launcher/server.py:44). mcp_servers/__init__.py is deliberately NOT
-    # shipped: the scripts are launched by path, never imported as a package.
+    # CONTRACT items 2-5: the 4 built-in MCP server scripts, resolved as
+    # <base_dir>/mcp_servers/<script>.py at src/builtin_mcp.py:71-74+122.
+    # LIVE since Mission 2: built-in MCP is ENABLED (no ODYSSEUS_DISABLE_MCP
+    # anywhere in the launcher). dobby spawns each script as
+    # `<ODYSSEUS_MCP_PYTHON> <script_path>` (src/builtin_mcp.py:99); the
+    # frozen launcher sets ODYSSEUS_MCP_PYTHON to the exe itself
+    # (launcher/server.py:48-49), whose SCRIPT role gives it python-like
+    # `exe script.py args...` semantics (launcher/__main__.py:32-45).
+    # mcp_servers/__init__.py is deliberately NOT shipped: the scripts are
+    # launched by path, never imported as a package.
     (os.path.join(DOBBY, 'mcp_servers', 'image_gen_server.py'), 'dobby/mcp_servers'),
     (os.path.join(DOBBY, 'mcp_servers', 'memory_server.py'),    'dobby/mcp_servers'),
     (os.path.join(DOBBY, 'mcp_servers', 'rag_server.py'),       'dobby/mcp_servers'),
@@ -356,6 +360,11 @@ exe = EXE(
     target_arch=None,
     codesign_identity=None,
     entitlements_file=None,
+    # Windows VERSIONINFO resource (Mission 2): ProductName/FileDescription
+    # "Dobby OS Desktop", version 1.1.0.0. Authenticode signing is NOT done
+    # here — build-windows.ps1 signs dist\DobbyOS\DobbyOS.exe post-build
+    # (best-effort, self-signed).
+    version=os.path.join(REPO, 'version_info.txt'),
     # NOTE: no icon= — assets/dobby.ico does not exist in this repo; the tray
     # glyph is drawn at runtime (launcher/tray.py). Revisit when an .ico lands.
 )
