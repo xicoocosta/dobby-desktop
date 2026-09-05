@@ -1,0 +1,50 @@
+DOBBY OS DESKTOP 1.1.0 — INSTALL NOTES
+=======================================
+
+WHAT YOU NEED
+-------------
+* Windows 10 or 11, 64-bit.
+* Ollama (free, local AI runtime) from https://ollama.com — install it and
+  pull at least one model, e.g. open a terminal and run:
+
+      ollama pull llama3.2
+
+  The app starts and works without Ollama, but the chat needs a model to talk to.
+
+INSTALL
+-------
+1. (Optional, recommended) Verify the download first: SHA256SUMS.txt next to
+   this file lists the SHA-256 hashes of the installer and the source zip.
+   In PowerShell: Get-FileHash .\DobbyOS-Setup-1.1.0.exe — compare the hash.
+2. Run DobbyOS-Setup-1.1.0.exe.
+3. Windows SmartScreen will likely say "Windows protected your PC /
+   unrecognized app". Click "More info", then "Run anyway".
+   Why: the installer is self-signed, not signed by a paid certificate
+   authority, so Windows has no reputation record for it. The SHA256SUMS
+   check in step 1 is your integrity guarantee.
+4. Follow the wizard. It installs per-user (no admin password needed) into
+   %LOCALAPPDATA%\Programs\DobbyOS and adds a Start Menu shortcut
+   ("Dobby OS"). A desktop shortcut is optional (checkbox, off by default).
+
+FIRST RUN
+---------
+* Windows Firewall may ask about "DobbyOS". The server listens ONLY on
+  127.0.0.1:7001 (your own machine — nothing is exposed to the network).
+  Allowing or blocking it on public/private networks doesn't change that.
+* A window opens — create your account there (stored locally on your PC).
+* Closing the window sends Dobby OS to the system tray (near the clock);
+  it keeps running. To exit fully, right-click the tray icon and choose Quit.
+
+YOUR DATA
+---------
+Everything you create lives in %LOCALAPPDATA%\Dobby (accounts, chats,
+settings). UNINSTALLING THE APP KEEPS YOUR DATA — uninstall only removes the
+program files. Delete %LOCALAPPDATA%\Dobby yourself if you want it gone.
+
+LICENSE & SOURCE
+----------------
+Dobby OS Desktop is licensed under the GNU AGPL-3.0 (the license text is
+shown during install and installed alongside the app). The COMPLETE source
+code is in SOURCE-DobbyOS-1.1.0.zip, distributed together with this
+installer. If you share this app with someone else, share the SOURCE zip
+with it — the license requires that source accompanies the program.
