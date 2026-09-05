@@ -1303,3 +1303,70 @@ Open items at Mission 2 end:
 3. Code signing with a CA-issued cert — future work if distribution ever goes public (which also requires resolving open item 4).
 4. dobby private (user decision) — AGPL corresponding-source gate stands before any distribution of binaries.
 5. Runtime pip installs / agent python tool remain degraded in the frozen exe (upstream limitation, unchanged).
+
+# MISSION 3 — MCP schema fix (authorized by continuation of the "re-enable" decision, completed 2026-09-05)
+
+Scope: the follow-up recorded at Mission 2 close-out item 1 — src/mcp_manager.py read camelCase attributes (`inputSchema`, `isError`) off mcp 2.x pydantic models, so EVERY MCP server's tools registered with `input_schema: {}` and error results surfaced as success. Fix upstream, repin, rebuild under the strict gate, verify frozen.
+
+## Mission 3 — agent reports
+
+### AGENT REPORT — DobbyEngineer (run 3)
+
+AGENT: DobbyEngineer (run 3)
+TASK: Mission 3 — fix camelCase mcp attribute reads
+STATUS: complete
+
+EVIDENCE:
+Preflight: repo clean at 534c31f on redesign/baseline. Live-interpreter check confirmed the defect class on mcp 2.1.1 models: hasattr(tool,'inputSchema')=False / input_schema present; same for isError→is_error, mimeType→mime_type, readOnlyHint→read_only_hint.
+HIT INVENTORY (grep over *.py): BROKEN attribute reads, all in src/mcp_manager.py — :210/:271/:352 `tool.inputSchema if hasattr(...)` → always {} (root cause); :484 `getattr(content,'mimeType','image/png')` → always 'image/png'; :491 `getattr(result,'isError',False)` → always False; :120-121 readOnlyHint/destructiveHint on ToolAnnotations → always None. LEGITIMATE (left alone): agent_loop.py:2811 dict key; mcp_manager.py:117-118 dict path; mcp_servers/*.py `inputSchema=` pydantic alias kwargs; test fixtures; comments.
+DIFF: 1 file, 7 lines changed — snake_case first, camelCase fallback (`getattr(x,'snake',None) or getattr(x,'camel',None) or default`; nested-getattr for tri-state hints and is_error so False stays meaningful).
+DEV PROOF (port 7031, throwaway data dir, AUTH_ENABLED=false, MCP enabled; fix stashed for BEFORE, popped for AFTER):
+(a) /api/mcp/tools — BEFORE: 47 tools, NON-EMPTY input_schema 0. AFTER: 47 tools, NON-EMPTY 47 (browser 30/30, email 14/14, image_gen 1/1, memory 1/1, rag 1/1). manage_memory example schema pasted in full (real properties/enum/required).
+(b) Error propagation via dobby's own McpManager.call_tool → _do_call path, invalid args (memory_id as int): BEFORE {"stdout":"startswith first arg must be str...","exit_code":0} (error as silent success) → AFTER {"stderr":"startswith first arg must be str...","exit_code":1} (error surfaces). Note: email server unusable for this proof (its handler blanket-catches into plain text) — switched to memory, disclosed.
+(c) Cleanup clean; regression pytest test_plan_mode + test_mcp_cache_invalidation → 10 passed.
+COMMIT/PUSH: 01ce7cd "fix(mcp): read snake_case attrs from mcp 2.x tool/result models" (src/mcp_manager.py 7+/7-); pushed 534c31f..01ce7cd; porcelain clean; stash empty.
+
+FILES WRITTEN: dobby src/mcp_manager.py
+COUNTS: hits 16 (broken 6 / legit 10); lines changed 7; schemas non-empty 0/47 → 47/47; new HEAD 01ce7cda371e9ff3d447d2e646d7fe9bf0a5cfbf
+OPEN ITEMS: none
+
+### AGENT REPORT — Packager (M3)
+
+AGENT: Packager (M3)
+TASK: Mission 3 — strict-gate rebuild + launch sanity
+STATUS: complete
+
+EVIDENCE:
+Strict pin gate (NO -AllowAheadSubmodule), verbatim: pinned gitlink 01ce7cda... == checked out; "submodule OK ... at the pinned commit"; "working tree is clean". Pre-build: HEAD a049f5b, porcelain clean.
+Build: "BUILD OK", ERRORLEVEL=0 (cmd-level redirection — the M2 PS-redirection trap avoided). Same 3 benign collect_submodules warnings only.
+Signature reuse PROVEN: "using existing PFX"; PFX/key/crt timestamps unchanged — NOT regenerated; Status=UnknownError (expected), same thumbprint 3E3E222F56BC396EA2499C23A70AA9845043A837; FileVersion 1.1.0.0.
+SHA256SUMS.txt: fc6ae9bc0205178dc743d05f8b8f99d29dc091262bf4dbd4db8c7176710f2eb6 *DobbyOS.exe / 758cfd9983eea1dc92bc23e5a776683207347ab4553967275aa6bb0adffad42a *DobbyOS-win64.zip (both differ from M2 — new content).
+Deltas vs M2: files 2,723 (0); 233.6 MB (0); exe 30,845,984 B (0 bytes, content differs); zip -45 B (0.00004%). Fix presence: dist _internal\dobby\src\mcp_manager.py SHA256 == vendor/dobby copy — the repinned fix is what shipped.
+Launch sanity (--smoke 45): health 200 t+12s; exit 0 t+77s; DobbyOS 0→…→0; node delta 0; fresh server.log slice: exactly 5 "MCP server connected" lines; only environmental errors (ChromaDB sidecar absent x2).
+
+FILES WRITTEN: dist\ (rebuilt), build\m3-build.log, m3-sanity.log, m3-serverlog-slice.txt
+COUNTS: build exit 0; 2,723 files / 233.6 MB; exe 30,845,984 B; zip 111,818,368 B; signature UnknownError (PFX reused); 1.1.0.0; health 200; orphan delta 0; MCP lines 5/5
+OPEN ITEMS: sanity script's "port STILL BOUND" line = TIME_WAIT sampling artifact 0.2s post-exit (re-verified free); its "6 ERROR lines" over-count = 4 uvicorn.error-logger INFO lines + 2 real environmental ChromaDB errors.
+
+### AGENT REPORT — Verifier (M3)
+
+AGENT: Verifier (M3)
+TASK: Mission 3 — W6 frozen MCP schema verification
+STATUS: complete
+EVIDENCE: PASS. (a) /api/mcp/tools from the real frozen exe: 47 tools, 47/47 non-empty input_schema (browser 30/30, email 14/14, image_gen 1/1, memory 1/1, rag 1/1); manage_memory tool object pasted verbatim (raw substring). (b) Same-run regression trio: health 200, self-exit 0, process delta 6→0, port released. (c) Honest limitation: no direct HTTP tool-call endpoint exists, so frozen is_error→exit_code was not re-proven from outside; proven in dev at the same pin, and the 47/47 result confirms the fixed code path is what is frozen. Operational findings: health is /api/health (/health 404s); /api/mcp/tools serves "[]" for ~3s after health 200 while MCP servers warm up. Two launches: run 1 consumed by health-path discovery (still corroborates 6→0 + clean exit), run 2 is the evidence run. AUTH_ENABLED=false deviation banner at top of the file; shipped defaults untouched.
+FILES WRITTEN: docs/verification/M3-W6.txt
+COUNTS: 47 tools, 47/47 non-empty; per-server 30/14/1/1/1; health 200; exit 0; delta 6→0
+OPEN ITEMS: /health vs /api/health naming could trip future probes; tools-list warmup window means health-200 alone is not sufficient gating for schema reads; frozen error-propagation proof would need an in-product tool invocation (account) — deliberately not done.
+
+### AUDIT NOTE — Auditor (Mission 3 countersign)
+
+AGENT: Auditor
+TASK: Mission 3 countersign
+STATUS: complete
+EVIDENCE (6/6 PASS): [1] 01ce7cd = exactly src/mcp_manager.py 7+/7-, pushed on origin/redesign/baseline; changed lines quoted at HEAD (L210 input_schema-first read, L491 is_error nested getattr, L120 read_only_hint) — snake_case first, camelCase fallback, defaults preserved. [2] Repin a049f5b gitlink 534c31f→01ce7cd; submodule clean at pin (space prefix). [3] Dist integrity: both SHA256 match SHA256SUMS.txt; frozen mcp_manager.py hash 56D4B36C... identical to vendor copy — the fix is what shipped; signature Status/CN/thumbprint match; FileVersion 1.1.0.0. [4] M3-W6.txt raw, deviation banner at lines 10–16, verdict PASS, numbers internally consistent, honest limitation statement present. [5] Porcelain exactly `?? docs/verification/M3-W6.txt`; diffs empty; vendor clean at pin. [6] Stale-doc sweep → 1 doc-only defect (README pin line still 534c31f) + 2 prescriptions (pin hash update; Verification section M3 sentence); all other 534c31f hits are historical records that must not be edited.
+COUNTS: spot-checks 6/6, defects 1 (doc-only), prescriptions 2
+VERDICT: COUNTERSIGNED WITH DEFECTS (doc-only; prescriptions applied by the Orchestrator before the final commits)
+OPEN ITEMS: commit M3-W6.txt; append this section to RUN_RECORD.
+
+## Mission 3 — close-out (Orchestrator, 2026-09-05)
+Prescriptions 1–2 applied as verbatim pen-work (README pin hash → 01ce7cd; Verification section gains the M3 sentence). Commits this mission: dobby +1 (01ce7cd); dobby-desktop +4 (a049f5b repin, readme updates, verification evidence W6, this run-record append) → dobby-desktop total 35. Combined verification: V 9/9 + W 5/5 (M2) + W6 1/1 (M3). Remaining open items: CA code signing (if ever distributing — requires dobby public first; dobby is private by user decision); runtime pip/agent-python frozen limitation (upstream); /api/mcp/tools ~3s warmup after health (operational note); Quit leaves the detached Ollama daemon running (design).
