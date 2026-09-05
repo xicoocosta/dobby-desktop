@@ -4,6 +4,12 @@ DOBBY OS DESKTOP 1.1.0 — INSTALL NOTES
 WHAT YOU NEED
 -------------
 * Windows 10 or 11, 64-bit.
+* Microsoft Edge WebView2 runtime — the app window runs on it. Windows 11
+  already includes it, and so does any Windows 10 PC that gets its updates.
+  If yours doesn't have it, the installer notices and offers to fetch it
+  from Microsoft during setup (needs internet). Offline, or declined it?
+  Get it free here and run Dobby OS afterwards:
+  https://developer.microsoft.com/microsoft-edge/webview2/
 * Ollama (free, local AI runtime) from https://ollama.com — install it and
   pull at least one model, e.g. open a terminal and run:
 
