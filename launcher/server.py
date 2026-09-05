@@ -28,7 +28,13 @@ from . import paths
 log = logging.getLogger("launcher.server")
 
 HEALTH_POLL_INTERVAL_S = 0.5
-HEALTH_TIMEOUT_S = 30.0
+# M4-R4: a cold FIRST launch of a fresh install (thousands of new files being
+# AV-scanned) can exceed 30s before /api/health answers; the old 30.0 produced
+# a spurious "server failed to start" dialog while the second launch was fine.
+# 120s is safe because the poll loop below fast-fails the moment the child
+# process dies (proc.poll() check), so real crashes still surface immediately —
+# the long timeout only delays the dialog in genuine hang cases.
+HEALTH_TIMEOUT_S = 120.0
 STOP_GRACE_S = 5.0
 LOG_TAIL_LINES = 50
 
@@ -95,7 +101,7 @@ class ServerProcess:
         )
 
     def wait_healthy(self) -> bool:
-        """Poll GET /api/health every 500ms for up to 30s."""
+        """Poll GET /api/health every 500ms for up to HEALTH_TIMEOUT_S."""
         log.info("health poll: GET %s every %.1fs, timeout %.0fs",
                  paths.HEALTH_URL, HEALTH_POLL_INTERVAL_S, HEALTH_TIMEOUT_S)
         deadline = time.monotonic() + HEALTH_TIMEOUT_S
