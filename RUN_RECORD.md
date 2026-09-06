@@ -1427,3 +1427,20 @@ Commits becbb19 (iss, +198) and 4898dc4 (INSTALL.txt, +6); build-release.ps1 re-
 
 ## Mission 4b — close-out (Orchestrator, 2026-09-05)
 Final shareable bundle: dist\DobbyOS-1.1.0-share.zip = 116,356,676 B (setup c01ffbb7..., source 19061e5d...). Commits this mission: 5 (becbb19, 4898dc4, readme updates, evidence R7, this append) → dobby-desktop total 48. Combined verification: V 9/9 + W 5/5 + W6 1/1 + R 7/7. Dependency posture of the release, final: Python runtime + all 122 packages frozen in-bundle (nothing to install); WebView2 detected/offered by the installer; Ollama the sole documented manual prerequisite (graceful dialog when absent); Node/ChromaDB/optional extras degrade gracefully and are documented. Carried honest gap: the absent-WebView2 bootstrapper branch has never executed end-to-end (all test machines have the runtime); a stale-Win10 VM run would close it.
+
+# MISSION 4c — absent-WebView2 branch harness (2026-09-06)
+
+Scope: close the carried R7 gap (the installer's absent-WebView2 branch had never executed — every test machine has the runtime) using a fully LOCAL harness: no internet downloads, no system changes, shipped installer untouched.
+
+## Mission 4c — agent reports (abridged; raw in docs/verification/M4-R8.txt)
+
+### AGENT REPORT — Verifier (M4c): R8 — STATUS complete, PASS
+Harness (gitignored build\wv2-branch-test\): 3,584-byte C# stub named MicrosoftEdgeWebView2Setup.exe compiled with the in-box Framework csc (exit 0; accepts /silent /install, exits 0); python http.server on 127.0.0.1:8777 serving it; TEST copy of the iss with exactly one guarded seam `(not TEST_FORCE_MISSING) and IsWebView2Installed` at the INITIAL call site only (the post-exec re-probe stayed the real detection), localhost URL, TEST output name, "NEVER SHIP" header; ISCC compile 0 errors.
+Evidence chain, two independent sides, verbatim in the file: forced miss ("WebView2: not detected — attempting Evergreen bootstrapper.", with NO pv-hit line before it) → silent DownloadTemporaryFile → server access log `GET /MicrosoftEdgeWebView2Setup.exe HTTP/1.1" 200` same-second as the install-log line → stub exec ("bootstrapper finished with exit code 0.") → re-probe hit the REAL registry ("per-machine (WOW6432Node) hit, pv=152.0.4191.66") → "runtime present after bootstrap step." → install exit 0. Cleanup: test install uninstalled (exit 0, dir + HKCU key gone), server killed, port free. Containment: shipped iss diff 0 lines; dist\release byte-identical (setup exe re-hashed c01ffbb7...).
+Honest scope: OUR download/exec/re-probe code is now runtime-proven; Microsoft's real bootstrapper and a genuinely WebView2-absent machine remain external/untested (their product; no such machine here).
+
+### AUDIT NOTE — Auditor (Mission 4c countersign) — 5/5 PASS, VERDICT: COUNTERSIGNED (0 defects), 1 prescription
+[1] M4-R8.txt raw + verdict + correctly bounded scope statement. [2] The two evidence sides cross-checked inside the file: download timestamps consistent to the second; "no pv-hit before the miss" verifiable in the quoted excerpt; the pv-hit appears only at the re-probe. [3] Containment verified: porcelain exactly ?? M4-R8.txt; build/ gitignored; shipped iss diffs empty; release setup exe re-hashed byte-identical. [4] Harness iss read directly: single seam at line 303, re-probe at 274 unforced, TEST header present; TEST_FORCE_MISSING appears in code only at its const + the one guard. [5] Prescription: extend README Verification paragraph to R8 (applied by the Orchestrator as verbatim pen-work).
+
+## Mission 4c — close-out (Orchestrator, 2026-09-06)
+Commits this mission: 3 (readme verification update, evidence R8, this append) → dobby-desktop total 51. Combined verification: V 9/9 + W 5/5 + W6 1/1 + R 8/8. The release bundle itself is UNCHANGED (dist\DobbyOS-1.1.0-share.zip, 116,356,676 B, sums c01ffbb7/19061e5d) — Mission 4c added evidence, not artifacts. Residual risk, correctly external: Microsoft's own bootstrapper behavior on a truly WebView2-absent machine (their product; would need a stale-Win10 VM — no longer a gap in our code).
